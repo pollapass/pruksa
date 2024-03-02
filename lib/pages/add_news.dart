@@ -66,34 +66,26 @@ class _AddNewsState extends State<AddNews> {
   Future<Null> uploadPictureAndInsertData() async {
     String titel = titelController.text;
     String detail = detailController.text;
-    SharedPreferences preference = await SharedPreferences.getInstance();
 
-    String cid = preference.getString('cid')!;
-    String phone = preference.getString('phone')!;
-    String name = preference.getString('name')!;
-    String lastname = preference.getString('lastname')!;
     print('## สถานที่ = $titel ,รายละเอียด = $detail');
 
     if (file == null) {
       // No Avatar
-      processInsertMySQL(
-        name: name,
-        titel: titel,
-        detail: detail,
-        phone: phone,
-        lastname: lastname,
-        cid: cid,
-      );
+      MyDialog().normalDialog(
+          context, 'ไม่ได้แนบรูปภาพ ?', 'กรุณาแนบรูปภาพด้วยค่ะ');
     } else {
       //      // Have Avatar
       print('### process Upload Avatar');
+      SharedPreferences preference = await SharedPreferences.getInstance();
+     String userkey = preference.getString('id')!;
+     
 
-      print('### cid = $cid');
+      print('### key = $userkey');
 
       print('### process Upload Avatar');
-      String apiSaveAvatar = '${MyConstant.domain}/dopa/api/savecontactpic.php';
+      String apiSaveAvatar = '${MyConstant.domain}/dopa/api/savenewpic.php';
       int i = Random().nextInt(100000);
-      String nameAvatar = 'dis$i.jpg';
+      String nameAvatar = 'new$i.jpg';
       Map<String, dynamic> map = Map();
       map['file'] =
           await MultipartFile.fromFile(file!.path, filename: nameAvatar);
@@ -102,10 +94,7 @@ class _AddNewsState extends State<AddNews> {
         avatar = '$nameAvatar';
         print('### avatar = $avatar');
         processInsertMySQL(
-          name: name,
-          lastname: lastname,
-          phone: phone,
-          cid: cid,
+         userkey: userkey,
           titel: titel,
           detail: detail,
         );
@@ -114,15 +103,15 @@ class _AddNewsState extends State<AddNews> {
   }
 
   Future<Null> processInsertMySQL(
-      {String? name,
+      {
       String? titel,
-      String? phone,
+      String? userkey,
       String? detail,
-      String? lastname,
-      String? cid}) async {
+      
+      }) async {
     print('### processInsertMySQL Work and avatar ==>> $avatar');
     String apiInsertUser =
-        '${MyConstant.domain}/dopa/api/insertcontact.php?isAdd=true&name=$name&lastname=$lastname&cid=$cid&phone=$phone&titel=$titel&image=$avatar&detail=$detail';
+        '${MyConstant.domain}/dopa/api/insertnews.php?isAdd=true&titel=$titel&image=$avatar&detail=$detail&userkey=$userkey';
     await Dio().get(apiInsertUser).then((value) {
       if (value.toString() == 'true') {
         Navigator.pop(context);

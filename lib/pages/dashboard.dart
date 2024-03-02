@@ -19,6 +19,7 @@ import 'package:pruksa/pages/news_detail.dart';
 
 import 'package:pruksa/pages/newspr.dart';
 import 'package:pruksa/pages/redcross_his.dart';
+import 'package:pruksa/utility/app_service.dart';
 
 import 'package:pruksa/utility/my_constant.dart';
 
@@ -57,6 +58,7 @@ class _DashboardState extends State<Dashboard> {
     // TODO: implement initState
     super.initState();
 
+    Appservice().processnoti(fromadmin: false);
     finduser();
     loadvaluefromapi();
     // initialFile();
@@ -259,7 +261,9 @@ class _DashboardState extends State<Dashboard> {
               const SizedBox(
                 height: 15.0,
               ),
-              GridView(physics: const ScrollPhysics(),shrinkWrap: true,
+              GridView(
+                physics: const ScrollPhysics(),
+                shrinkWrap: true,
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 3,
                   childAspectRatio: 3 / 2,
@@ -289,8 +293,7 @@ class _DashboardState extends State<Dashboard> {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                            builder: (context) => InformDisHis()),
+                        MaterialPageRoute(builder: (context) => InformDisHis()),
                       );
                     },
                     child: Column(
@@ -310,8 +313,7 @@ class _DashboardState extends State<Dashboard> {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                            builder: (context) => Informdamhis()),
+                        MaterialPageRoute(builder: (context) => Informdamhis()),
                       );
                     },
                     child: Column(
@@ -331,8 +333,7 @@ class _DashboardState extends State<Dashboard> {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                            builder: (context) => RedcrossHis()),
+                        MaterialPageRoute(builder: (context) => RedcrossHis()),
                       );
                     },
                     child: Column(
@@ -429,16 +430,18 @@ class _DashboardState extends State<Dashboard> {
       ),
     );
   }
-Widget BuildNews() {
-    return ListView.builder(physics: const ScrollPhysics(),shrinkWrap: true,
+
+  Widget BuildNews() {
+    return ListView.builder(
+        physics: const ScrollPhysics(),
+        shrinkWrap: true,
         itemCount: newsmodels.length,
         itemBuilder: (context, index) => Card(
               elevation: 10.0,
-              margin:
-                  new EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
+              margin: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
               child: Container(
-                decoration: BoxDecoration(
-                    color: Color.fromRGBO(246, 242, 247, 0.894)),
+                decoration:
+                    BoxDecoration(color: Color.fromRGBO(246, 242, 247, 0.894)),
                 child: ListTile(
                   onTap: () {
                     print('## You Click Edit');

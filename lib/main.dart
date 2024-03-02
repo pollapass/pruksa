@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -43,28 +44,36 @@ Future<Null> main() async {
   HttpOverrides.global = MyHttpOverride();
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Only call clearSavedSettings() during testing to reset internal values.
-  await Upgrader.clearSavedSettings();
+  await Firebase.initializeApp().then((value)async {
+    print('Fibase oK');
+
+await Upgrader.clearSavedSettings();
   WidgetsFlutterBinding.ensureInitialized();
   SharedPreferences preferences = await SharedPreferences.getInstance();
   String? type = preferences.getString('type');
 
-  
   if (type == null) {
     initlalRoute = MyConstant.routeLogin;
     runApp(MyApp());
   } else {
     if (type == 'user') {
-       initlalRoute = MyConstant.routeDashboard;
-    runApp(MyApp());
+      initlalRoute = MyConstant.routeDashboard;
+      runApp(MyApp());
     } else {
-          initlalRoute = MyConstant.routeAdmin;
-    runApp(MyApp());
+      initlalRoute = MyConstant.routeAdmin;
+      runApp(MyApp());
     }
   }
 
 
 
+
+
+
+  });
+
+  // Only call clearSavedSettings() during testing to reset internal values.
+  
 }
 
 class MyApp extends StatelessWidget {

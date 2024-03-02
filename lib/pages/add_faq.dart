@@ -52,7 +52,7 @@ class _AddFaqState extends State<AddFaq> {
       onPressed: () {
         if (formKey.currentState!.validate()) {
           // checkAuthen(user: user, password: password);
-          InsertData();
+          postData();
           //PostData();
         }
       },
@@ -146,24 +146,26 @@ class _AddFaqState extends State<AddFaq> {
     });
   }
 
-  Future<Null> PostData() async {
+  Future<void> postData() async {
     String titel = titelController.text;
     String detail = detailController.text;
 
+    String url = '${MyConstant.domain}/dopa/api/insertfaq1.php?isAdd=true';
+ print('## Url = $url');
     print('## สถานที่ = $titel ,รายละเอียด = $detail');
 
-    SharedPreferences preferences = await SharedPreferences.getInstance();
+    // SharedPreferences preferences = await SharedPreferences.getInstance();
 
-    String id = preferences.getString('id')!;
-    final dio = Dio();
-    final response = await dio.post(
-      '${MyConstant.domain}/dopa/api/insertfaq1.php?isAdd=true',
-      data: {
-        'title': titelController.text,
-        'detail': detailController.text,
-        'user_key': id,
-      },
-    );
-    print(response.data);
+    // String id = preferences.getString('id')!;
+    // final dio = Dio();
+    // final response = await dio.post(
+    //   '${MyConstant.domain}/dopa/api/insertfaq1.php?isAdd=true',
+    //   data: {
+    //     'title': titelController.text,
+    //     'detail': detailController.text,
+    //     'user_key': id,
+    //   },
+    // );
+    // print(response.data);
   }
 }
