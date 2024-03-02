@@ -60,6 +60,13 @@ class _LoginState extends State<Login> {
                   ),
                   const SizedBox(height: 25),
                   MyTextField(
+                    validatefunc: (p0) {
+                      if (p0?.isEmpty ?? true) {
+                        return 'กรุณากรอกบ้อมูลด้วยค่ะ';
+                      } else {
+                        return null;
+                      }
+                    },
                     controller: userController,
                     hintText: 'เลขบัตรประจำตัวประชาชน',
                     obscureText: false,
@@ -68,7 +75,13 @@ class _LoginState extends State<Login> {
                   const SizedBox(height: 10),
 
                   // password textfield
-                  MyTextField(
+                  MyTextField(   validatefunc: (p0) {
+                      if (p0?.isEmpty ?? true) {
+                        return 'กรุณากรอกบ้อมูลด้วยค่ะ';
+                      } else {
+                        return null;
+                      }
+                    },
                     controller: passwordController,
                     hintText: 'เบอร์โทรศัพท์',
                     obscureText: true,
@@ -164,20 +177,20 @@ class _LoginState extends State<Login> {
 
   ElevatedButton BuildAgent() {
     return ElevatedButton(
-                        onPressed: () {
-                          if (formKey.currentState!.validate()) {
-                            String user = userController.text;
-                            String password = passwordController.text;
-                            print('## user = $user, password = $password');
-                            checkUser(user: user, password: password);
-                          }
-                        },
-                        child: Text(
-                          'สำหรับเจ้าหน้าที่',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        style: MyConstant().mydarkbutton(),
-                      );
+      onPressed: () {
+        if (formKey.currentState!.validate()) {
+          String user = userController.text;
+          String password = passwordController.text;
+          print('## user = $user, password = $password');
+          checkUser(user: user, password: password);
+        }
+      },
+      child: Text(
+        'สำหรับเจ้าหน้าที่',
+        style: TextStyle(color: Colors.white),
+      ),
+      style: MyConstant().mydarkbutton(),
+    );
   }
 
   Future<Null> checkUser({String? user, String? password}) async {
@@ -202,7 +215,7 @@ class _LoginState extends State<Login> {
           // var user_key = await preferences.getString('id');
           //  preferences.setString('type', model.user_position);
           preferences.setString('posname', model.pos_name);
-         // preferences.setString('name', model.name);
+          // preferences.setString('name', model.name);
           preferences.setString('fullname', model.fullname);
           preferences.setString('user_photo', model.user_photo);
 
@@ -216,6 +229,8 @@ class _LoginState extends State<Login> {
   Future<Null> checkAuthen({String? user, String? password}) async {
     String apiCheckAuthen =
         '${MyConstant.domain}/dopa/api/getMemberWherecid.php?isAdd=true&user=$user';
+
+     
     await Dio().get(apiCheckAuthen).then((value) async {
       print('## value for API ==>> $value');
       if (value.toString() == 'null') {
