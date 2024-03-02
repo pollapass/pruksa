@@ -75,7 +75,8 @@ class _LoginState extends State<Login> {
                   const SizedBox(height: 10),
 
                   // password textfield
-                  MyTextField(   validatefunc: (p0) {
+                  MyTextField(
+                    validatefunc: (p0) {
                       if (p0?.isEmpty ?? true) {
                         return 'กรุณากรอกบ้อมูลด้วยค่ะ';
                       } else {
@@ -196,13 +197,15 @@ class _LoginState extends State<Login> {
   Future<Null> checkUser({String? user, String? password}) async {
     String? apiCheckAuthen =
         '${MyConstant.domain}/dopa/api/checklogin.php?isAdd=true&user=$user&password=$password';
+
+    print('url => $apiCheckAuthen');
     await Dio().get(apiCheckAuthen).then((value) async {
       print('## value for API ==>> $value');
       if (value.toString() == 'null') {
         MyDialog().normalDialog(
-            context, 'ไม่สามารถเข้าระบบได้!!!', 'ไม่มี $user ในฐานข้อมูล');
+            context, 'ไม่สามารถเข้าระบบได้!!!', 'User หรือ password ผิด');
       } else {
-        print('aaaaaa');
+   
         for (var item in json.decode(value.data)) {
           UserModel model = UserModel.fromMap(item);
 
@@ -210,7 +213,7 @@ class _LoginState extends State<Login> {
           //String type = model.user_position;
           // print('## Authen Success in Type ==> $type');
           SharedPreferences preferences = await SharedPreferences.getInstance();
-
+           preferences.setString('type', 'admin'); 
           preferences.setString('id', model.user_key);
           // var user_key = await preferences.getString('id');
           //  preferences.setString('type', model.user_position);
@@ -230,7 +233,6 @@ class _LoginState extends State<Login> {
     String apiCheckAuthen =
         '${MyConstant.domain}/dopa/api/getMemberWherecid.php?isAdd=true&user=$user';
 
-     
     await Dio().get(apiCheckAuthen).then((value) async {
       print('## value for API ==>> $value');
       if (value.toString() == 'null') {
@@ -246,6 +248,7 @@ class _LoginState extends State<Login> {
 
             SharedPreferences preferences =
                 await SharedPreferences.getInstance();
+                  preferences.setString('type', 'user'); 
             preferences.setString('cid', model.cid);
             preferences.setString('phone', model.phone);
             preferences.setString('lastname', model.lastname);

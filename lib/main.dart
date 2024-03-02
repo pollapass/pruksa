@@ -47,26 +47,24 @@ Future<Null> main() async {
   await Upgrader.clearSavedSettings();
   WidgetsFlutterBinding.ensureInitialized();
   SharedPreferences preferences = await SharedPreferences.getInstance();
-  //String? type = preferences.getString('type');
-  String? type = preferences.getString('cid');
-  // print('### type ===>> $type');
-  /*
-  if (type?.isEmpty ?? true) {
-    initlalRoute = MyConstant.routeLogin;
-    runApp(MyApp());
-  } else {
-    initlalRoute = MyConstant.routeDashboard;
-    runApp(MyApp());
-  }
-  */
+  String? type = preferences.getString('type');
 
-  if (type?.isEmpty ?? true) {
+  
+  if (type == null) {
     initlalRoute = MyConstant.routeLogin;
     runApp(MyApp());
   } else {
-    initlalRoute = MyConstant.routeDashboard;
+    if (type == 'user') {
+       initlalRoute = MyConstant.routeDashboard;
     runApp(MyApp());
+    } else {
+          initlalRoute = MyConstant.routeAdmin;
+    runApp(MyApp());
+    }
   }
+
+
+
 }
 
 class MyApp extends StatelessWidget {
