@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "145784622130",
+    "project_id": "pruksa-405310",
+    "storage_bucket": "pruksa-405310.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:145784622130:android:c072f775aa7a79e5b5802b",
+        "android_client_info": {
+          "package_name": "com.chaloemphrakiat.pruksa"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBcDnd6uSdUgcj6-StywOoAPhRXc6Mssuo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,142 @@
+import 'dart:convert';
+
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
+import 'package:pruksa/models/informrisk_model.dart';
+import 'package:pruksa/pages/risk_detail.dart';
+
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../utility/my_constant.dart';
+import '../wigets/show_image.dart';
+import '../wigets/show_progress.dart';
+import '../wigets/show_titel.dart';
+
+class InformHis extends StatefulWidget {
+  const InformHis({Key? key}) : super(key: key);
+
+  @override
+  State<InformHis> createState() => _InformHisState();
+}
+
+class _InformHisState extends State<InformHis> {
+  bool load = true;
+  bool? haveData;
+  List<InformriskModel> riskmodels = [];
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    loadvaluefromapi();
+    // initialFile();
+  }
+
+  Future<Null> loadvaluefromapi() async {
+    if (riskmodels.length != 0) {
+      riskmodels.clear();
+    } else {}
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    String id = preferences.getString('cid')!;
+    String apigetactivelist =
+        '${MyConstant.domain}/dopa/api/getrisk.php?isAdd=true&id=$id';
+
+    await Dio().get(apigetactivelist).then((value) {
+      print('value ==> $value');
+      // print('value ==> $id');
+      if (value.toString() == 'null') {
+        // No Data
+        setState(() {
+          load = false;
+          haveData = false;
+        });
+      } else {
+        for (var item in json.decode(value.data)) {
+          InformriskModel model = InformriskModel.fromMap(item);
+          //print('name of titel =${model.titel}');
+
+          setState(() {
+            load = false;
+            haveData = true;
+            riskmodels.add(model);
+          });
+        }
+      }
+    });
+  }
+
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('ประวัติการแจ้งจุดเสี่ยงแหล่งมั่วสุม'),
+        backgroundColor: Colors.pinkAccent,
+      ),
+      body: load
+          ? ShowProgress()
+          : haveData!
+              ? ListView.builder(
+                  itemCount: riskmodels.length,
+                  itemBuilder: (context, index) => Card(
+                        elevation: 10.0,
+                        margin: new EdgeInsets.symmetric(
+                            horizontal: 10.0, vertical: 6.0),
+                        child: Container(
+                          decoration: BoxDecoration(
+                              color: Color.fromRGBO(246, 242, 247, 0.894)),
+                          child: ListTile(
+                            onTap: () {
+                              print('## You Click Edit');
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => RiskDetail(
+                                      informriskModel: riskmodels[index],
+                                    ),
+                                  )).then((value) => loadvaluefromapi());
+                            },
+                            leading: Container(
+                              width: 60,
+                              height: 60,
+                              child: CachedNetworkImage(
+                                fit: BoxFit.cover,
+                                imageUrl:
+                                    ('${MyConstant.domain}/images/informrisk/${riskmodels[index].inform_images}'),
+                                placeholder: (context, url) => ShowProgress(),
+                                errorWidget: (context, url, error) =>
+                                    ShowImage(path: MyConstant.imgdopa),
+                              ),
+                            ),
+                            title: Text(
+                                'สถานที่:${riskmodels[index].inform_place}'),
+                            subtitle: Text(
+                              'สถานะ:${riskmodels[index].status_name}',
+                              style: MyConstant().h3RedStyle(),
+                            ),
+                            trailing: Icon(Icons.keyboard_arrow_right,
+                                color: Color.fromARGB(255, 22, 22, 22),
+                                size: 30.0),
+                          ),
+                        ),
+                      )
+                  //
+                  )
+              : Column(
+                  children: [
+                    ShowTitle(
+                      title: 'ไม่มีข้อมูลการแจ้งค่ะ',
+                      textStyle: MyConstant().h2RedStyle(),
+                    ),
+                  ],
+                ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: MyConstant.dark,
+        onPressed: () {
+          Navigator.pushNamed(context, MyConstant.routeAddinformRisk)
+              .then((value) => loadvaluefromapi());
+        },
+
+        //.then((value) => loadValueFromAPI()),
+        child: Text('เพิ่ม'),
+      ),
+    );
+  }
+}
