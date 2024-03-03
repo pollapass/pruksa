@@ -335,7 +335,7 @@ class _EditDisasterState extends State<EditDisaster> {
         String body = 'กรุณาดูข้อมูลที่เมนูสาธารณภัยด้วยค่ะ ';
 
         String sendtoken =
-            '${MyConstant.domain}/dopa/api/apinoti.php?isAdd=true&titlec=$titel&body=$body&token=$tokens';
+            '${MyConstant.domain}/dopa/api/apinoti.php?isAdd=true&title=$titel&body=$body&token=$tokens';
 
         sendfcmtomember(sendtoken);
       }

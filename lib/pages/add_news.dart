@@ -1,9 +1,12 @@
 import 'dart:io';
 import 'dart:math';
 
-import 'package:dio/dio.dart';
+import 'package:dio/dio.dart' as dio;
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:pruksa/utility/app_controller.dart';
+import 'package:pruksa/utility/app_service.dart';
 import 'package:pruksa/utility/my_constant.dart';
 import 'package:pruksa/utility/my_dialog.dart';
 import 'package:pruksa/wigets/show_image.dart';
@@ -23,6 +26,14 @@ class _AddNewsState extends State<AddNews> {
   TextEditingController titelController = TextEditingController();
   TextEditingController detailController = TextEditingController();
   final formKey = GlobalKey<FormState>();
+  AppController appController = Get.put(AppController());
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    Appservice().processalladmin();
+  }
+
   @override
   Widget build(BuildContext context) {
     double size = MediaQuery.of(context).size.width;
@@ -55,12 +66,33 @@ class _AddNewsState extends State<AddNews> {
               SizedBox(
                 height: 10,
               ),
+              listUserAdmin(),
               buildbutton(),
             ],
           ),
         ),
       ),
     );
+  }
+
+  Obx listUserAdmin() {
+    return Obx(() {
+      return appController.usermodels.isEmpty
+          ? const SizedBox()
+          : ListView.builder(
+              shrinkWrap: true,
+              physics: const ScrollPhysics(),
+              itemCount: appController.chooseUserModels.length,
+              itemBuilder: (context, index) => CheckboxListTile(
+                activeColor: Colors.blue,
+                value: appController.chooseUserModels[index],
+                onChanged: (value) {
+                  appController.chooseUserModels[index] = value!;
+                },
+                title: Text(appController.usermodels[index].fullname),
+              ),
+            );
+    });
   }
 
   Future<Null> uploadPictureAndInsertData() async {
@@ -71,14 +103,13 @@ class _AddNewsState extends State<AddNews> {
 
     if (file == null) {
       // No Avatar
-      MyDialog().normalDialog(
-          context, 'ไม่ได้แนบรูปภาพ ?', 'กรุณาแนบรูปภาพด้วยค่ะ');
+      MyDialog()
+          .normalDialog(context, 'ไม่ได้แนบรูปภาพ ?', 'กรุณาแนบรูปภาพด้วยค่ะ');
     } else {
       //      // Have Avatar
       print('### process Upload Avatar');
       SharedPreferences preference = await SharedPreferences.getInstance();
-     String userkey = preference.getString('id')!;
-     
+      String userkey = preference.getString('id')!;
 
       print('### key = $userkey');
 
@@ -88,13 +119,13 @@ class _AddNewsState extends State<AddNews> {
       String nameAvatar = 'new$i.jpg';
       Map<String, dynamic> map = Map();
       map['file'] =
-          await MultipartFile.fromFile(file!.path, filename: nameAvatar);
-      FormData data = FormData.fromMap(map);
-      await Dio().post(apiSaveAvatar, data: data).then((value) {
+          await dio.MultipartFile.fromFile(file!.path, filename: nameAvatar);
+      dio.FormData data = dio.FormData.fromMap(map);
+      await dio.Dio().post(apiSaveAvatar, data: data).then((value) {
         avatar = '$nameAvatar';
         print('### avatar = $avatar');
         processInsertMySQL(
-         userkey: userkey,
+          userkey: userkey,
           titel: titel,
           detail: detail,
         );
@@ -102,17 +133,15 @@ class _AddNewsState extends State<AddNews> {
     }
   }
 
-  Future<Null> processInsertMySQL(
-      {
-      String? titel,
-      String? userkey,
-      String? detail,
-      
-      }) async {
+  Future<Null> processInsertMySQL({
+    String? titel,
+    String? userkey,
+    String? detail,
+  }) async {
     print('### processInsertMySQL Work and avatar ==>> $avatar');
     String apiInsertUser =
         '${MyConstant.domain}/dopa/api/insertnews.php?isAdd=true&titel=$titel&image=$avatar&detail=$detail&userkey=$userkey';
-    await Dio().get(apiInsertUser).then((value) {
+    await dio.Dio().get(apiInsertUser).then((value) {
       if (value.toString() == 'true') {
         Navigator.pop(context);
       } else {

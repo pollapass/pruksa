@@ -10,6 +10,7 @@ class UserModel {
   final String lastname;
   final String user_position;
   final String pos_name;
+  final String? token;
   UserModel({
     required this.fullname,
     required this.user_key,
@@ -19,6 +20,7 @@ class UserModel {
     required this.lastname,
     required this.user_position,
     required this.pos_name,
+     this.token,
   });
   
   
@@ -33,6 +35,7 @@ class UserModel {
       'lastname': lastname,
       'user_position': user_position,
       'pos_name': pos_name,
+      'token': token,
     };
   }
 
@@ -46,6 +49,7 @@ class UserModel {
       lastname: (map['lastname'] ?? '') as String,
       user_position: (map['user_position'] ?? '') as String,
       pos_name: (map['pos_name'] ?? '') as String,
+      token: (map['token'] ?? '') as String,
     );
   }
 
