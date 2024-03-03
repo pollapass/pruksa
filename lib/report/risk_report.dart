@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rounded_date_picker/flutter_rounded_date_picker.dart';
+import 'package:get/get.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:pruksa/utility/app_controller.dart';
+import 'package:pruksa/utility/app_service.dart';
 import 'package:pruksa/utility/my_constant.dart';
 import 'package:pruksa/wigets/show_titel.dart';
 
@@ -17,7 +21,8 @@ class _RiskReportState extends State<RiskReport> {
   TextEditingController edateController = TextEditingController();
   late Duration duration;
   late DateTime dateTime;
-
+  AppController appController = Get.put(AppController());
+  Map<MarkerId, Marker> mapMarkers = {};
   final DateFormat formatted = DateFormat('yyyy-MM-dd');
   @override
   void initState() {
@@ -26,6 +31,9 @@ class _RiskReportState extends State<RiskReport> {
     dateTime = DateTime.now();
     duration = Duration(minutes: 10);
     super.initState();
+    if (appController.riskModels.isEmpty) {
+      appController.riskModels.clear();
+    }
 
     // initialFile();
   }
@@ -35,29 +43,56 @@ class _RiskReportState extends State<RiskReport> {
       appBar: AppBar(
         title: Text('พิกัดจุดเสี่ยง'),
       ),
-      body:  LayoutBuilder(builder: (context, constraints) => GestureDetector(
+      body: LayoutBuilder(
+        builder: (context, constraints) => GestureDetector(
           onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
           behavior: HitTestBehavior.opaque,
-        child: SingleChildScrollView(
-          child: Center(
-            child: Form(  key: formKey,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  SizedBox(height: 10,),
-                     ShowTitle(
-                  title: 'กรุณาเลือกวันที่ - ถึงวันที่'),
-                   builddate(constraints),
-                   buildenddate(constraints),
-                   SizedBox(height: 10,),
-                   buildbutton(),
-                ],
+          child: SingleChildScrollView(
+            child: Center(
+              child: Form(
+                key: formKey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      height: 10,
+                    ),
+                    ShowTitle(title: 'กรุณาเลือกวันที่ - ถึงวันที่'),
+                    builddate(constraints),
+                    buildenddate(constraints),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    buildbutton(),
+                    Obx(() {
+                      return appController.riskModels.isEmpty
+                          ? const SizedBox()
+                          : Container(
+                              margin: EdgeInsets.all(16),
+                              padding: EdgeInsets.all(4),
+                              child: GoogleMap(
+                                initialCameraPosition: CameraPosition(
+                                    zoom: 16,
+                                    target: LatLng(
+                                        double.parse(appController
+                                            .riskModels.last.lat
+                                            .trim()),
+                                        double.parse(appController
+                                            .riskModels.last.lng
+                                            .trim()))),markers: Set<Marker>.of(mapMarkers.values),
+                              ),
+                              decoration: BoxDecoration(border: Border.all()),
+                              width: Get.width,
+                              height: Get.width,
+                            );
+                    })
+                  ],
+                ),
               ),
             ),
           ),
         ),
       ),
-    ),
     );
   }
 
@@ -67,6 +102,22 @@ class _RiskReportState extends State<RiskReport> {
         if (formKey.currentState!.validate()) {
           // checkAuthen(user: user, password: password);
           //uploadPictureAndInsertData();
+          Appservice().readalldatarisk().then((value) {
+            if (appController.riskModels.isNotEmpty) {
+              int i = 0;
+              for (var element in appController.riskModels) {
+                MarkerId markerId = MarkerId('id$i');
+                i++;
+
+                Marker marker = Marker(
+                    markerId: markerId,
+                    position: LatLng(double.parse(element.lat.trim()),
+                        double.parse(element.lng.trim())));
+
+                mapMarkers[markerId] = marker;
+              }
+            }
+          });
         }
       },
       label: Text(

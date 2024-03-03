@@ -7,6 +7,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:pruksa/models/noti_model.dart';
+import 'package:pruksa/models/risk_model.dart';
 import 'package:pruksa/models/user_model.dart';
 import 'package:pruksa/utility/app_controller.dart';
 import 'package:pruksa/utility/my_constant.dart';
@@ -124,5 +125,19 @@ class Appservice {
     if (await launchUrl(uri, mode: LaunchMode.externalApplication)) {
       throw 'Cannot open';
     }
+  }
+
+  Future<void> readalldatarisk() async {
+    String urlrisk =
+        'https://banluang.org//dopa/api/getriskreport.php?isAdd=true';
+    await Dio().get(urlrisk).then((value) {
+      if (appController.riskModels.isNotEmpty) {
+        appController.riskModels.clear();
+      }
+      for (var element in jsonDecode(value.data)) {
+        RiskModel riskmodel = RiskModel.fromMap(element);
+        appController.riskModels.add(riskmodel);
+      }
+    });
   }
 }

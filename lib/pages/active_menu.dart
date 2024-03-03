@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pruksa/report/act_report.dart';
+import 'package:pruksa/report/risk_report.dart';
 import 'package:pruksa/wigets/menu_item.dart';
 
 class ActiveMenu extends StatelessWidget {
@@ -35,7 +36,7 @@ class ActiveMenu extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => ActiveReportMount()),
+                        builder: (context) => RiskReport()),
                   );
                 }))
           ],
