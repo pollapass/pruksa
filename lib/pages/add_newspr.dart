@@ -6,6 +6,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:pruksa/utility/my_constant.dart';
 import 'package:pruksa/utility/my_dialog.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AddNewsPr extends StatefulWidget {
   const AddNewsPr({Key? key}) : super(key: key);
@@ -77,12 +78,15 @@ class _AddNewsPrState extends State<AddNewsPr> {
       print('กรุณาแนนเอกสารด้วยค่ะ');
     } else {
       //      // Have Avatar
-      print('### process Upload Avatar');
+      SharedPreferences preference = await SharedPreferences.getInstance();
+      String userkey = preference.getString('id')!;
+
+      print('### key = $userkey');
 
       print('### process Upload Avatar');
-      String apiSaveAvatar = '${MyConstant.domain}/dopa/api/savecontactpic.php';
+      String apiSaveAvatar = '${MyConstant.domain}/dopa/api/savedocpr.php';
       int i = Random().nextInt(100000);
-      String nameAvatar = 'pr$i.jpg';
+      String nameAvatar = 'pr$i.pdf';
       Map<String, dynamic> map = Map();
       map['file'] =
           await MultipartFile.fromFile(file!.path, filename: nameAvatar);
@@ -92,6 +96,7 @@ class _AddNewsPrState extends State<AddNewsPr> {
         print('### avatar = $avatar');
         processInsertMySQL(
           titel: titel,
+          userkey: userkey,
         );
       });
     }
@@ -99,10 +104,11 @@ class _AddNewsPrState extends State<AddNewsPr> {
 
   Future<Null> processInsertMySQL({
     String? titel,
+    String? userkey,
   }) async {
     print('### processInsertMySQL Work and avatar ==>> $avatar');
     String apiInsertUser =
-        '${MyConstant.domain}/dopa/api/insertpr.php?isAdd=true&titel=$titel&image=$avatar';
+        '${MyConstant.domain}/dopa/api/insertnewspr.php?isAdd=true&titel=$titel&doc=$avatar&userkey=$userkey';
     await Dio().get(apiInsertUser).then((value) {
       if (value.toString() == 'true') {
         Navigator.pop(context);

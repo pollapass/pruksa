@@ -43,9 +43,20 @@ class Appservice {
       String apiInsertUser =
           '${MyConstant.domain}/dopa/api/updatetoken.php?isAdd=true&token=$token&key=$userkey';
 
-      await Dio().get(apiInsertUser).then((value) => print('Updatetokensuccess'));
+      await Dio()
+          .get(apiInsertUser)
+          .then((value) => print('Updatetokensuccess'));
     } else {
       //from user
+      SharedPreferences preferences = await SharedPreferences.getInstance();
+      String? cid = preferences.getString('cid');
+      String apiInsertUser =
+          '${MyConstant.domain}/dopa/api/updatemembertoken.php?isAdd=true&token=$token&key=$cid';
+
+      await Dio()
+          .get(apiInsertUser)
+          .then((value) => print('Updatetoken user success'));
+      
     }
   }
 }

@@ -6,6 +6,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:pruksa/models/informdis_model.dart';
+import 'package:pruksa/models/member_model.dart';
 import 'package:pruksa/utility/my_constant.dart';
 import 'package:pruksa/utility/my_dialog.dart';
 import 'package:pruksa/wigets/show_progress.dart';
@@ -72,11 +73,19 @@ class _EditDisasterState extends State<EditDisaster> {
         String remark = remarkController.text;
 
         String id = Dismodels!.inform_key;
-
+        String cid = Dismodels!.cid;
+        print('cid is $cid');
         String apiEditProduct =
             '${MyConstant.domain}/dopa/api/edit_informdis.php?isUpdate=true&id=$id&remark=$remark&status=$selecteValue';
-        await Dio().get(apiEditProduct).then((value) => Navigator.pop(context));
-        Navigator.pop(context);
+        //await Dio().get(apiEditProduct).then((value) => Navigator.pop(context));
+        await Dio().get(apiEditProduct).then((value) {
+          if (value.toString() == 'true') {
+            print('value is Success');
+            sendnotitomember(cid);
+          } else {
+            print('false');
+          }
+        });
       }
     }
   }
@@ -305,5 +314,32 @@ class _EditDisasterState extends State<EditDisaster> {
         ),
       ),
     );
+  }
+
+  Future<Null> sendnotitomember(String cid) async {
+    print('cids = $cid');
+    String findtoken =
+        '${MyConstant.domain}/dopa/api/getcidtoken.php?isAdd=true&cid=$cid';
+    await Dio().get(findtoken).then((value) {
+      //print('value is $value');
+      var results = jsonDecode(value.data);
+      print('reult == $results');
+      for (var element in results) {
+       MemberModel model = MemberModel.fromJson(element);
+        String? tokens = model.token;
+        print('token is $tokens');
+        String titel = 'ข้อมูลคำขอของท่านการมีการอับเดท';
+        String body = 'กรุณาดูข้อมูลที่เมนูสาธารณภัยด้วยค่ะ ';
+
+        String sendtoken =
+            '${MyConstant.domain}/dopa/api/apinoti.php.php?isadd=true&titel=$titel&body=$body&token=$tokens';
+
+        sendfcmtomember(sendtoken);
+      }
+    });
+  }
+      
+  Future<Null> sendfcmtomember(String sendtoken) async {
+    await Dio().get(sendtoken).then((value) => Navigator.pop(context));
   }
 }

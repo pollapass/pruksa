@@ -10,6 +10,7 @@ class MemberModel {
   final String images;
   final String lat;
   final String lng;
+  final String? token;
   MemberModel({
     required this.cid,
     required this.name,
@@ -19,8 +20,11 @@ class MemberModel {
     required this.images,
     required this.lat,
     required this.lng,
+    this.token,
   });
   
+
+ 
 
   MemberModel copyWith({
     String? cid,
@@ -31,6 +35,7 @@ class MemberModel {
     String? images,
     String? lat,
     String? lng,
+    String? token,
   }) {
     return MemberModel(
       cid: cid ?? this.cid,
@@ -41,6 +46,7 @@ class MemberModel {
       images: images ?? this.images,
       lat: lat ?? this.lat,
       lng: lng ?? this.lng,
+      token: token ?? this.token,
     );
   }
 
@@ -54,19 +60,21 @@ class MemberModel {
       'images': images,
       'lat': lat,
       'lng': lng,
+      'token': token,
     };
   }
 
   factory MemberModel.fromMap(Map<String, dynamic> map) {
     return MemberModel(
-      cid: map['cid'] as String,
-      name: map['name'] as String,
-      lastname: map['lastname'] as String,
-      address: map['address'] as String,
-      phone: map['phone'] as String,
-      images: map['images'] as String,
-      lat: map['lat'] as String,
-      lng: map['lng'] as String,
+      cid: (map['cid'] ?? '') as String,
+      name: (map['name'] ?? '') as String,
+      lastname: (map['lastname'] ?? '') as String,
+      address: (map['address'] ?? '') as String,
+      phone: (map['phone'] ?? '') as String,
+      images: (map['images'] ?? '') as String,
+      lat: (map['lat'] ?? '') as String,
+      lng: (map['lng'] ?? '') as String,
+      token: map['token'] != null ? map['token'] as String : null,
     );
   }
 
@@ -76,7 +84,7 @@ class MemberModel {
 
   @override
   String toString() {
-    return 'MemberModel(cid: $cid, name: $name, lastname: $lastname, address: $address, phone: $phone, images: $images, lat: $lat, lng: $lng)';
+    return 'MemberModel(cid: $cid, name: $name, lastname: $lastname, address: $address, phone: $phone, images: $images, lat: $lat, lng: $lng, token: $token)';
   }
 
   @override
@@ -91,7 +99,8 @@ class MemberModel {
       other.phone == phone &&
       other.images == images &&
       other.lat == lat &&
-      other.lng == lng;
+      other.lng == lng &&
+      other.token == token;
   }
 
   @override
@@ -103,6 +112,7 @@ class MemberModel {
       phone.hashCode ^
       images.hashCode ^
       lat.hashCode ^
-      lng.hashCode;
+      lng.hashCode ^
+      token.hashCode;
   }
 }
