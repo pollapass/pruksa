@@ -24,7 +24,18 @@ class ActiveMenu extends StatelessWidget {
                 onTap: (() {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => ActiveReportMount()),
+                    MaterialPageRoute(
+                        builder: (context) => ActiveReportMount()),
+                  );
+                })),
+            MenuItem(
+                imagepath: 'images/dopa.png',
+                titel: 'รายงานจุดเสี่ยง',
+                onTap:  (() {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ActiveReportMount()),
                   );
                 }))
           ],

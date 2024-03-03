@@ -5,10 +5,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:pruksa/models/noti_model.dart';
 import 'package:pruksa/models/user_model.dart';
 import 'package:pruksa/utility/app_controller.dart';
 import 'package:pruksa/utility/my_constant.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Appservice {
   // depency คือตัวที่ใช้เรียก filed
@@ -31,9 +34,15 @@ class Appservice {
     });
     FirebaseMessaging.onMessage.listen((event) {
       Get.snackbar(event.notification!.title!, event.notification!.body!);
+      savenoti(
+          title: event.notification!.title!,
+          message: event.notification!.body!);
     });
     FirebaseMessaging.onMessageOpenedApp.listen((event) {
       Get.snackbar(event.notification!.title!, event.notification!.body!);
+      savenoti(
+          title: event.notification!.title!,
+          message: event.notification!.body!);
     });
   }
 
@@ -82,5 +91,38 @@ class Appservice {
         appController.chooseUserModels.add(true);
       }
     });
+  }
+
+  Future<Null> processnotitomember(
+      {required String token,
+      required String title,
+      required String message}) async {
+    String urlapi =
+        '${MyConstant.domain}/dopa/api/apinoti.php?isAdd=true&title=$title&body=$message&token=$token';
+
+    await Dio().get(urlapi).then((value) => print('Send Noti Ok'));
+  }
+
+  Future<void> processChecknoti() async {
+    var result = await GetStorage().read('null');
+    print('## result is $result');
+  }
+
+  Future<void> savenoti(
+      {required String title, required String message}) async {
+    var notis = <NotiMode>[];
+    var result = await GetStorage().read('noti');
+    if (result != null) {
+      notis.addAll(result);
+    }
+  }
+
+  Future<void> gotodirection({required String lat, required String lng}) async {
+    String url = 'https://www.google.co.th/maps/search/?api&query=$lat,$lng';
+    print('##map = $url');
+    Uri uri = Uri.parse(url);
+    if (await launchUrl(uri, mode: LaunchMode.externalApplication)) {
+      throw 'Cannot open';
+    }
   }
 }

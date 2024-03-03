@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:pruksa/models/informdis_model.dart';
 import 'package:pruksa/models/member_model.dart';
+import 'package:pruksa/utility/app_service.dart';
 import 'package:pruksa/utility/my_constant.dart';
 import 'package:pruksa/utility/my_dialog.dart';
 import 'package:pruksa/wigets/show_progress.dart';
@@ -111,7 +112,8 @@ class _EditDisasterState extends State<EditDisaster> {
         title: Text('ข้อมูลการแจ้งสาธารณภัย'),
         backgroundColor: MyConstant.primary,
       ),
-      body: GestureDetector(onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+      body: GestureDetector(
+        onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
         child: Form(
           key: formKey,
           child: ListView(
@@ -132,7 +134,8 @@ class _EditDisasterState extends State<EditDisaster> {
                 style: MyConstant().h2Blacktyle(),
               ),
               ShowTitle(
-                  title: 'ภาพถ่ายจุดเสี่ยง :', textStyle: MyConstant().h2Style()),
+                  title: 'ภาพถ่ายจุดเสี่ยง :',
+                  textStyle: MyConstant().h2Style()),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -170,12 +173,16 @@ class _EditDisasterState extends State<EditDisaster> {
                       markers: <Marker>{
                         Marker(
                             markerId: MarkerId('id'),
+                            onTap: () {
+                              print('#### tap marker');
+                              Appservice().gotodirection(lat:Dismodels!.lat!,lng:Dismodels!.lng!  );
+                            },
                             position: LatLng(
                               double.parse('${Dismodels!.lat}'),
                               double.parse('${Dismodels!.lng}'),
                             ),
                             infoWindow: InfoWindow(
-                                title: 'คุณอยู่ที่นี่ ',
+                                title: 'เป็าหมายอยู่ที่นี่ ',
                                 snippet:
                                     'lat = ${Dismodels!.lat}, lng = ${Dismodels!.lng}')),
                       },
@@ -205,8 +212,7 @@ class _EditDisasterState extends State<EditDisaster> {
                   children: [
                     ElevatedButton(
                       onPressed: () {
-                     
-                         processEdit();
+                        processEdit();
                       },
                       child: Text(
                         'อับเดทข้อมูล',
@@ -328,7 +334,7 @@ class _EditDisasterState extends State<EditDisaster> {
       var results = jsonDecode(value.data);
       print('reult == $results');
       for (var element in results) {
-       MemberModel model = MemberModel.fromMap(element);
+        MemberModel model = MemberModel.fromMap(element);
         String? tokens = model.token;
         print('token is $tokens');
         String titel = 'ข้อมูลคำขอของท่านการมีการอับเดท';
@@ -341,7 +347,7 @@ class _EditDisasterState extends State<EditDisaster> {
       }
     });
   }
-      
+
   Future<Null> sendfcmtomember(String sendtoken) async {
     await Dio().get(sendtoken).then((value) => Navigator.pop(context));
   }

@@ -143,6 +143,16 @@ class _AddNewsState extends State<AddNews> {
         '${MyConstant.domain}/dopa/api/insertnews.php?isAdd=true&titel=$titel&image=$avatar&detail=$detail&userkey=$userkey';
     await dio.Dio().get(apiInsertUser).then((value) {
       if (value.toString() == 'true') {
+        for (var i = 0; i < appController.chooseUserModels.length; i++) {
+          if ((appController.chooseUserModels[i]) &&
+              (appController.usermodels[i].token!.isNotEmpty)) {
+            Appservice().processnotitomember(
+                token: appController.usermodels[i].token!,
+                title: 'มีข่าวใหม่',
+                message: titel!);
+          }
+        }
+
         Navigator.pop(context);
       } else {
         MyDialog().normalDialog(

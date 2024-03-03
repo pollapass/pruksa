@@ -50,6 +50,7 @@ class _AdminState extends State<Admin> {
     super.initState();
 
     Appservice().processnoti(fromadmin: true);
+    Appservice().processChecknoti();
     loadvaluefromapi();
     finduser();
     // initialFile();
