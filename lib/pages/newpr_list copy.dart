@@ -1,14 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/dio.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:open_file/open_file.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:pruksa/models/newspr_model.dart';
 import 'package:pruksa/utility/my_constant.dart';
 import 'package:pruksa/wigets/check_permission.dart';
@@ -29,7 +24,6 @@ class _NewPrListState extends State<NewPrList> {
   var checkAllPermissions = CheckPermission();
 
   checkPermission() async {
-    //await Permission.photos.request();
     var permission = await checkAllPermissions.isStoragePermission();
     if (permission) {
       setState(() {
@@ -38,110 +32,13 @@ class _NewPrListState extends State<NewPrList> {
     }
   }
 
-  Future<bool> storagePermission() async {
-    final DeviceInfoPlugin info =
-        DeviceInfoPlugin(); // import 'package:device_info_plus/device_info_plus.dart';
-    final AndroidDeviceInfo androidInfo = await info.androidInfo;
-    debugPrint('releaseVersion : ${androidInfo.version.release}');
-    final int androidVersion = int.parse(androidInfo.version.release);
-    bool havePermission = false;
-
-    if (androidVersion >= 13) {
-      final request = await [
-        Permission.videos,
-        Permission.photos,
-        //..... as needed
-      ].request(); //import 'package:permission_handler/permission_handler.dart';
-
-      havePermission =
-          request.values.every((status) => status == PermissionStatus.granted);
-    } else {
-      final status = await Permission.storage.request();
-      havePermission = status.isGranted;
-    }
-
-    if (!havePermission) {
-      // if no permission then open app-setting
-      await openAppSettings();
-    }
-
-    return havePermission;
-  }
-
-  Future<void> _getStoragePermission() async {
-    DeviceInfoPlugin plugin = DeviceInfoPlugin();
-    AndroidDeviceInfo android = await plugin.androidInfo;
-    if (android.version.sdkInt < 33) {
-      if (await Permission.storage.request().isGranted) {
-        setState(() {
-          isPermission = true;
-        });
-      } else if (await Permission.storage.request().isPermanentlyDenied) {
-        await openAppSettings();
-      } else if (await Permission.audio.request().isDenied) {
-        setState(() {
-          isPermission = false;
-        });
-      }
-    } else {
-      if (await Permission.photos.request().isGranted) {
-        setState(() {
-          isPermission = true;
-        });
-      } else if (await Permission.photos.request().isPermanentlyDenied) {
-        await openAppSettings();
-      } else if (await Permission.photos.request().isDenied) {
-        setState(() {
-          isPermission = false;
-        });
-      }
-    }
-  }
-
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    _getStoragePermission();
     loadvaluefromapi();
-    // checkPermission();
+    checkPermission();
     // initialFile();
-  }
-
-  Future<Null> openFile({required String url, String? filename}) async {
-    final name = filename ?? url.split('/').last;
-  //  final file = await pickFile();
-    final file = await downloadfile(url: url,name: name);
-    if (file == null) return;
-    print('path = ${file.path}');
-    OpenFile.open(file.path);
-  }
-
-  Future<File?> pickFile() async {
-    final result = await FilePicker.platform.pickFiles();
-     if (result == null) return null;
-     return File(result.files.first.path!);
-
-  }
-
-  Future<File?> downloadfile({required String url, String? name}) async {
-    final appStorang = await getApplicationDocumentsDirectory();
-    final file = File('${appStorang.path}/$name');
-
-    try {
-      final response = await Dio().get(url,
-          options: Options(
-              responseType: ResponseType.bytes,
-              followRedirects: false,
-              receiveTimeout: 0));
-
-      final raf = file.openSync(mode: FileMode.write);
-      raf.writeFromSync(response.data);
-      await raf.close();
-      return file;
-    } catch (e) {
-      return null;
-    }
   }
 
   Future<Null> loadvaluefromapi() async {
@@ -192,7 +89,7 @@ class _NewPrListState extends State<NewPrList> {
               })
           : TextButton(
               onPressed: () {
-                _getStoragePermission();
+                checkPermission();
               },
               child: const Text("Permission issue")),
       floatingActionButton: FloatingActionButton(
@@ -237,15 +134,12 @@ class _TileListState extends State<TileList> {
     });
 
     try {
-      await Dio().download(
-        widget.fileUrl,
-        filePath,
-        onReceiveProgress: (count, total) {
-          setState(() {
-            progress = (count / total);
-          });
-        },
-      );
+      await Dio().download(widget.fileUrl, filePath,
+          onReceiveProgress: (count, total) {
+        setState(() {
+          progress = (count / total);
+        });
+      }, cancelToken: cancelToken);
       setState(() {
         dowloading = false;
         fileExists = true;
@@ -259,7 +153,7 @@ class _TileListState extends State<TileList> {
   }
 
   cancelDownload() {
-    // cancelToken.cancel();
+    cancelToken.cancel();
     setState(() {
       dowloading = false;
     });
@@ -339,4 +233,5 @@ class _TileListState extends State<TileList> {
                       : const Icon(Icons.download))),
     );
   }
+
 }

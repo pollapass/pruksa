@@ -96,20 +96,55 @@ class Appservice {
       }
     });
   }
-    Future<void> processallmember() async {
+
+  Future<void> accessdamrong() async {
+    String apigetmemberlist =
+        '${MyConstant.domain}/dopa/api/getaccessdamrong.php?isAdd=true';
+
+    await Dio().get(apigetmemberlist).then((value) {
+      if (appController.usermodels.isNotEmpty) {
+        appController.usermodels.clear();
+        appController.chooseUserModels.clear();
+      }
+
+      for (var element in json.decode(value.data)) {
+        UserModel userModel = UserModel.fromMap(element);
+        appController.usermodels.add(userModel);
+        appController.chooseUserModels.add(true);
+      }
+    });
+  }
+
+  Future<void> accessrisk() async {
+    String apigetmemberlist =
+        '${MyConstant.domain}/dopa/api/getaccessrisk.php.php?isAdd=true';
+
+    await Dio().get(apigetmemberlist).then((value) {
+      if (appController.usermodels.isNotEmpty) {
+        appController.usermodels.clear();
+        appController.chooseUserModels.clear();
+      }
+
+      for (var element in json.decode(value.data)) {
+        UserModel userModel = UserModel.fromMap(element);
+        appController.usermodels.add(userModel);
+        appController.chooseUserModels.add(true);
+      }
+    });
+  }
+
+  Future<void> processallmember() async {
     String apigetmemberlist =
         '${MyConstant.domain}/dopa/api/getallmember.php?isAdd=true';
 
     await Dio().get(apigetmemberlist).then((value) {
       if (appController.memberModels.isNotEmpty) {
         appController.memberModels.clear();
-       
       }
 
       for (var element in json.decode(value.data)) {
         MemberModel memberModel = MemberModel.fromMap(element);
         appController.memberModels.add(memberModel);
-       
       }
     });
   }
@@ -123,13 +158,13 @@ class Appservice {
 
     await Dio().get(urlapi).then((value) {
       print('Send Noti Ok');
-            if (appController.usermodels.isNotEmpty) {
+      if (appController.usermodels.isNotEmpty) {
         appController.usermodels.clear();
       }
     });
   }
 
-    Future<Null> processnotitomember(
+  Future<Null> processnotitomember(
       {required String token,
       required String title,
       required String message}) async {
@@ -138,8 +173,6 @@ class Appservice {
 
     await Dio().get(urlapi).then((value) {
       print('Send Noti Ok');
-    
-
     });
   }
 

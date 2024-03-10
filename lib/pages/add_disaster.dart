@@ -1,11 +1,14 @@
 import 'dart:io';
 import 'dart:math';
 
-import 'package:dio/dio.dart';
+import 'package:dio/dio.dart' as dio;
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:pruksa/utility/app_controller.dart';
+import 'package:pruksa/utility/app_service.dart';
 import 'package:pruksa/wigets/show_titel.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -30,10 +33,12 @@ class _AddDisasterState extends State<AddDisaster> {
   String? selecteValue;
   TextEditingController placeController = TextEditingController();
   TextEditingController detailController = TextEditingController();
+  AppController appController = Get.put(AppController());
   @override
   void initState() {
     super.initState();
     checkPermission();
+    Appservice().processalladmin();
   }
 
   Future<Null> checkPermission() async {
@@ -168,9 +173,9 @@ class _AddDisasterState extends State<AddDisaster> {
       String nameAvatar = 'dis$i.jpg';
       Map<String, dynamic> map = Map();
       map['file'] =
-          await MultipartFile.fromFile(file!.path, filename: nameAvatar);
-      FormData data = FormData.fromMap(map);
-      await Dio().post(apiSaveAvatar, data: data).then((value) {
+          await dio.MultipartFile.fromFile(file!.path, filename: nameAvatar);
+      dio.FormData data = dio.FormData.fromMap(map);
+      await dio.Dio().post(apiSaveAvatar, data: data).then((value) {
         avatar = '$nameAvatar';
         print('### avatar = $avatar');
         processInsertMySQL(
@@ -188,7 +193,7 @@ class _AddDisasterState extends State<AddDisaster> {
   Future<Null> processInsertMySQL(
       {String? name,
       String? place,
-      String? titel,
+      
       String? phone,
       String? detail,
       String? lastname,
@@ -196,8 +201,21 @@ class _AddDisasterState extends State<AddDisaster> {
     print('### processInsertMySQL Work and avatar ==>> $avatar');
     String apiInsertUser =
         '${MyConstant.domain}/dopa/api/insertinformdis.php?isAdd=true&name=$name&lastname=$lastname&cid=$cid&phone=$phone&place=$place&image=$avatar&lat=$lat&lng=$lng&detail=$detail';
-    await Dio().get(apiInsertUser).then((value) {
+    await dio.Dio().get(apiInsertUser).then((value) {
       if (value.toString() == 'true') {
+
+       
+        for (var i = 0; i < appController.usermodels.length; i++) {
+          if (
+              (appController.usermodels[i].token!.isNotEmpty)) {
+            Appservice().processnotitouser(
+                token: appController.usermodels[i].token!,
+                title: 'แจ้งเตือนสาธารณภัย',
+                message: 'กรุณาดูข้อมูลที่เมนู สาธารณภัย!!');
+          }
+        }
+  
+      
         Navigator.pop(context);
       } else {
         MyDialog().normalDialog(
