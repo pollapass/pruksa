@@ -1,6 +1,10 @@
+import 'package:chart_sparkline/chart_sparkline.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rounded_date_picker/flutter_rounded_date_picker.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:pruksa/utility/app_controller.dart';
+import 'package:pruksa/utility/app_service.dart';
 import 'package:pruksa/utility/my_constant.dart';
 import 'package:pruksa/wigets/show_titel.dart';
 
@@ -17,11 +21,14 @@ class _ActiveReportMountState extends State<ActiveReportMount> {
   TextEditingController edateController = TextEditingController();
   late Duration duration;
   late DateTime dateTime;
-
+  AppController appController = Get.put(AppController());
   final DateFormat formatted = DateFormat('yyyy-MM-dd');
   @override
   void initState() {
     // TODO: implement initState
+    if (appController.actModels.isNotEmpty) {
+      appController.actModels.clear();
+    }
 
     dateTime = DateTime.now();
     duration = Duration(minutes: 10);
@@ -32,39 +39,61 @@ class _ActiveReportMountState extends State<ActiveReportMount> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('รายงานแยกรายเดือน'),
-      ),
-      body: LayoutBuilder(builder: (context, constraints) => GestureDetector(
-          onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
-          behavior: HitTestBehavior.opaque,
-        child: SingleChildScrollView(
-          child: Center(
-            child: Form(  key: formKey,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  SizedBox(height: 10,),
-                     ShowTitle(
-                  title: 'กรุณาเลือกวันที่ - ถึงวันที่'),
-                   builddate(constraints),
-                   buildenddate(constraints),
-                   SizedBox(height: 10,),
-                   buildbutton(),
-                ],
+        appBar: AppBar(
+          title: Text('รายงานแยกรายเดือน'),
+        ),
+        body: LayoutBuilder(
+          builder: (context, constraints) => GestureDetector(
+            onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
+            behavior: HitTestBehavior.opaque,
+            child: SingleChildScrollView(
+              child: Center(
+                child: Form(
+                  key: formKey,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        height: 10,
+                      ),
+                      ShowTitle(title: 'กรุณาเลือกวันที่ - ถึงวันที่'),
+                      builddate(constraints),
+                      buildenddate(constraints),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      buildbutton(),
+                      Obx(
+                        () {
+                          return appController.actModels.isEmpty?SizedBox() :Container(
+                            width: Get.width,
+                            height: Get.width,
+                            margin: EdgeInsets.all(16),
+                            padding: EdgeInsets.all(16),
+                            child: Sparkline(data: appController.actModels.map((element) => double.parse(element.cc.trim())).toList()),
+                            decoration: BoxDecoration(border: Border.all()),
+                          );
+                        }
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ),
           ),
-        ),
-      ),
-    ));
+        ));
   }
+
   ElevatedButton buildbutton() {
     return ElevatedButton.icon(
       onPressed: () {
         if (formKey.currentState!.validate()) {
           // checkAuthen(user: user, password: password);
           //uploadPictureAndInsertData();
+          Appservice().processReadChart(
+              start: sdateController.text,
+              end: edateController.text,
+              context: context);
         }
       },
       label: Text(
@@ -84,7 +113,6 @@ class _ActiveReportMountState extends State<ActiveReportMount> {
       ),
     );
   }
-
 
   Widget builddate(BoxConstraints constraints) {
     return Container(
@@ -149,7 +177,7 @@ class _ActiveReportMountState extends State<ActiveReportMount> {
     );
   }
 
-    Widget buildenddate(BoxConstraints constraints) {
+  Widget buildenddate(BoxConstraints constraints) {
     return Container(
       width: constraints.maxWidth * 0.75,
       margin: EdgeInsets.only(top: 16),

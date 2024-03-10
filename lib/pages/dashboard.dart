@@ -9,6 +9,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:pruksa/pages/appoint_his.dart';
 
 import 'package:pruksa/pages/contact_his.dart';
+import 'package:pruksa/pages/domrong_his.dart';
 
 import 'package:pruksa/pages/eservice.dart';
 import 'package:pruksa/pages/informdam_his.dart';
@@ -313,7 +314,7 @@ class _DashboardState extends State<Dashboard> {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => Informdamhis()),
+                        MaterialPageRoute(builder: (context) => DomrongHis()),
                       );
                     },
                     child: Column(

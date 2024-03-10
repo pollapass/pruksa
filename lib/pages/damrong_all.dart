@@ -106,7 +106,6 @@ class _DamrongAllState extends State<DamrongAll> {
                 Get.offAllNamed(MyConstant.routeAdmin);
                 // Navigator.of(context).pop();
                 // Navigator.of(context).pop();
-          
               },
             ),
           ],
@@ -148,7 +147,7 @@ class _DamrongAllState extends State<DamrongAll> {
                               child: CachedNetworkImage(
                                 fit: BoxFit.cover,
                                 imageUrl:
-                                    ('${MyConstant.domain}/images/informrisk/${dammodels[index].contact_images}'),
+                                    ('${MyConstant.domain}/images/damrong/${dammodels[index].contact_images}'),
                                 placeholder: (context, url) => ShowProgress(),
                                 errorWidget: (context, url, error) =>
                                     ShowImage(path: MyConstant.imgdopa),

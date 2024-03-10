@@ -4,21 +4,20 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:pruksa/models/redcross_model.dart';
-import 'package:pruksa/pages/redcross_detail.dart';
+import 'package:pruksa/pages/edit_redcross.dart';
 import 'package:pruksa/utility/my_constant.dart';
 import 'package:pruksa/wigets/show_image.dart';
 import 'package:pruksa/wigets/show_progress.dart';
 import 'package:pruksa/wigets/show_titel.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-class RedcrossHis extends StatefulWidget {
-  const RedcrossHis({Key? key}) : super(key: key);
+class redcrossall extends StatefulWidget {
+  const redcrossall({Key? key}) : super(key: key);
 
   @override
-  State<RedcrossHis> createState() => _RedcrossHisState();
+  State<redcrossall> createState() => _redcrossallState();
 }
 
-class _RedcrossHisState extends State<RedcrossHis> {
+class _redcrossallState extends State<redcrossall> {
   bool? haveData;
   bool load = true;
   List<RedcrossModel> redmodels = [];
@@ -33,10 +32,9 @@ class _RedcrossHisState extends State<RedcrossHis> {
     if (redmodels.length != 0) {
       redmodels.clear();
     } else {}
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    String id = preferences.getString('cid')!;
+
     String apigetactivelist =
-        '${MyConstant.domain}/dopa/api/getredcrosswhrecid.php?isAdd=true&id=$id';
+        '${MyConstant.domain}/dopa/api/getredcross.php?isAdd=true';
 
     await Dio().get(apigetactivelist).then((value) {
       print('value ==> $value');
@@ -65,8 +63,7 @@ class _RedcrossHisState extends State<RedcrossHis> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('ประวัติการของรับสนับสนุนงานกาชาด'),
-        backgroundColor: Colors.pinkAccent,
+        title: Text('ข้อมูลขอรับการสนับสนุน'),
       ),
       body: load
           ? ShowProgress()
@@ -81,12 +78,13 @@ class _RedcrossHisState extends State<RedcrossHis> {
                           decoration: BoxDecoration(
                               color: Color.fromRGBO(246, 242, 247, 0.894)),
                           child: ListTile(
-                                onTap: () {
-                              Navigator.push(
+                            onTap: () {
+
+                                  Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => redcroosdetail(
-                                      redcrossModel: redmodels[index],
+                                    builder: (context) => editredcross(
+                                      redcrossmodels: redmodels[index],
                                     ),
                                   )).then((value) => loadvaluefromapi());
                             },
@@ -119,21 +117,11 @@ class _RedcrossHisState extends State<RedcrossHis> {
               : Column(
                   children: [
                     ShowTitle(
-                      title: 'ไม่มีประวัติการแจ้ง',
+                      title: 'ไม่มีข้อมูลค่ะ',
                       textStyle: MyConstant().h2RedStyle(),
                     ),
                   ],
                 ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: MyConstant.dark,
-        onPressed: () {
-          Navigator.pushNamed(context, MyConstant.routeAddredcross)
-              .then((value) => loadvaluefromapi());
-        },
-
-        //.then((value) => loadValueFromAPI()),
-        child: Text('เพิ่ม'),
-      ),
     );
   }
 }

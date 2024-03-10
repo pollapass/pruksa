@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:pruksa/models/news_model.dart';
+import 'package:pruksa/pages/edit_news.dart';
 import 'package:pruksa/utility/my_constant.dart';
 import 'package:pruksa/wigets/show_image.dart';
 import 'package:pruksa/wigets/show_progress.dart';
@@ -77,7 +78,15 @@ class _InfromNewsState extends State<InfromNews> {
                           decoration: BoxDecoration(
                               color: Color.fromRGBO(246, 242, 247, 0.894)),
                           child: ListTile(
-                            onTap: () {},
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => (editnews(newsModels: newsmodels[index])
+                                      
+                                    ),
+                                  )).then((value) => loadvaluefromapi());
+                            },
                             leading: Container(
                               width: 60,
                               height: 60,

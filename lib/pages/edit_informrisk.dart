@@ -4,9 +4,12 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'package:pruksa/models/informrisk_model.dart';
+import 'package:pruksa/models/member_model.dart';
+import 'package:pruksa/utility/app_service.dart';
 import 'package:pruksa/utility/my_constant.dart';
 import 'package:pruksa/utility/my_dialog.dart';
 import 'package:pruksa/wigets/show_progress.dart';
@@ -137,6 +140,12 @@ class _EditInformRiskState extends State<EditInformRisk> {
                                     markers: <Marker>{
                                       Marker(
                                           markerId: MarkerId('id'),
+                                          onTap: () {
+                                            print('#### tap marker');
+                                            Appservice().gotodirection(
+                                                lat: Riskmodels!.lat!,
+                                                lng: Riskmodels!.lng!);
+                                          },
                                           position: LatLng(
                                             double.parse('${Riskmodels!.lat}'),
                                             double.parse('${Riskmodels!.lng}'),
@@ -225,12 +234,47 @@ class _EditInformRiskState extends State<EditInformRisk> {
       String remark = remarkController.text;
 
       String id = Riskmodels!.inform_key;
+      String cid = Riskmodels!.cid;
 
       String apiEditProduct =
           '${MyConstant.domain}/dopa/api/edit_informrisk.php?isUpdate=true&id=$id&remark=$remark&status=$selecteValue';
-      await Dio().get(apiEditProduct).then((value) => Navigator.pop(context));
-      Navigator.pop(context);
+      await Dio().get(apiEditProduct).then((value) {
+           Get.back();
+          if (value.toString() == 'true') {
+            print('value is Success');
+            sendnotitomember(cid);
+          } else {
+            print('false');
+          }
+      });
     }
+  }
+
+    Future<Null> sendnotitomember(String cid) async {
+    print('cids = $cid');
+    String findtoken =
+        '${MyConstant.domain}/dopa/api/getcidtoken.php?isAdd=true&cid=$cid';
+    await Dio().get(findtoken).then((value) {
+      //print('value is $value');
+      var results = jsonDecode(value.data);
+      print('reult == $results');
+      for (var element in results) {
+        MemberModel model = MemberModel.fromMap(element);
+        String? tokens = model.token;
+        print('token is $tokens');
+        String titel = 'ข้อมูลคำขอของท่านการมีการอับเดท';
+        String body = 'กรุณาดูข้อมูลที่เมนูแจ้งจุดเสี่ยงด้วยค่ะ ';
+
+        String sendtoken =
+            '${MyConstant.domain}/dopa/api/apinoti.php?isAdd=true&title=$titel&body=$body&token=$tokens';
+
+        sendfcmtomember(sendtoken);
+      }
+    });
+  }
+
+  Future<Null> sendfcmtomember(String sendtoken) async {
+    await Dio().get(sendtoken).then((value) => Navigator.pop(context));
   }
 
   Future<Null> processdel() async {
@@ -297,7 +341,6 @@ class _EditInformRiskState extends State<EditInformRisk> {
         Container(
           width: constraints.maxWidth * 0.75,
           child: TextFormField(
-            
             maxLines: 4,
             controller: remarkController,
             decoration: InputDecoration(

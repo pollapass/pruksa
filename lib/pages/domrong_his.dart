@@ -66,7 +66,7 @@ class _DomrongHisState extends State<DomrongHis> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('ประวัติการร้องเรียน'),
+        title: Text('ประวัติการร้องทุกข์ร้องเรียน'),
       ),
       body: load
           ? ShowProgress()
@@ -82,11 +82,12 @@ class _DomrongHisState extends State<DomrongHis> {
                               color: Color.fromRGBO(246, 242, 247, 0.894)),
                           child: ListTile(
                             onTap: () {
-                                   Navigator.push(
+                              print('## You Click Edit');
+                              Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => DamrongDetail(
-                                      damrong: dammodels[index],
+                                      Damrong: dammodels[index],
                                     ),
                                   )).then((value) => loadvaluefromapi());
                             },
@@ -96,7 +97,7 @@ class _DomrongHisState extends State<DomrongHis> {
                               child: CachedNetworkImage(
                                 fit: BoxFit.cover,
                                 imageUrl:
-                                    ('${MyConstant.domain}/images/news/${dammodels[index].contact_key}'),
+                                    ('${MyConstant.domain}/images/damrong/${dammodels[index].contact_images}'),
                                 placeholder: (context, url) => ShowProgress(),
                                 errorWidget: (context, url, error) =>
                                     ShowImage(path: MyConstant.imgdamrong),
@@ -105,7 +106,7 @@ class _DomrongHisState extends State<DomrongHis> {
                             title: Text(
                                 'เรื่อง:${dammodels[index].contact_title}'),
                             subtitle: Text(
-                              'วันที่:${dammodels[index].contact_insert}',
+                              'สถานะ:${dammodels[index].status_name}',
                               style: MyConstant().h3RedStyle(),
                             ),
                             trailing: Icon(Icons.keyboard_arrow_right,

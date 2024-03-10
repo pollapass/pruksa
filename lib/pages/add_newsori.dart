@@ -32,7 +32,6 @@ class _AddNewsState extends State<AddNews> {
     // TODO: implement initState
     super.initState();
     Appservice().processalladmin();
-    Appservice().processallmember();
   }
 
   @override
@@ -67,7 +66,7 @@ class _AddNewsState extends State<AddNews> {
               SizedBox(
                 height: 10,
               ),
-              //listUserAdmin(),
+              listUserAdmin(),
               buildbutton(),
             ],
           ),
@@ -75,7 +74,7 @@ class _AddNewsState extends State<AddNews> {
       ),
     );
   }
- /*
+
   Obx listUserAdmin() {
     return Obx(() {
       return appController.usermodels.isEmpty
@@ -95,7 +94,6 @@ class _AddNewsState extends State<AddNews> {
             );
     });
   }
-  */
 
   Future<Null> uploadPictureAndInsertData() async {
     String titel = titelController.text;
@@ -145,28 +143,15 @@ class _AddNewsState extends State<AddNews> {
         '${MyConstant.domain}/dopa/api/insertnews.php?isAdd=true&titel=$titel&image=$avatar&detail=$detail&userkey=$userkey';
     await dio.Dio().get(apiInsertUser).then((value) {
       if (value.toString() == 'true') {
-        
-        for (var i = 0; i < appController.usermodels.length; i++) {
-          if (
+        for (var i = 0; i < appController.chooseUserModels.length; i++) {
+          if ((appController.chooseUserModels[i]) &&
               (appController.usermodels[i].token!.isNotEmpty)) {
-            Appservice().processnotitouser(
+            Appservice().processnotitomember(
                 token: appController.usermodels[i].token!,
                 title: 'มีข่าวใหม่',
                 message: titel!);
           }
         }
-      
-
-        
-        for (var i = 0; i < appController.memberModels.length; i++) {
-          if ((appController.memberModels[i].token!.isNotEmpty)) {
-            Appservice().processnotitomember(
-                token: appController.memberModels[i].token!,
-                title: 'มีข่าวใหม่สำหรับสมาชิก',
-                message: titel!);
-          }
-        }
-        
 
         Navigator.pop(context);
       } else {

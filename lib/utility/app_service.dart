@@ -4,8 +4,11 @@ import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:pruksa/models/act_model.dart';
+import 'package:pruksa/models/member_model.dart';
 import 'package:pruksa/models/noti_model.dart';
 import 'package:pruksa/models/risk_model.dart';
 import 'package:pruksa/models/user_model.dart';
@@ -93,15 +96,51 @@ class Appservice {
       }
     });
   }
+    Future<void> processallmember() async {
+    String apigetmemberlist =
+        '${MyConstant.domain}/dopa/api/getallmember.php?isAdd=true';
 
-  Future<Null> processnotitomember(
+    await Dio().get(apigetmemberlist).then((value) {
+      if (appController.memberModels.isNotEmpty) {
+        appController.memberModels.clear();
+       
+      }
+
+      for (var element in json.decode(value.data)) {
+        MemberModel memberModel = MemberModel.fromMap(element);
+        appController.memberModels.add(memberModel);
+       
+      }
+    });
+  }
+
+  Future<Null> processnotitouser(
       {required String token,
       required String title,
       required String message}) async {
     String urlapi =
         '${MyConstant.domain}/dopa/api/apinoti.php?isAdd=true&title=$title&body=$message&token=$token';
 
-    await Dio().get(urlapi).then((value) => print('Send Noti Ok'));
+    await Dio().get(urlapi).then((value) {
+      print('Send Noti Ok');
+            if (appController.usermodels.isNotEmpty) {
+        appController.usermodels.clear();
+      }
+    });
+  }
+
+    Future<Null> processnotitomember(
+      {required String token,
+      required String title,
+      required String message}) async {
+    String urlapi =
+        '${MyConstant.domain}/dopa/api/apinoti.php?isAdd=true&title=$title&body=$message&token=$token';
+
+    await Dio().get(urlapi).then((value) {
+      print('Send Noti Ok');
+    
+
+    });
   }
 
   Future<void> processChecknoti() async {
@@ -137,6 +176,26 @@ class Appservice {
       for (var element in jsonDecode(value.data)) {
         RiskModel riskmodel = RiskModel.fromMap(element);
         appController.riskModels.add(riskmodel);
+      }
+    });
+  }
+
+  Future<void> processReadChart(
+      {required String start,
+      required String end,
+      required BuildContext context}) async {
+    String url = 'https://banluang.org//dopa/api/getactivegrap.php?isAdd=true';
+    await Dio().get(url).then((value) {
+      if (appController.actModels.isNotEmpty) {
+        appController.actModels.clear();
+      }
+
+      if (value.toString() == 'null') {
+      } else {
+        for (var element in jsonDecode(value.data)) {
+          ActModel actModel = ActModel.fromMap(element);
+          appController.actModels.add(actModel);
+        }
       }
     });
   }

@@ -3,6 +3,7 @@ import 'package:pruksa/pages/active_menu.dart';
 import 'package:pruksa/pages/damrong_all.dart';
 import 'package:pruksa/pages/disaster_all.dart';
 import 'package:pruksa/pages/informrisk_all.dart';
+import 'package:pruksa/pages/redcross_all.dart';
 import 'package:pruksa/utility/my_constant.dart';
 import 'package:pruksa/wigets/menu_item.dart';
 
@@ -57,7 +58,12 @@ class _AdminMenuState extends State<AdminMenu> {
               MenuItem(
                   imagepath: 'images/redcross.jpg',
                   titel: 'กาชาด',
-                  onTap: () {}),
+                  onTap: () {
+                      Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => redcrossall()),
+                    );
+                  }),
               MenuItem(
                   imagepath: 'images/appoint.png',
                   titel: 'ระบบคิว',
