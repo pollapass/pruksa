@@ -56,8 +56,10 @@ apply plugin: 'com.google.gms.google-services'
         targetSdkVersion 33
         //versionCode flutterVersionCode.toInteger()
         //versionName flutterVersionName
-        versionCode 1
-        versionName '1.0.1'
+        //versionCode 1
+        //versionName '1.0.1'
+        versionCode 4
+        versionName '1.2.0'
     }
 
      signingConfigs {

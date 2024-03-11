@@ -50,7 +50,7 @@ Future<Null> main() async {
   await Firebase.initializeApp().then((value) async {
     print('Fibase oK');
 
-    await Upgrader.clearSavedSettings();
+   // await Upgrader.clearSavedSettings();
     WidgetsFlutterBinding.ensureInitialized();
     SharedPreferences preferences = await SharedPreferences.getInstance();
     String? type = preferences.getString('type');
