@@ -1,18 +1,15 @@
 import 'dart:convert';
-import 'dart:io';
 
-import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/dio.dart';
-import 'package:file_picker/file_picker.dart';
+
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:open_file/open_file.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 import 'package:pruksa/models/newspr_model.dart';
+import 'package:pruksa/pages/edit_newpr.dart';
 import 'package:pruksa/utility/my_constant.dart';
-import 'package:pruksa/wigets/check_permission.dart';
-import 'package:pruksa/wigets/directory_path.dart';
+import 'package:pruksa/wigets/show_progress.dart';
+import 'package:pruksa/wigets/show_titel.dart';
 
 class NewPrList extends StatefulWidget {
   const NewPrList({Key? key}) : super(key: key);
@@ -25,123 +22,15 @@ class _NewPrListState extends State<NewPrList> {
   bool load = true;
   bool? haveData;
   List<NewsprModel> newsmodels = [];
-  bool isPermission = false;
-  var checkAllPermissions = CheckPermission();
-
-  checkPermission() async {
-    //await Permission.photos.request();
-    var permission = await checkAllPermissions.isStoragePermission();
-    if (permission) {
-      setState(() {
-        isPermission = true;
-      });
-    }
-  }
-
-  Future<bool> storagePermission() async {
-    final DeviceInfoPlugin info =
-        DeviceInfoPlugin(); // import 'package:device_info_plus/device_info_plus.dart';
-    final AndroidDeviceInfo androidInfo = await info.androidInfo;
-    debugPrint('releaseVersion : ${androidInfo.version.release}');
-    final int androidVersion = int.parse(androidInfo.version.release);
-    bool havePermission = false;
-
-    if (androidVersion >= 13) {
-      final request = await [
-        Permission.videos,
-        Permission.photos,
-        //..... as needed
-      ].request(); //import 'package:permission_handler/permission_handler.dart';
-
-      havePermission =
-          request.values.every((status) => status == PermissionStatus.granted);
-    } else {
-      final status = await Permission.storage.request();
-      havePermission = status.isGranted;
-    }
-
-    if (!havePermission) {
-      // if no permission then open app-setting
-      await openAppSettings();
-    }
-
-    return havePermission;
-  }
-
-  Future<void> _getStoragePermission() async {
-    DeviceInfoPlugin plugin = DeviceInfoPlugin();
-    AndroidDeviceInfo android = await plugin.androidInfo;
-    if (android.version.sdkInt < 33) {
-      if (await Permission.storage.request().isGranted) {
-        setState(() {
-          isPermission = true;
-        });
-      } else if (await Permission.storage.request().isPermanentlyDenied) {
-        await openAppSettings();
-      } else if (await Permission.audio.request().isDenied) {
-        setState(() {
-          isPermission = false;
-        });
-      }
-    } else {
-      if (await Permission.photos.request().isGranted) {
-        setState(() {
-          isPermission = true;
-        });
-      } else if (await Permission.photos.request().isPermanentlyDenied) {
-        await openAppSettings();
-      } else if (await Permission.photos.request().isDenied) {
-        setState(() {
-          isPermission = false;
-        });
-      }
-    }
-  }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    _getStoragePermission();
+
     loadvaluefromapi();
     // checkPermission();
     // initialFile();
-  }
-
-  Future<Null> openFile({required String url, String? filename}) async {
-    final name = filename ?? url.split('/').last;
-  //  final file = await pickFile();
-    final file = await downloadfile(url: url,name: name);
-    if (file == null) return;
-    print('path = ${file.path}');
-    OpenFile.open(file.path);
-  }
-
-  Future<File?> pickFile() async {
-    final result = await FilePicker.platform.pickFiles();
-     if (result == null) return null;
-     return File(result.files.first.path!);
-
-  }
-
-  Future<File?> downloadfile({required String url, String? name}) async {
-    final appStorang = await getApplicationDocumentsDirectory();
-    final file = File('${appStorang.path}/$name');
-
-    try {
-      final response = await Dio().get(url,
-          options: Options(
-              responseType: ResponseType.bytes,
-              followRedirects: false,
-              receiveTimeout: 0));
-
-      final raf = file.openSync(mode: FileMode.write);
-      raf.writeFromSync(response.data);
-      await raf.close();
-      return file;
-    } catch (e) {
-      return null;
-    }
   }
 
   Future<Null> loadvaluefromapi() async {
@@ -180,21 +69,49 @@ class _NewPrListState extends State<NewPrList> {
       appBar: AppBar(
         title: Text('ข่าวประชาสัมพันธ์ ประกาศ'),
       ),
-      body: isPermission
-          ? ListView.builder(
-              itemCount: newsmodels.length,
-              itemBuilder: (BuildContext context, int index) {
-                return TileList(
-                  fileUrl:
-                      '${MyConstant.domain}/document/pr/${newsmodels[index].doc_key}',
-                  title: newsmodels[index].book_name,
-                );
-              })
-          : TextButton(
-              onPressed: () {
-                _getStoragePermission();
-              },
-              child: const Text("Permission issue")),
+      body: load
+          ? ShowProgress()
+          : haveData!
+              ? ListView.builder(
+                  itemCount: newsmodels.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return Card(
+                      elevation: 10.0,
+                      margin: const EdgeInsets.symmetric(
+                          horizontal: 10.0, vertical: 6.0),
+                      child: Container(
+                        decoration: const BoxDecoration(
+                            color: Color.fromRGBO(246, 242, 247, 0.894)),
+                        child: ListTile(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => EditNewpr(
+
+                                     newprModels: newsmodels[index],
+                                  ),
+                                )).then((value) => loadvaluefromapi());
+                          },
+                          title: Text('${newsmodels[index].book_name}'),
+                          trailing: const FaIcon(FontAwesomeIcons.pen,
+                              color: Color.fromARGB(255, 43, 37, 54),
+                              size: 24.0),
+                        ),
+                      ),
+                      //  fileUrl: '${MyConstant.domain}/document/pr/${newsmodels[index].doc_key}',
+
+                      //title: newsmodels[index].book_name,
+                    );
+                  })
+              : Column(
+                  children: [
+                    ShowTitle(
+                      title: 'ไม่มีประวัติการแจ้ง',
+                      textStyle: MyConstant().h2RedStyle(),
+                    ),
+                  ],
+                ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: MyConstant.dark,
         onPressed: () {
@@ -205,138 +122,6 @@ class _NewPrListState extends State<NewPrList> {
         //.then((value) => loadValueFromAPI()),
         child: Text('เพิ่ม'),
       ),
-    );
-  }
-}
-
-class TileList extends StatefulWidget {
-  TileList({Key? key, required this.fileUrl, required this.title});
-  final String fileUrl;
-  final String title;
-
-  @override
-  State<TileList> createState() => _TileListState();
-}
-
-class _TileListState extends State<TileList> {
-  bool dowloading = false;
-  bool fileExists = false;
-  double progress = 0;
-  String fileName = "";
-  late String filePath;
-  late CancelToken cancelToken;
-  var getPathFile = DirectoryPath();
-
-  startDownload() async {
-    cancelToken = CancelToken();
-    var storePath = await getPathFile.getPath();
-    filePath = '$storePath/$fileName';
-    setState(() {
-      dowloading = true;
-      progress = 0;
-    });
-
-    try {
-      await Dio().download(
-        widget.fileUrl,
-        filePath,
-        onReceiveProgress: (count, total) {
-          setState(() {
-            progress = (count / total);
-          });
-        },
-      );
-      setState(() {
-        dowloading = false;
-        fileExists = true;
-      });
-    } catch (e) {
-      print(e);
-      setState(() {
-        dowloading = false;
-      });
-    }
-  }
-
-  cancelDownload() {
-    // cancelToken.cancel();
-    setState(() {
-      dowloading = false;
-    });
-  }
-
-  checkFileExit() async {
-    var storePath = await getPathFile.getPath();
-    filePath = '$storePath/$fileName';
-    bool fileExistCheck = await File(filePath).exists();
-    setState(() {
-      fileExists = fileExistCheck;
-    });
-  }
-
-  openfile() {
-    OpenFile.open(filePath);
-    print("fff $filePath");
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    setState(() {
-      //fileName = Path.basename(widget.fileUrl);
-      fileName = widget.fileUrl;
-    });
-    checkFileExit();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      elevation: 10,
-      shadowColor: Colors.grey.shade100,
-      child: ListTile(
-          title: Text(widget.title),
-          leading: IconButton(
-              onPressed: () {
-                fileExists && dowloading == false
-                    ? openfile()
-                    : cancelDownload();
-              },
-              icon: fileExists && dowloading == false
-                  ? const Icon(
-                      Icons.window,
-                      color: Colors.green,
-                    )
-                  : const Icon(Icons.close)),
-          trailing: IconButton(
-              onPressed: () {
-                fileExists && dowloading == false
-                    ? openfile()
-                    : startDownload();
-              },
-              icon: fileExists
-                  ? const Icon(
-                      Icons.save,
-                      color: Colors.green,
-                    )
-                  : dowloading
-                      ? Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            CircularProgressIndicator(
-                              value: progress,
-                              strokeWidth: 3,
-                              backgroundColor: Colors.grey,
-                              valueColor: const AlwaysStoppedAnimation<Color>(
-                                  Colors.blue),
-                            ),
-                            Text(
-                              "${(progress * 100).toStringAsFixed(2)}",
-                              style: TextStyle(fontSize: 12),
-                            )
-                          ],
-                        )
-                      : const Icon(Icons.download))),
     );
   }
 }

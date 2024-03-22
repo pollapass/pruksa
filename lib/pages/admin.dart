@@ -5,7 +5,9 @@ import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pruksa/models/news_model.dart';
+import 'package:pruksa/pages/about.dart';
 import 'package:pruksa/pages/adminmenu.dart';
 import 'package:pruksa/pages/damrong_all.dart';
 import 'package:pruksa/pages/disaster_all.dart';
@@ -17,10 +19,13 @@ import 'package:pruksa/pages/newpr_list.dart';
 import 'package:pruksa/pages/news.dart';
 import 'package:pruksa/pages/news_detail.dart';
 import 'package:pruksa/pages/newspr.dart';
+import 'package:pruksa/pages/profile.dart';
+import 'package:pruksa/pages/test.dart';
 import 'package:pruksa/utility/app_service.dart';
 import 'package:pruksa/utility/my_constant.dart';
 import 'package:pruksa/wigets/show_image.dart';
 import 'package:pruksa/wigets/show_progress.dart';
+import 'package:pruksa/wigets/show_titel.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -163,19 +168,16 @@ class _AdminState extends State<Admin> {
                   padding:
                       EdgeInsets.symmetric(horizontal: 5.0, vertical: 10.0),
                   child: TextButton(
-                    style: TextButton.styleFrom(
-                      primary: Colors.pink,
-                    ),
-                    onPressed: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => AdminMenu()));
-                    },
-                    child: Icon(
-                      Icons.widgets,
-                      size: 35.0,
-                      color: Colors.white,
-                    ),
-                  ),
+                      style: TextButton.styleFrom(
+                        primary: Colors.pink,
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => AdminMenu()));
+                      },
+                      child: FaIcon(FontAwesomeIcons.windows,size: 30,),),
                 ),
                 label: 'บริการทั้งหมด',
               ),
@@ -224,7 +226,7 @@ class _AdminState extends State<Admin> {
                           icon: Icon(Icons.face_outlined),
                           iconSize: 36,
                           color: MyConstant.light,
-                          tooltip: 'Edit Shop',
+                          tooltip: '',
                         ),
                       ],
                       decoration: BoxDecoration(
@@ -244,12 +246,63 @@ class _AdminState extends State<Admin> {
                           Text(posname == null ? 'Type ?' : ' $posname ')),
 
                   // ShowMenu(),
+                  showprofile(),
+                  MenuAbout(),
+                  test()
                   // ShowProduct()
                 ],
               ),
             ],
           ),
         ));
+  }
+
+  ListTile MenuAbout() {
+    return ListTile(
+      onTap: () {
+        setState(() {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => About()),
+          );
+        });
+      },
+      leading: Icon(Icons.ac_unit_outlined),
+      title: ShowTitle(title: 'เกี่ยวกับโปรแกรม'),
+      subtitle: ShowTitle(title: 'แสดงรายละเอียดเกี่ยวกับโปรแกรม'),
+    );
+  }
+
+  ListTile showprofile() {
+    return ListTile(
+      onTap: () {
+        setState(() {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => profile()),
+          );
+        });
+      },
+      leading: FaIcon(FontAwesomeIcons.user),
+      title: ShowTitle(title: 'Profile'),
+      subtitle: ShowTitle(title: 'แก้ไขข้อมูลส่วนตัว'),
+    );
+  }
+
+    ListTile test() {
+    return ListTile(
+      onTap: () {
+        setState(() {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => test()),
+          );
+        });
+      },
+      leading: FaIcon(FontAwesomeIcons.user),
+      title: ShowTitle(title: 'test'),
+      subtitle: ShowTitle(title: 'ทดสอบ'),
+    );
   }
 
   GridView gridgroup(BuildContext context) {
@@ -496,10 +549,18 @@ class _AdminState extends State<Admin> {
                 decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(color: Colors.white70, width: 2)),
-                child: CircleAvatar(
-                  backgroundImage: NetworkImage(
-                      '${MyConstant.domain}/dopa/resource/users/images/$avatar'),
-                  radius: 30,
+                child: InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => profile()),
+                    );
+                  },
+                  child: CircleAvatar(
+                    backgroundImage: NetworkImage(
+                        '${MyConstant.domain}/dopa/resource/users/images/$avatar'),
+                    radius: 30,
+                  ),
                 ),
               ),
             ],

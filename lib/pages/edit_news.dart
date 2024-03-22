@@ -1,10 +1,15 @@
+// ignore_for_file: camel_case_types
+
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pruksa/models/news_model.dart';
 import 'package:pruksa/utility/my_constant.dart';
+import 'package:pruksa/utility/my_dialog.dart';
 import 'package:pruksa/wigets/show_image.dart';
 import 'package:pruksa/wigets/show_progress.dart';
 import 'package:pruksa/wigets/show_titel.dart';
@@ -40,7 +45,7 @@ class _editnewsState extends State<editnews> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('แก่ไขข่าว'),
+          title: Text('แก้ไขข่าว'),
         ),
         body: LayoutBuilder(
           builder: (context, constraints) => Center(
@@ -91,9 +96,7 @@ class _editnewsState extends State<editnews> {
                                 children: [
                                   ElevatedButton(
                                     onPressed: () {
-                                      if (formKey.currentState!.validate()) {
-                                        // processEdit();
-                                      }
+                                      processEdit();
                                     },
                                     child: Text(
                                       'อับเดทข้อมูล',
@@ -104,9 +107,7 @@ class _editnewsState extends State<editnews> {
                                   Padding(padding: EdgeInsets.all(10)),
                                   ElevatedButton(
                                     onPressed: () {
-                                      if (formKey.currentState!.validate()) {
-                                        // processdel();
-                                      }
+                                      _dialogBuilder(context);
                                     },
                                     child: Text(
                                       'ลบข้อมูล',
@@ -125,6 +126,76 @@ class _editnewsState extends State<editnews> {
             ),
           ),
         ));
+  }
+
+  Future<void> _dialogBuilder(BuildContext context) {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('ยืนยันการลบข้อมูล'),
+          content: const Text(
+            'หากกดปุ่มยืนยันแล้วข้อมูลจะถูกลบจากฐานข้อมูล ไม่สามารถกู้ข้อมูลได้',
+          ),
+          actions: <Widget>[
+            TextButton(
+              style: TextButton.styleFrom(
+                textStyle: Theme.of(context).textTheme.labelLarge,
+              ),
+              child: const Text('ยกเลิก'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              style: TextButton.styleFrom(
+                textStyle: Theme.of(context).textTheme.labelLarge,
+              ),
+              child: const Text('ยืนยัน'),
+              onPressed: () {
+                processdel();
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<Null> processEdit() async {
+    if (formKey.currentState!.validate()) {
+      //MyDialog().showProgressDialog(context);
+
+      String titel = titleController.text;
+      String detail = detailController.text;
+      String id = newsModels!.news_key;
+
+      String apiEditProduct =
+          '${MyConstant.domain}/dopa/api/edit_news.php?isUpdate=true&id=$id&remark=$titel&detail=$detail';
+      await Dio().get(apiEditProduct).then((value) {
+       Get.back();
+        if (value.toString() == 'true') {
+          print('value is Success');
+          // sendnotitomember(cid);
+          MyDialog().normalDialog(context, 'แจ้งเตือน', 'การอับเดทข้อมูลสำเร็จ');
+          Get.back();
+        } else {
+          print('false');
+        }
+      });
+    }
+  }
+
+  Future<Null> processdel() async {
+    MyDialog().showProgressDialog(context);
+
+    String id = newsModels!.news_key;
+
+    String apiEditProduct =
+        '${MyConstant.domain}/dopa/api/del_news.php?isDelete=true&id=$id';
+    await Dio().get(apiEditProduct).then((value) => Navigator.pop(context));
+    Navigator.pop(context);
   }
 
   Future<Null> chooseImage(ImageSource source) async {
@@ -207,7 +278,7 @@ class _editnewsState extends State<editnews> {
           width: constraints.maxWidth * 0.75,
           child: TextFormField(
             // enabled: false,
-            maxLines: 3,
+            maxLines: 6,
             controller: detailController,
             decoration: InputDecoration(
               labelText: 'Detail :',

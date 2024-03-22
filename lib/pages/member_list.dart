@@ -1,7 +1,9 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+
 import 'package:pruksa/models/user_model.dart';
 import 'package:pruksa/utility/my_constant.dart';
 
@@ -16,15 +18,35 @@ class _MemberListState extends State<MemberList> {
   bool load = true;
   bool? haveData;
   List<UserModel> usermodels = [];
+ List<UserDetails> _searchResult = [];
+
+  List<UserDetails> _userDetails = [];
+  //List<Map<String,dynamic>> items = [];
+  //List<Map<String,dynamic>> founduser = [];
   TextEditingController titelController = TextEditingController();
 
   final formKey = GlobalKey<FormState>();
   @override
   void initState() {
     // TODO: implement initState
+
     super.initState();
+    getUserDetails();
     loadmemberfromapi();
     // initialFile();
+  }
+
+  Future<Null> getUserDetails() async {
+    String apigetmemberlist =
+        '${MyConstant.domain}/dopa/api/getalluser.php?isAdd=true';
+    final response = await Dio().get(apigetmemberlist);
+    final responseJson = json.decode(response.data);
+
+    setState(() {
+      for (Map<String, dynamic> user in responseJson) {
+        _userDetails.add(UserDetails.fromJson(user));
+      }
+    });
   }
 
   Future<Null> loadmemberfromapi() async {
@@ -56,7 +78,20 @@ class _MemberListState extends State<MemberList> {
       }
     });
   }
+  onSearchTextChanged(String text) async {
+    _searchResult.clear();
+    if (text.isEmpty) {
+      setState(() {});
+      return;
+    }
 
+    _userDetails.forEach((userDetail) {
+      if (userDetail.fullname.contains(text) || userDetail.pos_name.contains(text))
+        _searchResult.add(userDetail);
+    });
+
+    setState(() {});
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -93,6 +128,7 @@ class _MemberListState extends State<MemberList> {
             return null;
           }
         },
+         onChanged: onSearchTextChanged,
         decoration: InputDecoration(
           border: InputBorder.none,
           hintText: 'กรุณากรอกชื่อเรื่อง',
@@ -153,6 +189,30 @@ class _MemberListState extends State<MemberList> {
             //
             ),
       ),
+    );
+  }
+}
+
+class UserDetails {
+  final String fullname;
+  final String user_key;
+  final String? user_phone;
+  final String user_photo;
+  final String pos_name;
+  UserDetails({
+    required this.fullname,
+    required this.user_key,
+    this.user_phone,
+    required this.user_photo,
+    required this.pos_name,
+  });
+  factory UserDetails.fromJson(Map<String, dynamic> json) {
+    return new UserDetails(
+      user_key: json['user_key'],
+      fullname: json['fullname'],
+      user_photo: json['user_photo'],
+      pos_name: json['pos_name'],
+      user_phone: json['user_phone'],
     );
   }
 }

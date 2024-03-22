@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:pruksa/pab/active_main.dart';
+import 'package:pruksa/report/act_mountreport.dart';
 import 'package:pruksa/report/act_report.dart';
 import 'package:pruksa/report/risk_report.dart';
 import 'package:pruksa/wigets/menu_item.dart';
@@ -19,6 +21,16 @@ class ActiveMenu extends StatelessWidget {
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 3, crossAxisSpacing: 20, mainAxisSpacing: 30),
           children: [
+                MenuItem(
+                imagepath: 'images/dopa.png',
+                titel: 'เมนูหลัก',
+                onTap: (() {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => activeMain()),
+                  );
+                })),
             MenuItem(
                 imagepath: 'images/report.png',
                 titel: 'แยกรายเดือน',
@@ -31,12 +43,30 @@ class ActiveMenu extends StatelessWidget {
                 })),
             MenuItem(
                 imagepath: 'images/dopa.png',
-                titel: 'รายงานจุดเสี่ยง',
-                onTap:  (() {
+                titel: 'เมนูหลัก',
+                onTap: (() {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => RiskReport()),
+                        builder: (context) => ActiveReportMount()),
+                  );
+                })),
+            MenuItem(
+                imagepath: 'images/dopa.png',
+                titel: 'รายงานจุดเสี่ยง',
+                onTap: (() {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => RiskReport()),
+                  );
+                })),
+            MenuItem(
+                imagepath: 'images/dopa.png',
+                titel: 'แบบเดือน',
+                onTap: (() {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => actmountreport()),
                   );
                 }))
           ],

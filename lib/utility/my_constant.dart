@@ -21,7 +21,7 @@ class MyConstant {
   static String routeAddnews = '/add_news';
   static String routeAddpr = '/add_pr';
   static String routeAddfaq = '/add_faq';
- 
+
   static String routeAdmin = '/admin';
   // Image
   static String imglogo = 'images/logo1.jpg';
@@ -123,6 +123,11 @@ class MyConstant {
         color: Colors.red.shade900,
         fontWeight: FontWeight.bold,
       );
+  TextStyle gh2Style() => GoogleFonts.prompt(
+        fontSize: 18,
+        color: Colors.black,
+        fontWeight: FontWeight.normal,
+      );
 
   TextStyle gh1RedStyle() => GoogleFonts.prompt(
         fontSize: 24,
@@ -193,14 +198,14 @@ class MyConstant {
         ),
       );
 
-        ButtonStyle mygreenbutton() => ElevatedButton.styleFrom(
+  ButtonStyle mygreenbutton() => ElevatedButton.styleFrom(
         primary: Colors.green,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
         ),
       );
 
-           ButtonStyle myredbutton() => ElevatedButton.styleFrom(
+  ButtonStyle myredbutton() => ElevatedButton.styleFrom(
         primary: Colors.redAccent,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),

@@ -191,7 +191,8 @@ class Appservice {
   }
 
   Future<void> gotodirection({required String lat, required String lng}) async {
-    String url = 'https://www.google.co.th/maps/search/?api&query=$lat,$lng';
+   // String url = 'https://www.google.co.th/maps/search/?api&query=$lat,$lng';
+   String url = 'https://www.google.co.th/maps/search/?api=1&query=$lat,$lng';
     print('##map = $url');
     Uri uri = Uri.parse(url);
     if (await launchUrl(uri, mode: LaunchMode.externalApplication)) {

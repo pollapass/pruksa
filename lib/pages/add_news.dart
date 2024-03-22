@@ -151,7 +151,7 @@ class _AddNewsState extends State<AddNews> {
               (appController.usermodels[i].token!.isNotEmpty)) {
             Appservice().processnotitouser(
                 token: appController.usermodels[i].token!,
-                title: 'มีข่าวใหม่',
+                title: 'มีข่าวประชาสัมพันธ์จากอำเภอบ้านหลวง',
                 message: titel!);
           }
         }
@@ -162,7 +162,7 @@ class _AddNewsState extends State<AddNews> {
           if ((appController.memberModels[i].token!.isNotEmpty)) {
             Appservice().processnotitomember(
                 token: appController.memberModels[i].token!,
-                title: 'มีข่าวใหม่สำหรับสมาชิก',
+                title: 'มีข่าวประชาสัมพันธ์จากอำเภอบ้านหลวง',
                 message: titel!);
           }
         }

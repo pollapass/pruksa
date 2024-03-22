@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:pruksa/pages/active_menu.dart';
+import 'package:pruksa/pages/appoint_list.dart';
 import 'package:pruksa/pages/damrong_all.dart';
 import 'package:pruksa/pages/disaster_all.dart';
 import 'package:pruksa/pages/informrisk_all.dart';
 import 'package:pruksa/pages/redcross_all.dart';
+import 'package:pruksa/pages/show_meet.dart';
 import 'package:pruksa/utility/my_constant.dart';
 import 'package:pruksa/wigets/menu_item.dart';
 
@@ -59,7 +61,7 @@ class _AdminMenuState extends State<AdminMenu> {
                   imagepath: 'images/redcross.jpg',
                   titel: 'กาชาด',
                   onTap: () {
-                      Navigator.push(
+                    Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => redcrossall()),
                     );
@@ -67,7 +69,10 @@ class _AdminMenuState extends State<AdminMenu> {
               MenuItem(
                   imagepath: 'images/appoint.png',
                   titel: 'ระบบคิว',
-                  onTap: () {}),
+                  onTap: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => AppointList()));
+                  }),
               MenuItem(
                   imagepath: 'images/book.png',
                   titel: 'หนังสือเวียน',
@@ -76,9 +81,18 @@ class _AdminMenuState extends State<AdminMenu> {
                   imagepath: 'images/dopa.png',
                   titel: 'กำนัน ผู้ใหญ่บ้าน',
                   onTap: () {
-                        Navigator.push(
+                    Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => ActiveMenu()),
+                    );
+                  }),
+              MenuItem(
+                  imagepath: 'images/dopa.png',
+                  titel: 'ห้องประชุม',
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => showmeeting()),
                     );
                   }),
             ],

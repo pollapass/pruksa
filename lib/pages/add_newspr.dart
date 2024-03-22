@@ -1,9 +1,14 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
-import 'package:dio/dio.dart';
+import 'package:dio/dio.dart' as dio;
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:pruksa/utility/app_controller.dart';
+import 'package:pruksa/utility/app_service.dart';
+
 import 'package:pruksa/utility/my_constant.dart';
 import 'package:pruksa/utility/my_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -22,7 +27,15 @@ class _AddNewsPrState extends State<AddNewsPr> {
   final formKey = GlobalKey<FormState>();
   TextEditingController titelController = TextEditingController();
   TextEditingController detailController = TextEditingController();
+   AppController appController = Get.put(AppController());
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    Appservice().processalladmin();
+    Appservice().processallmember();
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -89,9 +102,9 @@ class _AddNewsPrState extends State<AddNewsPr> {
       String nameAvatar = 'pr$i.pdf';
       Map<String, dynamic> map = Map();
       map['file'] =
-          await MultipartFile.fromFile(file!.path, filename: nameAvatar);
-      FormData data = FormData.fromMap(map);
-      await Dio().post(apiSaveAvatar, data: data).then((value) {
+          await dio.MultipartFile.fromFile(file!.path, filename: nameAvatar);
+      dio.FormData data = dio.FormData.fromMap(map);
+      await dio.Dio().post(apiSaveAvatar, data: data).then((value) {
         avatar = '$nameAvatar';
         print('### avatar = $avatar');
         processInsertMySQL(
@@ -109,8 +122,32 @@ class _AddNewsPrState extends State<AddNewsPr> {
     print('### processInsertMySQL Work and avatar ==>> $avatar');
     String apiInsertUser =
         '${MyConstant.domain}/dopa/api/insertnewspr.php?isAdd=true&titel=$titel&doc=$avatar&userkey=$userkey';
-    await Dio().get(apiInsertUser).then((value) {
+    await dio.Dio().get(apiInsertUser).then((value) {
       if (value.toString() == 'true') {
+               for (var i = 0; i < appController.usermodels.length; i++) {
+          if (
+              (appController.usermodels[i].token!.isNotEmpty)) {
+            Appservice().processnotitouser(
+                token: appController.usermodels[i].token!,
+                title: 'มีประกาศจากอำเภอบ้านหลวง',
+                message: titel!);
+          }
+        }
+      
+
+        
+        for (var i = 0; i < appController.memberModels.length; i++) {
+          if ((appController.memberModels[i].token!.isNotEmpty)) {
+            Appservice().processnotitomember(
+                token: appController.memberModels[i].token!,
+                title: 'มีประกาศจากอำเภอบ้านหลวง',
+                message: titel!);
+          }
+        }
+        
+
+      
+
         Navigator.pop(context);
       } else {
         MyDialog().normalDialog(
@@ -119,8 +156,9 @@ class _AddNewsPrState extends State<AddNewsPr> {
     });
   }
 
+
   Future uploadpdf() async {
-    var dio = Dio();
+    var Dios = dio.Dio();
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
       allowedExtensions: ['jpg', 'pdf', 'doc'],
@@ -130,11 +168,11 @@ class _AddNewsPrState extends State<AddNewsPr> {
       String fileName = file.path.split('/').last;
       String path = file.path;
 
-      FormData data = FormData.fromMap({
-        'file': await MultipartFile.fromFile(file!.path, filename: fileName)
+      dio.FormData data = dio.FormData.fromMap({
+        'file': await dio.MultipartFile.fromFile(file!.path, filename: fileName)
       });
 
-      final response = dio.post(
+      final response = Dios.post(
           '${MyConstant.domain}/dopa/api/insertfaq1.php?isAdd=true',
           data: data, onSendProgress: (int sent, int total) {
         print('$sent,$total');
