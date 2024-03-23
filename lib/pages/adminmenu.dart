@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pruksa/pages/active_menu.dart';
 import 'package:pruksa/pages/appoint_list.dart';
 import 'package:pruksa/pages/damrong_all.dart';
@@ -7,6 +8,7 @@ import 'package:pruksa/pages/informrisk_all.dart';
 import 'package:pruksa/pages/redcross_all.dart';
 import 'package:pruksa/pages/show_meet.dart';
 import 'package:pruksa/utility/my_constant.dart';
+import 'package:pruksa/wigets/icon_menu.dart';
 import 'package:pruksa/wigets/menu_item.dart';
 
 class AdminMenu extends StatefulWidget {
@@ -95,6 +97,15 @@ class _AdminMenuState extends State<AdminMenu> {
                       MaterialPageRoute(builder: (context) => showmeeting()),
                     );
                   }),
+              iconsmenu(
+                  iconpath: FontAwesomeIcons.gears,
+                  titel: 'ตั้งค่าระบบ',
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => showmeeting()),
+                    );
+                  })
             ],
           ),
         ));

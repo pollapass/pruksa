@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:pruksa/pab/addactive.dart';
 import 'package:pruksa/pages/add_appointment.dart';
 import 'package:pruksa/pages/add_contact.dart';
 import 'package:pruksa/pages/add_damrong.dart';
@@ -37,6 +38,7 @@ final Map<String, WidgetBuilder> map = {
   '/add_faq': (BuildContext context) => AddFaq(),
   '/add_pr': (BuildContext context) => AddNewsPr(),
   '/admin': (BuildContext context) => Admin(),
+  '/add_active': (BuildContext context) => addactive(),
 };
 
 String? initlalRoute;

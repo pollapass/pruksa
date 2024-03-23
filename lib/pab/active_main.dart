@@ -24,42 +24,12 @@ class _activeMainState extends State<activeMain> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    loadmemberfromapi();
+   // loadmemberfromapi();
     loadvaluefromapi();
 
     // initialFile();
   }
 
-  Future<Null> loadmemberfromapi() async {
-    if (usermodels.length != 0) {
-      usermodels.clear();
-    } else {}
-    String apigetmemberlist =
-        '${MyConstant.domain}/dopa/api/getuser.php?isAdd=true';
-    await Dio().get(apigetmemberlist).then((value) {
-      // print('value ==> $value');
-      // print('value ==> $id');
-      if (value.toString() == 'null') {
-        // No Data
-        setState(() {
-          load = false;
-          haveData = false;
-        });
-      } else {
-        for (var item in json.decode(value.data)) {
-          // UserModel model = UserModel.fromMap(item);
-          UserModel model = UserModel.fromMap(item);
-          //print('name of titel =${model.titel}');
-
-          setState(() {
-            load = false;
-            haveData = true;
-            usermodels.add(model);
-          });
-        }
-      }
-    });
-  }
 
   Future<Null> loadvaluefromapi() async {
     if (itemList.length != 0) {
@@ -94,30 +64,42 @@ class _activeMainState extends State<activeMain> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text('ระบบปกครองท้องที่ อำเภอบ้านหลวง'),
-          backgroundColor: Color(0xFFEDF0F6),
-        ),
-        body: Column(
-          children: [
-            Expanded(child: ListView.builder(
+      appBar: AppBar(
+        title: Text('ระบบปกครองท้องที่ อำเภอบ้านหลวง'), actions: [],
+        // backgroundColor: Color(0xFFEDF0F6),
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: ListView.builder(
 
-                  //itemCount: stories.length + 1,
-                  itemCount: itemList.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return UserPost(
-                        name: itemList[index].fullname,
-                        detail: itemList[index].act_detail,
-                        act_date: itemList[index].act_date,
-                        itemsname: itemList[index].items_name,
-                        user_photo:
-                            '${MyConstant.domain}/dopa/resource/users/images/${itemList[index].user_photo}',
-                        photo:
-                            '${MyConstant.domain}/dopa/resource/active/images/${itemList[index].act_images}',
-                        titel: itemList[index].titel,
-                        act_key: itemList[index].act_key);
-                  }),)
-          ],
-        ));
+                //itemCount: stories.length + 1,
+                itemCount: itemList.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return UserPost(
+                      name: itemList[index].fullname,
+                      detail: itemList[index].act_detail,
+                      act_date: itemList[index].act_date,
+                      itemsname: itemList[index].items_name,
+                      user_key: itemList[index].user_key,
+                      user_photo:
+                          '${MyConstant.domain}/dopa/resource/users/images/${itemList[index].user_photo}',
+                      photo:
+                          '${MyConstant.domain}/dopa/resource/active/images/${itemList[index].act_images}',
+                      titel: itemList[index].titel,
+                      act_key: itemList[index].act_key);
+                }),
+          )
+        ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: MyConstant.dark,
+     onPressed: () {
+          Navigator.pushNamed(context, MyConstant.routeAddactive)
+              .then((value) => loadvaluefromapi());
+        },
+        child: Text('เพิ่ม'),
+      ),
+    );
   }
 }

@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pruksa/utility/my_constant.dart';
 
-class MenuItem extends StatelessWidget {
-  final String imagepath;
+class iconsmenu extends StatelessWidget {
+    final IconData iconpath;
   final String titel;
   final VoidCallback onTap;
-
-  const MenuItem(
-      {Key? key,
-      required this.imagepath,
+  const iconsmenu({Key? key,
+      required this.iconpath,
       required this.titel,
       required this.onTap})
       : super(key: key);
@@ -28,10 +27,9 @@ class MenuItem extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              Image.asset(
-                imagepath,
-                width: 60,
-                height: 60,
+              FaIcon(
+                iconpath,
+                size: 60,
               ),
               Text(
                 titel,

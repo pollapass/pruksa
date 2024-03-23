@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:pruksa/models/user_model.dart';
 import 'package:pruksa/pab/view_post_screen.dart';
 import 'package:pruksa/utility/my_constant.dart';
 import 'package:pruksa/utility/my_dialog.dart';
@@ -15,11 +16,12 @@ class UserPost extends StatefulWidget {
   final String user_photo;
   final String detail;
   final String act_date;
-
+  final String user_key;
   final String itemsname;
   const UserPost(
       {Key? key,
       required this.name,
+      required this.user_key,
       required this.itemsname,
       required this.photo,
       required this.titel,
@@ -34,7 +36,7 @@ class UserPost extends StatefulWidget {
 }
 
 class _UserPostState extends State<UserPost> {
-    List<String> groupList = [];
+  List<String> groupList = [];
 
   var total;
   var like;
@@ -86,8 +88,10 @@ class _UserPostState extends State<UserPost> {
   Future<Null> checklike() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     String userkey = preferences.getString('id')!;
+    String fullname = preferences.getString('fullname')!;
     String act_key = widget.act_key;
-
+    String titels = widget.titel;
+    String keys = widget.user_key;
     String apiCheckAuthen =
         '${MyConstant.domain}/dopa/api/checklike.php?isAdd=true&userkey=$userkey&act_key=$act_key';
     await Dio().get(apiCheckAuthen).then((value) async {
@@ -98,7 +102,13 @@ class _UserPostState extends State<UserPost> {
         await Dio().get(apiInsertActReport).then((value) {
           if (value.toString() == 'true') {
             //loadcommentfromapi();
-            loadlikeFromAPI();
+              loadlikeFromAPI();
+            sendnotitomember(
+              key: keys,
+              fullname: fullname,
+              detail: titels,
+            );
+          
           } else {
             MyDialog().normalDialog(
                 context, 'ไม่สามารถกด Like ได้ !!!', 'Please Try Again');
@@ -108,8 +118,39 @@ class _UserPostState extends State<UserPost> {
     });
   }
 
+  Future<Null> sendnotitomember(
+      {required String key,
+      required String detail,
+      required String fullname}) async {
+    print('cids = $key');
+    String findtoken =
+        '${MyConstant.domain}/dopa/api/getchecklike.php?isAdd=true&cid=$key';
+    await Dio().get(findtoken).then((value) {
+      print('value is $value');
+      var results = jsonDecode(value.data);
+      print('reult == $results');
+      for (var element in results) {
+        UserModel model = UserModel.fromMap(element);
+        String? tokens = model.token;
+        print('token is $tokens');
+        String titel = '$fullname ได้กดถูกใจในผลงานของคุณ';
+        String body = 'เรื่อง : $detail ';
+
+        String sendtoken =
+            '${MyConstant.domain}/dopa/api/apinoti.php?isAdd=true&title=$titel&body=$body&token=$tokens';
+
+        sendfcmtomember(sendtoken);
+      }
+    });
+  }
+
+  Future<Null> sendfcmtomember(String sendtoken) async {
+    await Dio().get(sendtoken).then((value) => Navigator.pop(context));
+  }
+
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
           padding: const EdgeInsets.all(8.0),
@@ -270,63 +311,22 @@ class _UserPostState extends State<UserPost> {
         ),
         Padding(
           padding: EdgeInsets.only(left: 16.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('ด้าน : ${widget.itemsname}'),
-            ],
-          ),
+          child: Text('ถูกใจโดย ${widget.name} และคนอื่นๆ'),
         ),
         Padding(
-          padding: EdgeInsets.only(top: 10.0, left: 16.0),
-          child: Row(
-            children: [
-              Text('ถูกใจโดย'),
-              Text(
-                widget.name,
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              Text('และ'),
-              Text(
-                'คนอื่นๆ',
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-            ],
-          ),
+          padding: EdgeInsets.only(left: 16.0),
+          child: Text('ด้าน : ${widget.itemsname}'),
         ),
-        Padding(
-          padding: EdgeInsets.only(left: 16.0, top: 8),
 
-          //padding: EdgeInsets.symmetric(horizontal: 20.0),
-          child: Row(
-            //mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Column(
-                children: [
-                  RichText(
-                      text: TextSpan(
-                    children: [
-                      TextSpan(
-                        text: widget.name,
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, color: Colors.black),
-                      ),
-                      TextSpan(
-                        text: ':',
-                        style: TextStyle(color: Colors.black),
-                      ),
-                      TextSpan(
-                        text: widget.titel,
-                        style: TextStyle(color: Colors.black),
-                      ),
-                    ],
-                  )),
-                ],
-              ),
-            ],
+        Padding(
+          padding: EdgeInsets.only(left: 16.0),
+          child: Text(
+            '${widget.name}:${widget.titel}',
+            style: TextStyle(fontWeight: FontWeight.bold),
           ),
         ),
+
+        // Text('${widget.name}:${widget.titel}')
       ],
     );
   }

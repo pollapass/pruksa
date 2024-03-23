@@ -31,37 +31,7 @@ class _actmountreportState extends State<actmountreport> {
     // initialFile();
   }
 
-  Future<Null> loadvaluefromapi() async {
-    if (actmodels.length != 0) {
-      actmodels.clear();
-    } else {}
 
-    String apigetactivelist =
-        '${MyConstant.domain}/dopa/api/getactivegrap.php?isAdd=true';
-
-    await dio.Dio().get(apigetactivelist).then((value) {
-      print('value ==> $value');
-
-      if (value.toString() == 'null') {
-        // No Data
-        setState(() {
-          load = false;
-          haveData = false;
-        });
-      } else {
-        for (var item in json.decode(value.data)) {
-          ActModel model = ActModel.fromMap(item);
-          print('name of titel =${model.cc}');
-
-          setState(() {
-            load = false;
-            haveData = true;
-            actmodels.add(model);
-          });
-        }
-      }
-    });
-  }
 
   Future<String> getJsonFromFirebase() async {
     String url = '${MyConstant.domain}/dopa/api/getactivegrap.php?isAdd=true';

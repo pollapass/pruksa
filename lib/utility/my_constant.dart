@@ -21,7 +21,7 @@ class MyConstant {
   static String routeAddnews = '/add_news';
   static String routeAddpr = '/add_pr';
   static String routeAddfaq = '/add_faq';
-
+  static String routeAddactive = '/add_active';
   static String routeAdmin = '/admin';
   // Image
   static String imglogo = 'images/logo1.jpg';
@@ -182,6 +182,12 @@ class MyConstant {
   TextStyle h3RedStyle() => TextStyle(
         fontSize: 14,
         color: Colors.red,
+        fontWeight: FontWeight.normal,
+      );
+
+        TextStyle h4Style() => TextStyle(
+        fontSize: 12,
+        color: dark,
         fontWeight: FontWeight.normal,
       );
 

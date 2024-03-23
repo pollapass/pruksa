@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:pruksa/pab/active_list.dart';
 import 'package:pruksa/pab/active_main.dart';
+import 'package:pruksa/pab/dopa_list.dart';
 import 'package:pruksa/report/act_mountreport.dart';
+import 'package:pruksa/report/act_person_report.dart';
 import 'package:pruksa/report/act_report.dart';
 import 'package:pruksa/report/risk_report.dart';
+import 'package:pruksa/wigets/icon_menu.dart';
 import 'package:pruksa/wigets/menu_item.dart';
 
 class ActiveMenu extends StatelessWidget {
@@ -21,14 +26,32 @@ class ActiveMenu extends StatelessWidget {
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 3, crossAxisSpacing: 20, mainAxisSpacing: 30),
           children: [
-                MenuItem(
+            MenuItem(
                 imagepath: 'images/dopa.png',
-                titel: 'เมนูหลัก',
+                titel: 'ปกครองท้องที่',
+                onTap: (() {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => activeMain()),
+                  );
+                })),
+            iconsmenu(
+                iconpath: FontAwesomeIcons.clock,
+                titel: 'ประวัติผลงาน',
+                onTap: (() {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ActiveList()),
+                  );
+                })),
+                   iconsmenu(
+                iconpath:FontAwesomeIcons.users,
+                titel: 'สมาชิก',
                 onTap: (() {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => activeMain()),
+                        builder: (context) => dopalist()),
                   );
                 })),
             MenuItem(
@@ -67,6 +90,15 @@ class ActiveMenu extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => actmountreport()),
+                  );
+                })),
+            MenuItem(
+                imagepath: 'images/report1.png',
+                titel: 'แบบรายคน',
+                onTap: (() {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => actreportperson()),
                   );
                 }))
           ],

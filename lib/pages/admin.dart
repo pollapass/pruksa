@@ -349,7 +349,7 @@ class _AdminState extends State<Admin> {
               SizedBox(
                 height: 10.0,
               ),
-              Text('ข้อมูลร้องทุกข์ร้องเรียน')
+              Text('ร้องทุกข์ร้องเรียน')
             ],
           ),
         ),
