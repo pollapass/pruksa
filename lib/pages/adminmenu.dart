@@ -79,8 +79,10 @@ class _AdminMenuState extends State<AdminMenu> {
               MenuItem(
                   imagepath: 'images/book.png',
                   titel: 'งานสารบัญ',
-                  onTap: () {  Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => sarabunmenu()));}),
+                  onTap: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => sarabunmenu()));
+                  }),
               MenuItem(
                   imagepath: 'images/dopa.png',
                   titel: 'กำนัน ผู้ใหญ่บ้าน',
@@ -97,6 +99,15 @@ class _AdminMenuState extends State<AdminMenu> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => showmeeting()),
+                    );
+                  }),
+              MenuItem(
+                  imagepath: 'images/webboard.png',
+                  titel: 'กล่องหนังสือ',
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => sarabunmenu()),
                     );
                   }),
               iconsmenu(

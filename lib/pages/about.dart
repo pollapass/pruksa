@@ -19,7 +19,7 @@ class About extends StatelessWidget {
           SizedBox(
             height: 10,
           ),
-          Text('Pruksa Project',
+          Text('P Project version Pruksa',
               style: GoogleFonts.prompt(
                 fontSize: 18,
                 color: Colors.black,
@@ -27,6 +27,7 @@ class About extends StatelessWidget {
               )),
           Container(
               padding: EdgeInsets.all(20),
+             // decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(10))),
               child: Image.asset(MyConstant.develop)),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -79,7 +80,7 @@ class About extends StatelessWidget {
             children: [
               Container(
                   margin: EdgeInsets.only(top: 16),
-                  width: 400,
+                  width: 250,
                   child: ShowImage(path: 'images/logo1.jpg')),
             ],
           ),

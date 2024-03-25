@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pruksa/pages/inform_news.dart';
 import 'package:pruksa/pages/newpr_list.dart';
 import 'package:pruksa/sarabun/booK_send.dart';
+import 'package:pruksa/sarabun/book_send_all.dart';
 
 import 'package:pruksa/wigets/icon_menu.dart';
 import 'package:pruksa/wigets/menu_item.dart';
@@ -53,6 +54,15 @@ class _sarabunmenuState extends State<sarabunmenu> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => booksend()),
+                  );
+                })),
+                    iconsmenu(
+                iconpath: FontAwesomeIcons.bookBookmark,
+                titel: 'หนังสือเวียน',
+                onTap: (() {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => booksendall()),
                   );
                 })),
           ],

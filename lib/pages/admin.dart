@@ -6,6 +6,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:pruksa/models/news_model.dart';
 import 'package:pruksa/pages/about.dart';
 import 'package:pruksa/pages/adminmenu.dart';
@@ -425,7 +426,7 @@ class _AdminState extends State<Admin> {
       backgroundColor: MyConstant.primary,
       elevation: 0,
 
-      title: Text('P Project'),
+      title: Text('BL Service',style: GoogleFonts.prompt(),),
       centerTitle: true,
       actions: [
         IconButton(
