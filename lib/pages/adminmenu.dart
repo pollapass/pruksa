@@ -7,6 +7,7 @@ import 'package:pruksa/pages/disaster_all.dart';
 import 'package:pruksa/pages/informrisk_all.dart';
 import 'package:pruksa/pages/redcross_all.dart';
 import 'package:pruksa/pages/show_meet.dart';
+import 'package:pruksa/sarabun/sarabun_menu.dart';
 import 'package:pruksa/utility/my_constant.dart';
 import 'package:pruksa/wigets/icon_menu.dart';
 import 'package:pruksa/wigets/menu_item.dart';
@@ -23,7 +24,7 @@ class _AdminMenuState extends State<AdminMenu> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('ระบบ'),
+          title: Text('เมนูหลัก '),
         ),
         body: Container(
           decoration: BoxDecoration(),
@@ -77,8 +78,9 @@ class _AdminMenuState extends State<AdminMenu> {
                   }),
               MenuItem(
                   imagepath: 'images/book.png',
-                  titel: 'หนังสือเวียน',
-                  onTap: () {}),
+                  titel: 'งานสารบัญ',
+                  onTap: () {  Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => sarabunmenu()));}),
               MenuItem(
                   imagepath: 'images/dopa.png',
                   titel: 'กำนัน ผู้ใหญ่บ้าน',

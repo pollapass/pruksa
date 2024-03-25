@@ -93,7 +93,9 @@ class _DisasterAllState extends State<DisasterAll> {
                               child: CachedNetworkImage(
                                 fit: BoxFit.cover,
                                 imageUrl:
-                                    ('${MyConstant.domain}/images/informrisk/${dismodels[index].inform_images}'),
+                                    ('${MyConstant.domain}/images/disaster/${dismodels[index].inform_images}'),
+
+                                  
                                 placeholder: (context, url) => ShowProgress(),
                                 errorWidget: (context, url, error) =>
                                     ShowImage(path: MyConstant.imgdopa),

@@ -6,6 +6,7 @@ import 'package:pruksa/pab/dopa_list.dart';
 import 'package:pruksa/report/act_mountreport.dart';
 import 'package:pruksa/report/act_person_report.dart';
 import 'package:pruksa/report/act_report.dart';
+import 'package:pruksa/report/act_tmbreport.dart';
 import 'package:pruksa/report/risk_report.dart';
 import 'package:pruksa/wigets/icon_menu.dart';
 import 'package:pruksa/wigets/menu_item.dart';
@@ -61,40 +62,23 @@ class ActiveMenu extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => ActiveReportMount()),
+                        builder: (context) => actmountreport()),
                   );
                 })),
-            MenuItem(
-                imagepath: 'images/dopa.png',
-                titel: 'เมนูหลัก',
+            iconsmenu(
+                iconpath: FontAwesomeIcons.react,
+                titel: 'แยกตำบล',
                 onTap: (() {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => ActiveReportMount()),
+                        builder: (context) => acttmbreport()),
                   );
                 })),
-            MenuItem(
-                imagepath: 'images/dopa.png',
-                titel: 'รายงานจุดเสี่ยง',
-                onTap: (() {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => RiskReport()),
-                  );
-                })),
-            MenuItem(
-                imagepath: 'images/dopa.png',
-                titel: 'แบบเดือน',
-                onTap: (() {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => actmountreport()),
-                  );
-                })),
+         
             MenuItem(
                 imagepath: 'images/report1.png',
-                titel: 'แบบรายคน',
+                titel: 'TOPTEN',
                 onTap: (() {
                   Navigator.push(
                     context,

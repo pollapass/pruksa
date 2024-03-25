@@ -51,7 +51,7 @@ class _actmountreportState extends State<actmountreport> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Bar Chart'),
+        title: Text('ผลงานรอบปีงบประมาณ'),
       ),
       body: Center(
         child: FutureBuilder(
@@ -61,7 +61,7 @@ class _actmountreportState extends State<actmountreport> {
                 return SfCartesianChart(
                     primaryXAxis: CategoryAxis(),
                     // Chart title
-                    title: ChartTitle(text: 'Half yearly sales analysis'),
+                    title: ChartTitle(text: 'ผลงานรอบปีงบประมาณแยกรายเดือน'),
                     series: <LineSeries<SalesData, String>>[
                       LineSeries<SalesData, String>(
                           dataSource: chartData,
@@ -80,13 +80,13 @@ class _actmountreportState extends State<actmountreport> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-                          Text('Retriving Firebase data...',
-                              style: TextStyle(fontSize: 20.0)),
+                          Text('...ประมวลผลจากฐานข้อมูล',
+                              style: TextStyle(fontSize: 20.0,color: Colors.lightBlue)),
                           Container(
                             height: 40,
                             width: 40,
                             child: CircularProgressIndicator(
-                              semanticsLabel: 'Retriving Firebase data',
+                              semanticsLabel: 'Retriving Mysql data',
                               valueColor: AlwaysStoppedAnimation<Color>(
                                   Colors.blueAccent),
                               backgroundColor: Colors.grey[300],

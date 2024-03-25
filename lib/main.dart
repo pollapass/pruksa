@@ -19,6 +19,7 @@ import 'package:pruksa/pages/admin.dart';
 import 'package:pruksa/pages/dashboard.dart';
 import 'package:pruksa/pages/login.dart';
 import 'package:pruksa/pages/register.dart';
+import 'package:pruksa/sarabun/add_booksend.dart';
 import 'package:pruksa/utility/my_constant.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -39,6 +40,7 @@ final Map<String, WidgetBuilder> map = {
   '/add_pr': (BuildContext context) => AddNewsPr(),
   '/admin': (BuildContext context) => Admin(),
   '/add_active': (BuildContext context) => addactive(),
+  '/add_booksend': (BuildContext context) => addbooksend(),
 };
 
 String? initlalRoute;

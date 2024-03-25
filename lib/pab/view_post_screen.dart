@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:pruksa/models/comment_model.dart';
+import 'package:pruksa/models/user_model.dart';
 import 'package:pruksa/utility/my_constant.dart';
 import 'package:pruksa/utility/my_dialog.dart';
 import 'package:pruksa/wigets/show_progress.dart';
@@ -10,7 +11,7 @@ import 'package:pruksa/wigets/show_titel.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ViewPostScreen extends StatefulWidget {
-    final String activekey;
+  final String activekey;
   final String titel;
   final String user_photo;
   final String name;
@@ -18,6 +19,7 @@ class ViewPostScreen extends StatefulWidget {
   final String itemsname;
   final String photo;
   final String detail;
+  final String userkey;
   const ViewPostScreen({
     Key? key,
     required this.activekey,
@@ -27,6 +29,7 @@ class ViewPostScreen extends StatefulWidget {
     required this.act_date,
     required this.photo,
     required this.detail,
+    required this.userkey,
     required this.itemsname,
   }) : super(key: key);
 
@@ -82,8 +85,10 @@ class _ViewPostScreenState extends State<ViewPostScreen> {
   Future<Null> checklike() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     String userkey = preferences.getString('id')!;
+    String fullname = preferences.getString('fullname')!;
     String act_key = widget.activekey;
-
+ String titels = widget.titel;
+    String keys = widget.userkey;
     String apiCheckAuthen =
         '${MyConstant.domain}/dopa/api/checklike.php?isAdd=true&userkey=$userkey&act_key=$act_key';
     await Dio().get(apiCheckAuthen).then((value) async {
@@ -94,7 +99,12 @@ class _ViewPostScreenState extends State<ViewPostScreen> {
         await Dio().get(apiInsertActReport).then((value) {
           if (value.toString() == 'true') {
             //loadcommentfromapi();
-            countlikeFromAPI();
+           
+                sendnotitomember1(
+              key: keys,
+              fullname: fullname,
+              detail: titels,
+            );
           } else {
             MyDialog().normalDialog(
                 context, 'ไม่สามารถกด Like ได้ !!!', 'Please Try Again');
@@ -164,14 +174,20 @@ class _ViewPostScreenState extends State<ViewPostScreen> {
       SharedPreferences preference = await SharedPreferences.getInstance();
 
       String userkey = preference.getString('id')!;
+      String fullname = preference.getString('fullname')!;
+      String keys = widget.userkey;
+      String detail = widget.titel;
       String apiInsertActReport =
           '${MyConstant.domain}/dopa/api/insertcomment.php?isAdd=true&user_key=$userkey &titel=$name&act_key=$id';
       await Dio().get(apiInsertActReport).then((value) {
         if (value.toString() == 'true') {
-          setState(() {
-            countcommentFromAPI();
-            loadcommentfromapi();
-          });
+
+    sendnotitomember(
+              key: keys,
+              fullname: fullname,
+              detail: detail,
+            );
+     
         } else {
           MyDialog().normalDialog(
               context, 'เพิ่ม Cooment ไม่ได้ !!!', 'กรุณาลองใหม่');
@@ -180,8 +196,76 @@ class _ViewPostScreenState extends State<ViewPostScreen> {
     }
   }
 ////////////
+  Future<Null> sendnotitomember(
+      {required String key,
+      required String detail,
+      required String fullname}) async {
+    print('cids = $key');
+    String findtoken =
+        '${MyConstant.domain}/dopa/api/getchecklike.php?isAdd=true&cid=$key';
+    await Dio().get(findtoken).then((value) {
+      print('value is $value');
+      var results = jsonDecode(value.data);
+      print('reult == $results');
+      for (var element in results) {
+        UserModel model = UserModel.fromMap(element);
+        String? tokens = model.token;
+        print('token is $tokens');
+        String titel = '$fullname ได้แสดงความคิดเห็นในผลงานของคุณ';
+        String body = 'เรื่อง : $detail ';
 
+        String sendtoken =
+            '${MyConstant.domain}/dopa/api/apinoti.php?isAdd=true&title=$titel&body=$body&token=$tokens';
+
+        sendfcmtomember(sendtoken);
+      }
+    });
+  }
+
+    Future<Null> sendnotitomember1(
+      {required String key,
+      required String detail,
+      required String fullname}) async {
+    print('cids = $key');
+    String findtoken =
+        '${MyConstant.domain}/dopa/api/getchecklike.php?isAdd=true&cid=$key';
+    await Dio().get(findtoken).then((value) {
+      print('value is $value');
+      var results = jsonDecode(value.data);
+      print('reult == $results');
+      for (var element in results) {
+        UserModel model = UserModel.fromMap(element);
+        String? tokens = model.token;
+        print('token is $tokens');
+        String titel = '$fullname ได้ถุกใจในผลงานของคุณ';
+        String body = 'เรื่อง : $detail ';
+
+        String sendtoken =
+            '${MyConstant.domain}/dopa/api/apinoti.php?isAdd=true&title=$titel&body=$body&token=$tokens';
+
+        sendfcmtomember1(sendtoken);
+      }
+    });
+  }
+   Future<Null> sendfcmtomember(String sendtoken) async {
+    await Dio().get(sendtoken).then((value) {
+         setState(() {
+            countcommentFromAPI();
+            loadcommentfromapi();
+          });
+    });
+  }
+
+     Future<Null> sendfcmtomember1(String sendtoken) async {
+    await Dio().get(sendtoken).then((value) {
+         setState(() {
+          countlikeFromAPI();
+          });
+    });
+  }
 //////////////////
+///
+///
 
   Widget build(BuildContext context) {
     return Scaffold(

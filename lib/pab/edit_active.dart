@@ -1,12 +1,16 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rounded_date_picker/flutter_rounded_date_picker.dart';
+
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:pruksa/models/active_list_model.dart';
 import 'package:pruksa/utility/my_constant.dart';
+import 'package:pruksa/utility/my_dialog.dart';
 import 'package:pruksa/wigets/show_image.dart';
 import 'package:pruksa/wigets/show_progress.dart';
 
@@ -70,6 +74,37 @@ class _EditActiveState extends State<EditActive> {
                     style: MyConstant().gh2Style(),
                   ),
                   buildAvatar(constraints),
+                  SizedBox(height: 20,),
+                             Padding(
+                padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  // crossAxisAlignment: CrossFadeState,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                      processEdit();
+                      },
+                      child: Text(
+                        'อับเดทข้อมูล',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      style: MyConstant().mygreenbutton(),
+                    ),
+                    Padding(padding: EdgeInsets.all(10)),
+                    ElevatedButton(
+                      onPressed: () {
+                        _dialogBuilder(context);
+                      },
+                      child: Text(
+                        'ลบข้อมูล',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      style: MyConstant().myredbutton(),
+                    ),
+                  ],
+                ),
+              ),
                 ],
               ),
             ),
@@ -78,7 +113,90 @@ class _EditActiveState extends State<EditActive> {
       ),
     );
   }
+  Future<Null> processEdit() async {
+    print('processEditProfileSeller Work');
 
+    MyDialog().showProgressDialog(context);
+
+    if (formKey.currentState!.validate()) {
+      if (file == null) {
+        print('## User Current Avatar');
+        editValueToMySQL(activeModel!.act_images);
+      } else {
+         String apiSaveAvatar = '${MyConstant.domain}/dopa/api/saveactimages.php';
+
+        List<String> nameAvatars = activeModel!.act_images.split('/');
+        String nameFile = nameAvatars[nameAvatars.length - 1];
+        nameFile = 'edit${Random().nextInt(1000)}$nameFile';
+
+        print('## User New Avatar nameFile ==>>> $nameFile');
+
+        Map<String, dynamic> map = {};
+        map['file'] =
+            await MultipartFile.fromFile(file!.path, filename: nameFile);
+        FormData formData = FormData.fromMap(map);
+        await Dio().post(apiSaveAvatar, data: formData).then((value) {
+          print('Upload Succes');
+          String pathAvatar = '$nameFile';
+          editValueToMySQL(pathAvatar);
+        });
+      }
+    }
+  }
+    Future<void> _dialogBuilder(BuildContext context) {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('ยืนยันการลบข้อมูล'),
+          content: const Text(
+            'หากกดปุ่มยืนยันแล้วข้อมูลจะถูกลบจากฐานข้อมูล ไม่สามารถกู้ข้อมูลได้',
+          ),
+          actions: <Widget>[
+            TextButton(
+              style: TextButton.styleFrom(
+                textStyle: Theme.of(context).textTheme.labelLarge,
+              ),
+              child: const Text('ยกเลิก'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              style: TextButton.styleFrom(
+                textStyle: Theme.of(context).textTheme.labelLarge,
+              ),
+              child: const Text('ยืนยัน'),
+              onPressed: () {
+                processdel();
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+  Future<void> processdel() async {
+    MyDialog().showProgressDialog(context);
+
+    String id = activeModel!.act_key;
+    print(' id - $id');
+
+    String apiEditProduct =
+        '${MyConstant.domain}/dopa/api/del_active.php?isDelete=true&id=$id';
+    await Dio().get(apiEditProduct).then((value) => Navigator.pop(context));
+    Navigator.pop(context);
+  }
+  Future<Null> editValueToMySQL(String pathAvatar) async {
+    print('## pathAvatar ==> $pathAvatar');
+    String apiEditProfile =
+        '${MyConstant.domain}/dopa/api/edit_active.php?isAdd=true&id=${activeModel!.act_key}&titel=${titelController.text}&detail=${detailController.text}&act_date=${dateController.text}&avatar=$pathAvatar';
+    await Dio().get(apiEditProfile).then((value) {
+      Navigator.pop(context);
+    Navigator.pop(context);
+    });
+  }
   Container BuildDetail() {
     return Container(
       padding: EdgeInsets.all(5),

@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:pruksa/models/informdis_model.dart';
 import 'package:pruksa/models/member_model.dart';
@@ -13,6 +13,7 @@ import 'package:pruksa/utility/my_constant.dart';
 import 'package:pruksa/utility/my_dialog.dart';
 import 'package:pruksa/wigets/show_progress.dart';
 import 'package:pruksa/wigets/show_titel.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class EditDisaster extends StatefulWidget {
   final InformDisModel Dismodels;
@@ -24,8 +25,11 @@ class EditDisaster extends StatefulWidget {
 
 class _EditDisasterState extends State<EditDisaster> {
   InformDisModel? Dismodels;
+  // List<MemberModel> _membermodel = [];
+  MemberModel? memberModels;
   List groupList = [];
   String? selecteValue;
+
   TextEditingController titleController = TextEditingController();
   TextEditingController placeController = TextEditingController();
   TextEditingController detailController = TextEditingController();
@@ -47,8 +51,10 @@ class _EditDisasterState extends State<EditDisaster> {
     //titleController.text = Riskmodels!.inform_titel;
     placeController.text = Dismodels!.inform_place;
     detailController.text = Dismodels!.inform_detail;
+
     // remarkController.text = Dismodels!.inform_remark;
     loadActivegroupFromAPI();
+    loadvaluefromapi();
   }
 
   Future<void> loadActivegroupFromAPI() async {
@@ -62,6 +68,22 @@ class _EditDisasterState extends State<EditDisaster> {
       });
     });
     //print(poslist);
+  }
+
+  Future<Null> loadvaluefromapi() async {
+    String cid = Dismodels!.cid;
+    String findtoken =
+        '${MyConstant.domain}/dopa/api/getcidtoken.php?isAdd=true&cid=$cid';
+
+    Response response = await Dio().get(findtoken);
+    print('Result is $response');
+    var resilt = jsonDecode(response.data);
+    for (var map in resilt) {
+      print('map = $map');
+      setState(() {
+        memberModels = MemberModel.fromMap(map);
+      });
+    }
   }
 
   Future<Null> processEdit() async {
@@ -81,7 +103,7 @@ class _EditDisasterState extends State<EditDisaster> {
             '${MyConstant.domain}/dopa/api/edit_informdis.php?isUpdate=true&id=$id&remark=$remark&status=$selecteValue';
         //await Dio().get(apiEditProduct).then((value) => Navigator.pop(context));
         await Dio().get(apiEditProduct).then((value) {
-          Get.back();
+          Navigator.pop(context);
           if (value.toString() == 'true') {
             print('value is Success');
             sendnotitomember(cid);
@@ -122,9 +144,37 @@ class _EditDisasterState extends State<EditDisaster> {
               SizedBox(
                 height: 10.0,
               ),
-              Text(
-                'ชื่อ : ${Dismodels!.inform_name} เบอร์โทร ${Dismodels!.inform_tel} ',
-                style: MyConstant().h2Blacktyle(),
+              InkWell(
+                onTap: () {
+                  gotophoen();
+                },
+                child: Text(
+                  'ชื่อ : ${Dismodels!.inform_name} เบอร์โทร ${Dismodels!.inform_tel} ',
+                  style: MyConstant().h2Blacktyle(),
+                ),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Row(
+                children: [
+                  Text(
+                    'เลขบัตรประชาชน',
+                    style: MyConstant().h2Blacktyle(),
+                  ),
+                  InkWell(
+                      onTap: (() {
+                        MyDialog().showmemberdialog(
+                            context,
+                            'ชื่อ ${memberModels!.name} ${memberModels!.lastname}',
+                            'ทีอยู่ ${memberModels!.address}',
+                            '${memberModels!.images}');
+                      }),
+                      child: Text(
+                        '${Dismodels!.cid}',
+                        style: MyConstant().h2Blacktyle(),
+                      )),
+                ],
               ),
               SizedBox(
                 height: 10,
@@ -155,41 +205,7 @@ class _EditDisasterState extends State<EditDisaster> {
                 height: 10.0,
               ),
               ShowTitle(title: 'Location :', textStyle: MyConstant().h2Style()),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    margin: EdgeInsets.symmetric(vertical: 16),
-                    width: 300,
-                    height: 300,
-                    child: GoogleMap(
-                      initialCameraPosition: CameraPosition(
-                        target: LatLng(
-                          double.parse('${Dismodels!.lat}'),
-                          double.parse('${Dismodels!.lng}'),
-                        ),
-                        zoom: 16,
-                      ),
-                      markers: <Marker>{
-                        Marker(
-                            markerId: MarkerId('id'),
-                            onTap: () {
-                              print('#### tap marker');
-                              Appservice().gotodirection(lat:Dismodels!.lat!,lng:Dismodels!.lng!  );
-                            },
-                            position: LatLng(
-                              double.parse('${Dismodels!.lat}'),
-                              double.parse('${Dismodels!.lng}'),
-                            ),
-                            infoWindow: InfoWindow(
-                                title: 'เป็าหมายอยู่ที่นี่ ',
-                                snippet:
-                                    'lat = ${Dismodels!.lat}, lng = ${Dismodels!.lng}')),
-                      },
-                    ),
-                  ),
-                ],
-              ),
+              Buildmap(),
               SizedBox(
                 height: 20.0,
               ),
@@ -239,6 +255,55 @@ class _EditDisasterState extends State<EditDisaster> {
         ),
       ),
     );
+  }
+
+  Row Buildmap() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Container(
+          margin: EdgeInsets.symmetric(vertical: 16),
+          width: 300,
+          height: 300,
+          child: GoogleMap(
+            initialCameraPosition: CameraPosition(
+              target: LatLng(
+                double.parse('${Dismodels!.lat}'),
+                double.parse('${Dismodels!.lng}'),
+              ),
+              zoom: 16,
+            ),
+            markers: <Marker>{
+              Marker(
+                  markerId: MarkerId('id'),
+                  onTap: () {
+                    print('#### tap marker');
+                    Appservice().gotodirection(
+                        lat: Dismodels!.lat!, lng: Dismodels!.lng!);
+                  },
+                  position: LatLng(
+                    double.parse('${Dismodels!.lat}'),
+                    double.parse('${Dismodels!.lng}'),
+                  ),
+                  infoWindow: InfoWindow(
+                      title: 'เป็าหมายอยู่ที่นี่ ',
+                      snippet:
+                          'lat = ${Dismodels!.lat}, lng = ${Dismodels!.lng}')),
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  Future<void> gotophoen() async {
+    // String url = 'https://www.google.co.th/maps/search/?api&query=$lat,$lng';
+    String url = '${memberModels!.phone}';
+    print('##map = $url');
+    Uri uri = Uri.parse(url);
+    if (await launchUrl(uri)) {
+      throw 'Cannot open';
+    }
   }
 
   Future<void> _dialogBuilder(BuildContext context) {

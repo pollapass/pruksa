@@ -102,13 +102,12 @@ class _UserPostState extends State<UserPost> {
         await Dio().get(apiInsertActReport).then((value) {
           if (value.toString() == 'true') {
             //loadcommentfromapi();
-              loadlikeFromAPI();
+
             sendnotitomember(
               key: keys,
               fullname: fullname,
               detail: titels,
             );
-          
           } else {
             MyDialog().normalDialog(
                 context, 'ไม่สามารถกด Like ได้ !!!', 'Please Try Again');
@@ -145,7 +144,11 @@ class _UserPostState extends State<UserPost> {
   }
 
   Future<Null> sendfcmtomember(String sendtoken) async {
-    await Dio().get(sendtoken).then((value) => Navigator.pop(context));
+    await Dio().get(sendtoken).then((value) {
+      setState(() {
+        loadlikeFromAPI();
+      });
+    });
   }
 
   Widget build(BuildContext context) {
@@ -213,6 +216,7 @@ class _UserPostState extends State<UserPost> {
                                     name: widget.name,
                                     act_date: widget.act_date,
                                     itemsname: widget.itemsname,
+                                    userkey: widget.user_key,
                                     detail: widget.detail,
                                     photo: widget.photo)))
                         .then((value) => loadcommentFromAPI());
@@ -284,6 +288,7 @@ class _UserPostState extends State<UserPost> {
                                           user_photo: widget.user_photo,
                                           name: widget.name,
                                           act_date: widget.act_date,
+                                          userkey: widget.user_key,
                                           itemsname: widget.itemsname,
                                           detail: widget.detail,
                                           photo: widget.photo)))

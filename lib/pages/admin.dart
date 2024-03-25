@@ -168,30 +168,32 @@ class _AdminState extends State<Admin> {
                   padding:
                       EdgeInsets.symmetric(horizontal: 5.0, vertical: 10.0),
                   child: TextButton(
-                      style: TextButton.styleFrom(
-                        primary: Colors.pink,
-                      ),
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => AdminMenu()));
-                      },
-                      child: FaIcon(FontAwesomeIcons.windows,size: 30,),),
+                    style: TextButton.styleFrom(
+                      primary: Colors.pink,
+                    ),
+                    onPressed: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => AdminMenu()));
+                    },
+                    child: FaIcon(
+                      FontAwesomeIcons.windows,
+                      size: 30,
+                    ),
+                  ),
                 ),
-                label: 'บริการทั้งหมด',
+                label: 'ระบบ',
               ),
               BottomNavigationBarItem(
                 icon: IconButton(
-                  icon: const Icon(Icons.supervised_user_circle_sharp),
+                  icon: const Icon(Icons.info_outline),
                   iconSize: 30,
                   color: Colors.grey,
                   onPressed: () {
                     Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => MemberList()));
+                        MaterialPageRoute(builder: (context) => NewsPr()));
                   },
                 ),
-                label: 'สมาชิก',
+                label: 'ประกาศ',
               ),
               BottomNavigationBarItem(
                 icon: IconButton(
@@ -248,7 +250,7 @@ class _AdminState extends State<Admin> {
                   // ShowMenu(),
                   showprofile(),
                   MenuAbout(),
-                  test()
+
                   // ShowProduct()
                 ],
               ),
@@ -289,7 +291,7 @@ class _AdminState extends State<Admin> {
     );
   }
 
-    ListTile test() {
+  ListTile test() {
     return ListTile(
       onTap: () {
         setState(() {
@@ -423,7 +425,7 @@ class _AdminState extends State<Admin> {
       backgroundColor: MyConstant.primary,
       elevation: 0,
 
-      title: Text('P(Pruksa) Project'),
+      title: Text('P Project'),
       centerTitle: true,
       actions: [
         IconButton(

@@ -5,18 +5,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rounded_date_picker/flutter_rounded_date_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:pruksa/utility/my_constant.dart';
-import 'package:pruksa/utility/my_dialog.dart';
 import 'package:pruksa/wigets/show_titel.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
-class actreportperson extends StatefulWidget {
-  const actreportperson({Key? key}) : super(key: key);
+class acttmbreport extends StatefulWidget {
+  const acttmbreport({Key? key}) : super(key: key);
 
   @override
-  State<actreportperson> createState() => _actreportpersonState();
+  State<acttmbreport> createState() => _acttmbreportState();
 }
 
-class _actreportpersonState extends State<actreportperson> {
+class _acttmbreportState extends State<acttmbreport> {
   final formKey = GlobalKey<FormState>();
   TextEditingController sdateController = TextEditingController();
   TextEditingController edateController = TextEditingController();
@@ -38,7 +37,7 @@ class _actreportpersonState extends State<actreportperson> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('รายงานผู้ลงข้อมูลมากที่สุด'),
+        title: Text('จำนวนผลงานแยกตำบล'),
       ),
       body: LayoutBuilder(
         builder: (context, constraints) => GestureDetector(
@@ -60,6 +59,14 @@ class _actreportpersonState extends State<actreportperson> {
                     SizedBox(
                       height: 10,
                     ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                          'ตำบลบ้านฟ้า 550301 ตำบลป่าคาหลวง 550302 ตำบลสวด 550303 ตำบลบ้านพี้ 550304'),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
                     buildbutton(),
                     BuildGraph(),
                   ],
@@ -70,62 +77,6 @@ class _actreportpersonState extends State<actreportperson> {
         ),
       ),
     );
-  }
-
-  FutureBuilder<String> BuildGraph() {
-    return FutureBuilder(
-                      future: getJsonFromFirebase(),
-                      builder: (context, snapShot) {
-                        if (snapShot.hasData) {
-                          // ignore: prefer_const_constructors
-                          return SfCircularChart(
-                            legend: Legend(isVisible: true),
-                            // Chart title
-                            title: const ChartTitle(text: 'ข้อมูลผู้ทำงาน'),
-                            series: <CircularSeries>[
-                              PieSeries<SalesData, String>(
-                                dataSource: chartData,
-                                xValueMapper: (SalesData sales, _) =>
-                                    sales.fullname,
-                                yValueMapper: (SalesData sales, _) =>
-                                    int.parse(sales.total),
-                                dataLabelSettings:
-                                    DataLabelSettings(isVisible: true),
-                              )
-                            ],
-                          );
-                        } else {
-                          return Card(
-                            elevation: 5.0,
-                            child: Container(
-                              height: 100,
-                              width: 400,
-                              child: Center(
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
-                                  children: [
-                                    Text('Retriving Firebase data...',
-                                        style: TextStyle(fontSize: 20.0)),
-                                    Container(
-                                      height: 40,
-                                      width: 40,
-                                      child: CircularProgressIndicator(
-                                        semanticsLabel:
-                                            'Retriving Firebase data',
-                                        valueColor:
-                                            AlwaysStoppedAnimation<Color>(
-                                                Colors.blueAccent),
-                                        backgroundColor: Colors.grey[300],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          );
-                        }
-                      });
   }
 
   ElevatedButton buildbutton() {
@@ -160,7 +111,7 @@ class _actreportpersonState extends State<actreportperson> {
     String sdate = sdateController.text;
     String edate = edateController.text;
     String url =
-        '${MyConstant.domain}/dopa/api/getactperson.php?isAdd=true&sdate=$sdate&edate=$edate';
+        '${MyConstant.domain}/dopa/api/getacttmb.php?isAdd=true&sdate=$sdate&edate=$edate';
     var response = await Dio().get(url);
     print('object is $response ');
     return response.data;
@@ -171,6 +122,63 @@ class _actreportpersonState extends State<actreportperson> {
     final dynamic jsonResponse = json.decode(jsonString);
     for (Map<String, dynamic> i in jsonResponse)
       chartData.add(SalesData.fromJson(i));
+  }
+
+  FutureBuilder<String> BuildGraph() {
+    return FutureBuilder(
+        future: getJsonFromFirebase(),
+        builder: (context, snapShot) {
+          if (snapShot.hasData) {
+            // ignore: prefer_const_constructors
+            return SfCartesianChart(
+              //  isTrackVisible: true,
+              primaryXAxis: CategoryAxis(),
+              isTransposed: true,
+              // Chart title
+              title: const ChartTitle(text: 'ผลงานแยกตำบล'),
+              series: <CartesianSeries>[
+                ColumnSeries<SalesData, String>(
+                  dataSource: chartData,
+                  isTrackVisible: true,
+                  xValueMapper: (SalesData sales, _) => sales.addressid,
+                  yValueMapper: (SalesData sales, _) => int.parse(sales.total),
+                  name: 'Laki-Laki',
+                  dataLabelSettings: const DataLabelSettings(
+                    isVisible: true,
+                    labelAlignment: ChartDataLabelAlignment.middle,
+                  ),
+                )
+              ],
+            );
+          } else {
+            return Card(
+              elevation: 5.0,
+              child: Container(
+                height: 100,
+                width: 400,
+                child: Center(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Text('Retriving Firebase data...',
+                          style: TextStyle(fontSize: 20.0)),
+                      Container(
+                        height: 40,
+                        width: 40,
+                        child: CircularProgressIndicator(
+                          semanticsLabel: 'Retriving Firebase data',
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(Colors.blueAccent),
+                          backgroundColor: Colors.grey[300],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          }
+        });
   }
 
   Widget builddate(BoxConstraints constraints) {
@@ -301,15 +309,17 @@ class _actreportpersonState extends State<actreportperson> {
 }
 
 class SalesData {
-  SalesData(this.fullname, this.total);
+  SalesData(this.fullname, this.total, this.addressid);
 
   final String fullname;
   final String total;
+  final String addressid;
 
   factory SalesData.fromJson(Map<String, dynamic> parsedJson) {
     return SalesData(
       parsedJson['fullname'].toString(),
       parsedJson['total'].toString(),
+      parsedJson['addressid'].toString(),
     );
   }
 }
