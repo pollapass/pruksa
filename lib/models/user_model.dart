@@ -4,13 +4,15 @@ import 'dart:convert';
 class UserModel {
   final String fullname;
   final String user_key;
- final String? user_phone;
+  final String? user_phone;
   final String user_photo;
   final String name;
   final String lastname;
   final String user_position;
   final String pos_name;
   final String? token;
+  final String moopart;
+  final String addressid;
   UserModel({
     required this.fullname,
     required this.user_key,
@@ -20,9 +22,10 @@ class UserModel {
     required this.lastname,
     required this.user_position,
     required this.pos_name,
-     this.token,
+    this.token,
+    required this.moopart,
+    required this.addressid,
   });
-  
   
 
   Map<String, dynamic> toMap() {
@@ -36,6 +39,8 @@ class UserModel {
       'user_position': user_position,
       'pos_name': pos_name,
       'token': token,
+      'moopart': moopart,
+      'addressid': addressid,
     };
   }
 
@@ -49,7 +54,9 @@ class UserModel {
       lastname: (map['lastname'] ?? '') as String,
       user_position: (map['user_position'] ?? '') as String,
       pos_name: (map['pos_name'] ?? '') as String,
-      token: (map['token'] ?? '') as String,
+      token: map['token'] != null ? map['token'] as String : null,
+      moopart: (map['moopart'] ?? '') as String,
+      addressid: (map['addressid'] ?? '') as String,
     );
   }
 

@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:pruksa/pab/add_smiv.dart';
 import 'package:pruksa/pab/addactive.dart';
 import 'package:pruksa/pages/add_appointment.dart';
 import 'package:pruksa/pages/add_contact.dart';
@@ -41,6 +42,7 @@ final Map<String, WidgetBuilder> map = {
   '/admin': (BuildContext context) => Admin(),
   '/add_active': (BuildContext context) => addactive(),
   '/add_booksend': (BuildContext context) => addbooksend(),
+ '/add_smiv': (BuildContext context) => addsmiv(), 
 };
 
 String? initlalRoute;

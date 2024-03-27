@@ -110,6 +110,15 @@ class _AdminMenuState extends State<AdminMenu> {
                       MaterialPageRoute(builder: (context) => sarabunmenu()),
                     );
                   }),
+                    MenuItem(
+                  imagepath: 'images/sasuk.png',
+                  titel: 'สาธารณสุข',
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => sarabunmenu()),
+                    );
+                  }),
               iconsmenu(
                   iconpath: FontAwesomeIcons.gears,
                   titel: 'ตั้งค่าระบบ',

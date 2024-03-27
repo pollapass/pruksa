@@ -23,6 +23,7 @@ class MyConstant {
   static String routeAddfaq = '/add_faq';
   static String routeAddactive = '/add_active';
   static String routeAddbooksend = '/add_booksend';
+    static String routeAddsmiv = '/add_smiv';
   static String routeAdmin = '/admin';
   // Image
   static String imglogo = 'images/logo1.jpg';

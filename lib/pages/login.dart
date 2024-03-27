@@ -221,6 +221,8 @@ class _LoginState extends State<Login> {
           // preferences.setString('name', model.name);
           preferences.setString('fullname', model.fullname);
           preferences.setString('user_photo', model.user_photo);
+          preferences.setString('moopart', model.moopart);
+          preferences.setString('addressid', model.addressid);
 
           Navigator.pushNamedAndRemoveUntil(
               context, MyConstant.routeAdmin, (route) => false);

@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pruksa/pab/active_list.dart';
 import 'package:pruksa/pab/active_main.dart';
 import 'package:pruksa/pab/dopa_list.dart';
+import 'package:pruksa/pab/smiv_moo.dart';
 import 'package:pruksa/report/act_mountreport.dart';
 import 'package:pruksa/report/act_person_report.dart';
 import 'package:pruksa/report/act_report.dart';
@@ -84,8 +85,18 @@ class ActiveMenu extends StatelessWidget {
                     context,
                     MaterialPageRoute(builder: (context) => actreportperson()),
                   );
+                })),
+                MenuItem(
+                imagepath: 'images/sasuk.png',
+                titel: 'SMIV',
+                onTap: (() {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => smivmoo()),
+                  );
                 }))
           ],
+          
         ),
       ),
     );
