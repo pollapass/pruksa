@@ -41,10 +41,14 @@ class _NewsDetailState extends State<NewsDetail> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                '${newsModel!.news_name_th}',
+                'เรื่อง ${newsModel!.news_name_th}',
                 style: GoogleFonts.prompt(textStyle:TextStyle(fontSize: 26.0, fontWeight: FontWeight.bold))  , 
               ),
               SizedBox(
+                height: 8,
+              ),
+              Text('โดย  ${newsModel!.dep_name} '),
+                SizedBox(
                 height: 8,
               ),
               Text(

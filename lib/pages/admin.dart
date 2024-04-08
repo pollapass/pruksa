@@ -22,6 +22,7 @@ import 'package:pruksa/pages/news_detail.dart';
 import 'package:pruksa/pages/newspr.dart';
 import 'package:pruksa/pages/profile.dart';
 import 'package:pruksa/pages/test.dart';
+import 'package:pruksa/sarabun/book_send_all.dart';
 import 'package:pruksa/utility/app_service.dart';
 import 'package:pruksa/utility/my_constant.dart';
 import 'package:pruksa/wigets/show_image.dart';
@@ -400,13 +401,13 @@ class _AdminState extends State<Admin> {
           onTap: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => FaqHis()),
+              MaterialPageRoute(builder: (context) => booksendall()),
             );
           },
           child: Column(
             children: [
               CircleAvatar(
-                child: Image.asset('images/faq.png'),
+                child: Image.asset('images/book.png'),
                 backgroundColor: MyConstant.dark,
               ),
               SizedBox(
@@ -426,7 +427,10 @@ class _AdminState extends State<Admin> {
       backgroundColor: MyConstant.primary,
       elevation: 0,
 
-      title: Text('BL Service',style: GoogleFonts.prompt(),),
+      title: Text(
+        'BANLUANG',
+        style: GoogleFonts.prompt(),
+      ),
       centerTitle: true,
       actions: [
         IconButton(

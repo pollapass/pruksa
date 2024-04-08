@@ -4,10 +4,13 @@ import 'package:pruksa/pages/active_menu.dart';
 import 'package:pruksa/pages/appoint_list.dart';
 import 'package:pruksa/pages/damrong_all.dart';
 import 'package:pruksa/pages/disaster_all.dart';
+import 'package:pruksa/pages/dopa_menu.dart';
 import 'package:pruksa/pages/informrisk_all.dart';
 import 'package:pruksa/pages/redcross_all.dart';
 import 'package:pruksa/pages/show_meet.dart';
+import 'package:pruksa/sarabun/%E0%B8%B4book_box.dart';
 import 'package:pruksa/sarabun/sarabun_menu.dart';
+import 'package:pruksa/sasuk/sasuk_menu.dart';
 import 'package:pruksa/utility/my_constant.dart';
 import 'package:pruksa/wigets/icon_menu.dart';
 import 'package:pruksa/wigets/menu_item.dart';
@@ -24,7 +27,7 @@ class _AdminMenuState extends State<AdminMenu> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('เมนูหลัก '),
+          title: Text('เมนูหลัก OAOA'),
         ),
         body: Container(
           decoration: BoxDecoration(),
@@ -33,15 +36,16 @@ class _AdminMenuState extends State<AdminMenu> {
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 3, crossAxisSpacing: 20, mainAxisSpacing: 30),
             children: [
-              MenuItem(
+                   MenuItem(
                   imagepath: 'images/dopa.png',
-                  titel: 'ข้อมูลจุดเสี่ยง',
+                  titel: 'ทปค บ้านหลวง',
                   onTap: (() {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => InformRiskAll()),
+                      MaterialPageRoute(builder: (context) => dopamenu()),
                     );
                   })),
+           
               MenuItem(
                   imagepath: 'images/disaster.jpg',
                   titel: 'สาธารณภัย',
@@ -51,15 +55,7 @@ class _AdminMenuState extends State<AdminMenu> {
                       MaterialPageRoute(builder: (context) => DisasterAll()),
                     );
                   })),
-              MenuItem(
-                  imagepath: 'images/damrong.jpg',
-                  titel: 'ศูนย์ดำรงธรรม',
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => DamrongAll()),
-                    );
-                  }),
+            
               MenuItem(
                   imagepath: 'images/redcross.jpg',
                   titel: 'กาชาด',
@@ -69,20 +65,8 @@ class _AdminMenuState extends State<AdminMenu> {
                       MaterialPageRoute(builder: (context) => redcrossall()),
                     );
                   }),
-              MenuItem(
-                  imagepath: 'images/appoint.png',
-                  titel: 'ระบบคิว',
-                  onTap: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => AppointList()));
-                  }),
-              MenuItem(
-                  imagepath: 'images/book.png',
-                  titel: 'งานสารบัญ',
-                  onTap: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => sarabunmenu()));
-                  }),
+     
+         
               MenuItem(
                   imagepath: 'images/dopa.png',
                   titel: 'กำนัน ผู้ใหญ่บ้าน',
@@ -92,22 +76,14 @@ class _AdminMenuState extends State<AdminMenu> {
                       MaterialPageRoute(builder: (context) => ActiveMenu()),
                     );
                   }),
-              MenuItem(
-                  imagepath: 'images/dopa.png',
-                  titel: 'ห้องประชุม',
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => showmeeting()),
-                    );
-                  }),
+          
               MenuItem(
                   imagepath: 'images/webboard.png',
                   titel: 'กล่องหนังสือ',
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => sarabunmenu()),
+                      MaterialPageRoute(builder: (context) => bookbox()),
                     );
                   }),
                     MenuItem(
@@ -116,7 +92,7 @@ class _AdminMenuState extends State<AdminMenu> {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => sarabunmenu()),
+                      MaterialPageRoute(builder: (context) => sasukmenu()),
                     );
                   }),
               iconsmenu(

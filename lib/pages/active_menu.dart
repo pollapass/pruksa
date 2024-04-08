@@ -3,7 +3,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pruksa/pab/active_list.dart';
 import 'package:pruksa/pab/active_main.dart';
 import 'package:pruksa/pab/dopa_list.dart';
+import 'package:pruksa/pab/forest.dart';
 import 'package:pruksa/pab/smiv_moo.dart';
+import 'package:pruksa/pages/member_list.dart';
 import 'package:pruksa/report/act_mountreport.dart';
 import 'package:pruksa/report/act_person_report.dart';
 import 'package:pruksa/report/act_report.dart';
@@ -46,14 +48,13 @@ class ActiveMenu extends StatelessWidget {
                     MaterialPageRoute(builder: (context) => ActiveList()),
                   );
                 })),
-                   iconsmenu(
-                iconpath:FontAwesomeIcons.users,
+            iconsmenu(
+                iconpath: FontAwesomeIcons.users,
                 titel: 'สมาชิก',
                 onTap: (() {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                        builder: (context) => dopalist()),
+                    MaterialPageRoute(builder: (context) => dopalist()),
                   );
                 })),
             MenuItem(
@@ -62,8 +63,7 @@ class ActiveMenu extends StatelessWidget {
                 onTap: (() {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                        builder: (context) => actmountreport()),
+                    MaterialPageRoute(builder: (context) => actmountreport()),
                   );
                 })),
             iconsmenu(
@@ -72,11 +72,9 @@ class ActiveMenu extends StatelessWidget {
                 onTap: (() {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                        builder: (context) => acttmbreport()),
+                    MaterialPageRoute(builder: (context) => acttmbreport()),
                   );
                 })),
-         
             MenuItem(
                 imagepath: 'images/report1.png',
                 titel: 'TOPTEN',
@@ -86,7 +84,7 @@ class ActiveMenu extends StatelessWidget {
                     MaterialPageRoute(builder: (context) => actreportperson()),
                   );
                 })),
-                MenuItem(
+            MenuItem(
                 imagepath: 'images/sasuk.png',
                 titel: 'SMIV',
                 onTap: (() {
@@ -94,9 +92,35 @@ class ActiveMenu extends StatelessWidget {
                     context,
                     MaterialPageRoute(builder: (context) => smivmoo()),
                   );
-                }))
+                })),
+            iconsmenu(
+                iconpath: FontAwesomeIcons.sun,
+                titel: 'คนโล๊ะป่า',
+                onTap: (() {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => forest()),
+                  );
+                })),
+            MenuItem(
+                imagepath: 'images/sasuk.png',
+                titel: 'พชอ',
+                onTap: (() {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => MemberList()),
+                  );
+                })),
+                    MenuItem(
+                imagepath: 'images/sasuk.png',
+                titel: 'พชอ',
+                onTap: (() {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => MemberList()),
+                  );
+                })),
           ],
-          
         ),
       ),
     );

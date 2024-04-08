@@ -3,25 +3,27 @@ import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:pruksa/models/smiv_model.dart';
-import 'package:pruksa/pab/edit_moo_smiv.dart';
+import 'package:pruksa/models/forrest_model.dart';
+import 'package:pruksa/pab/add_forrest.dart';
+import 'package:pruksa/pab/forrest_edit.dart';
+import 'package:pruksa/sarabun/add_booksend.dart';
 import 'package:pruksa/utility/my_constant.dart';
 import 'package:pruksa/wigets/show_image.dart';
 import 'package:pruksa/wigets/show_progress.dart';
 import 'package:pruksa/wigets/show_titel.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class smivmoo extends StatefulWidget {
-  const smivmoo({Key? key}) : super(key: key);
+class forest extends StatefulWidget {
+  const forest({Key? key}) : super(key: key);
 
   @override
-  State<smivmoo> createState() => _smivmooState();
+  State<forest> createState() => _forestState();
 }
 
-class _smivmooState extends State<smivmoo> {
+class _forestState extends State<forest> {
   bool load = true;
   bool? haveData;
-  List<smivmodel> smmodels = [];
+  List<forrest> forest = [];
 
   void initState() {
     // TODO: implement initState
@@ -31,8 +33,8 @@ class _smivmooState extends State<smivmoo> {
   }
 
   Future<Null> loadvaluefromapi() async {
-    if (smmodels.length != 0) {
-      smmodels.clear();
+    if (forest.length != 0) {
+      forest.clear();
     } else {}
     SharedPreferences preferences = await SharedPreferences.getInstance();
 
@@ -41,7 +43,7 @@ class _smivmooState extends State<smivmoo> {
     String tmbpart = preferences
         .getString('addressid')!; //  preferences.setString('addressid')!;
     String apigetactivelist =
-        '${MyConstant.domain}/dopa/api/getsmivmoo.php?isAdd=true&moopart=$moopart&tmbpart=$tmbpart';
+        '${MyConstant.domain}/dopa/api/getforestmoo.php?isAdd=true&moopart=$moopart&tmbpart=$tmbpart';
 
     await Dio().get(apigetactivelist).then((value) {
       print('value ==> $value');
@@ -54,13 +56,13 @@ class _smivmooState extends State<smivmoo> {
         });
       } else {
         for (var item in json.decode(value.data)) {
-          smivmodel model = smivmodel.fromMap(item);
+          forrest model = forrest.fromMap(item);
           //print('name of titel =${model.titel}');
 
           setState(() {
             load = false;
             haveData = true;
-            smmodels.add(model);
+            forest.add(model);
           });
         }
       }
@@ -70,13 +72,14 @@ class _smivmooState extends State<smivmoo> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('คัดกรอง SMIV ในหมู่บ้าน'),
+        title: Text('ทะเบียนคนขึ้นป่า'),
+        backgroundColor: Colors.green,
       ),
       body: load
           ? ShowProgress()
           : haveData!
               ? ListView.builder(
-                  itemCount: smmodels.length,
+                  itemCount: forest.length,
                   itemBuilder: (context, index) => Card(
                         elevation: 10.0,
                         margin: new EdgeInsets.symmetric(
@@ -90,9 +93,9 @@ class _smivmooState extends State<smivmoo> {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => editsmivmoo(
-                                      smivModel: smmodels[index],
-                                    ),
+                                    builder: (context) => editforrest(
+                                        //smivModel: forest[index],
+                                        ),
                                   )).then((value) => loadvaluefromapi());
                             },
                             leading: Container(
@@ -101,15 +104,15 @@ class _smivmooState extends State<smivmoo> {
                               child: CachedNetworkImage(
                                 fit: BoxFit.cover,
                                 imageUrl:
-                                    ('${MyConstant.domain}/images/smiv/${smmodels[index].sm_image}'),
+                                    ('${MyConstant.domain}/images/smiv/${forest[index].images}'),
                                 placeholder: (context, url) => ShowProgress(),
                                 errorWidget: (context, url, error) =>
                                     ShowImage(path: MyConstant.imgdopa),
                               ),
                             ),
-                            title: Text('ชื่อ:${smmodels[index].sm_name}'),
+                            title: Text('ชื่อ:${forest[index].fullname}'),
                             subtitle: Text(
-                              'ที่อยู่:${smmodels[index].address} หมู่ที่ ${smmodels[index].moopart} ${smmodels[index].fulladdress}',
+                              'ที่อยู่:${forest[index].address} หมู่ที่ ${forest[index].moopart} ${forest[index].fulladdress}',
                               style: MyConstant().h3RedStyle(),
                             ),
                             trailing: Icon(Icons.keyboard_arrow_right,
@@ -129,8 +132,9 @@ class _smivmooState extends State<smivmoo> {
                   ],
                 ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: MyConstant.dark,
-        onPressed: () => Navigator.pushNamed(context, MyConstant.routeAddsmiv)
+        backgroundColor: Colors.green,
+        onPressed: () => Navigator.push(context,
+                MaterialPageRoute(builder: ((context) => addforrest())))
             .then((value) => loadvaluefromapi()),
         child: Text('เพิ่ม'),
       ),

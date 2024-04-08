@@ -86,13 +86,13 @@ class _booksendallState extends State<booksendall> {
                                 MaterialPageRoute(
                                   builder: (context) => showbooksend(
                                       pdfurl:
-                                          '${MyConstant.domain}/document/pr/${_bookmodels[index].doc_key}',
+                                          '${MyConstant.domain}/document/booksend/${_bookmodels[index].doc_key}',
                                       titel: '${_bookmodels[index].book_name}'),
                                 )).then((value) => loadvaluefromapi());
                           },
                           title: Text('${_bookmodels[index].book_name}'),
                           subtitle: Text('โดย:${_bookmodels[index].dep_name}'),
-                          trailing: const FaIcon(FontAwesomeIcons.forward,
+                          trailing: const FaIcon(FontAwesomeIcons.filePdf,
                               color: Color.fromARGB(255, 43, 37, 54),
                               size: 24.0),
                         ),

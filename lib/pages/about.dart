@@ -19,10 +19,10 @@ class About extends StatelessWidget {
           SizedBox(
             height: 10,
           ),
-          Text('P Project version Pruksa',
+          Text('P Project CodeName Pruksa',
               style: GoogleFonts.prompt(
                 fontSize: 18,
-                color: Colors.black,
+                color: Colors.black87,
                 fontWeight: FontWeight.bold,
               )),
           Container(

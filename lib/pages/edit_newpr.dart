@@ -30,7 +30,7 @@ class _EditNewprState extends State<EditNewpr> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('แก้ไขประกาศ'),
+        title: Text('แก้ไขประกาศ คำสั่ง'),
       ),
       body: LayoutBuilder(
         builder: (context, constraints) => GestureDetector(
@@ -43,38 +43,38 @@ class _EditNewprState extends State<EditNewpr> {
               children: [
                 Buildname(constraints),
                 SizedBox(
-                              height: 30.0,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                // crossAxisAlignment: CrossFadeState,
-                                children: [
-                                  ElevatedButton(
-                                    onPressed: () {
-                                      processEdit();
-                                    },
-                                    child: Text(
-                                      'อับเดทข้อมูล',
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                                    style: MyConstant().mygreenbutton(),
-                                  ),
-                                  Padding(padding: EdgeInsets.all(10)),
-                                  ElevatedButton(
-                                    onPressed: () {
-                                      _dialogBuilder(context);
-                                    },
-                                    child: Text(
-                                      'ลบข้อมูล',
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                                    style: MyConstant().myredbutton(),
-                                  ),
-                                ],
-                              ),
-                            ),
+                  height: 30.0,
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    // crossAxisAlignment: CrossFadeState,
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          processEdit();
+                        },
+                        child: Text(
+                          'อับเดทข้อมูล',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        style: MyConstant().mygreenbutton(),
+                      ),
+                      Padding(padding: EdgeInsets.all(10)),
+                      ElevatedButton(
+                        onPressed: () {
+                          _dialogBuilder(context);
+                        },
+                        child: Text(
+                          'ลบข้อมูล',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        style: MyConstant().myredbutton(),
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
           ),
@@ -82,29 +82,32 @@ class _EditNewprState extends State<EditNewpr> {
       ),
     );
   }
+
   Future<Null> processEdit() async {
     if (formKey.currentState!.validate()) {
       //MyDialog().showProgressDialog(context);
 
       String titel = titleController.text;
-    
+
       String id = newprModels!.book_key;
 
       String apiEditProduct =
           '${MyConstant.domain}/dopa/api/edit_newspr.php?isUpdate=true&id=$id&remark=$titel';
       await Dio().get(apiEditProduct).then((value) {
-       Get.back();
+        Get.back();
         if (value.toString() == 'true') {
           print('value is Success');
           // sendnotitomember(cid);
-          MyDialog().normalDialog(context, 'แจ้งเตือน', 'การอับเดทข้อมูลสำเร็จ');
-         // Get.back();
+          MyDialog()
+              .normalDialog(context, 'แจ้งเตือน', 'การอับเดทข้อมูลสำเร็จ');
+          // Get.back();
         } else {
           print('false');
         }
       });
     }
   }
+
   Row Buildname(BoxConstraints constraints) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -131,7 +134,7 @@ class _EditNewprState extends State<EditNewpr> {
     );
   }
 
-    Future<Null> processdel() async {
+  Future<Null> processdel() async {
     MyDialog().showProgressDialog(context);
 
     String id = newprModels!.book_key;

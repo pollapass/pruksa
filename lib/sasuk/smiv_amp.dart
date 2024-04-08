@@ -4,25 +4,24 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:pruksa/models/smiv_model.dart';
-import 'package:pruksa/pab/edit_moo_smiv.dart';
+import 'package:pruksa/sasuk/edit_smivamp.dart';
 import 'package:pruksa/utility/my_constant.dart';
 import 'package:pruksa/wigets/show_image.dart';
 import 'package:pruksa/wigets/show_progress.dart';
 import 'package:pruksa/wigets/show_titel.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-class smivmoo extends StatefulWidget {
-  const smivmoo({Key? key}) : super(key: key);
+class smvamp extends StatefulWidget {
+  const smvamp({Key? key}) : super(key: key);
 
   @override
-  State<smivmoo> createState() => _smivmooState();
+  State<smvamp> createState() => _smvampState();
 }
 
-class _smivmooState extends State<smivmoo> {
+class _smvampState extends State<smvamp> {
   bool load = true;
   bool? haveData;
   List<smivmodel> smmodels = [];
-
+ 
   void initState() {
     // TODO: implement initState
     super.initState();
@@ -34,14 +33,9 @@ class _smivmooState extends State<smivmoo> {
     if (smmodels.length != 0) {
       smmodels.clear();
     } else {}
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-
-    String moopart =
-        preferences.getString('moopart')!; //preferences.setString('moopart')!;
-    String tmbpart = preferences
-        .getString('addressid')!; //  preferences.setString('addressid')!;
+    //  preferences.setString('addressid')!;
     String apigetactivelist =
-        '${MyConstant.domain}/dopa/api/getsmivmoo.php?isAdd=true&moopart=$moopart&tmbpart=$tmbpart';
+        '${MyConstant.domain}/dopa/api/getsmivamp.php?isAdd=true';
 
     await Dio().get(apigetactivelist).then((value) {
       print('value ==> $value');
@@ -70,7 +64,7 @@ class _smivmooState extends State<smivmoo> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('คัดกรอง SMIV ในหมู่บ้าน'),
+        title: Text('ข้อมูลส่งต่อจาก รพสต'),
       ),
       body: load
           ? ShowProgress()
@@ -86,11 +80,11 @@ class _smivmooState extends State<smivmoo> {
                               color: Color.fromRGBO(246, 242, 247, 0.894)),
                           child: ListTile(
                             onTap: () {
-                              //print('## You Click Edit');
+                              print('## You Click Edit');
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => editsmivmoo(
+                                    builder: (context) => editsmivamp(
                                       smivModel: smmodels[index],
                                     ),
                                   )).then((value) => loadvaluefromapi());
@@ -109,7 +103,7 @@ class _smivmooState extends State<smivmoo> {
                             ),
                             title: Text('ชื่อ:${smmodels[index].sm_name}'),
                             subtitle: Text(
-                              'ที่อยู่:${smmodels[index].address} หมู่ที่ ${smmodels[index].moopart} ${smmodels[index].fulladdress}',
+                              'ที่อยู่:${smmodels[index].address} หมู่ที่ ${smmodels[index].moopart}${smmodels[index].fulladdress}',
                               style: MyConstant().h3RedStyle(),
                             ),
                             trailing: Icon(Icons.keyboard_arrow_right,
@@ -128,12 +122,6 @@ class _smivmooState extends State<smivmoo> {
                     ),
                   ],
                 ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: MyConstant.dark,
-        onPressed: () => Navigator.pushNamed(context, MyConstant.routeAddsmiv)
-            .then((value) => loadvaluefromapi()),
-        child: Text('เพิ่ม'),
-      ),
     );
   }
 }

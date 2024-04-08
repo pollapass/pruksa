@@ -67,7 +67,7 @@ class _NewPrListState extends State<NewPrList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('ข่าวประชาสัมพันธ์ ประกาศ'),
+        title: Text('คำสั่ง ประกาศ'),
       ),
       body: load
           ? ShowProgress()
@@ -93,8 +93,9 @@ class _NewPrListState extends State<NewPrList> {
                                   ),
                                 )).then((value) => loadvaluefromapi());
                           },
-                          title: Text('${newsmodels[index].book_name}'),
-                          trailing: const FaIcon(FontAwesomeIcons.pen,
+                title: Text('${newsmodels[index].book_name}',style: MyConstant().gh2Style(),),
+                            subtitle: Text('${newsmodels[index].dep_name}',style: MyConstant().h2Style(),),
+                          trailing: const FaIcon(FontAwesomeIcons.penFancy,
                               color: Color.fromARGB(255, 43, 37, 54),
                               size: 24.0),
                         ),
@@ -107,7 +108,7 @@ class _NewPrListState extends State<NewPrList> {
               : Column(
                   children: [
                     ShowTitle(
-                      title: 'ไม่มีประวัติการแจ้ง',
+                      title: 'ไม่มีประกาศค่ะ',
                       textStyle: MyConstant().h2RedStyle(),
                     ),
                   ],

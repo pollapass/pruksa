@@ -7,15 +7,15 @@ import 'package:pruksa/utility/my_constant.dart';
 import 'package:pruksa/utility/my_dialog.dart';
 import 'package:pruksa/wigets/show_titel.dart';
 
-class editsmivmoo extends StatefulWidget {
+class editsmivtmb extends StatefulWidget {
   final smivmodel smivModel;
-  const editsmivmoo({Key? key, required this.smivModel}) : super(key: key);
+  const editsmivtmb({Key? key, required this.smivModel}) : super(key: key);
 
   @override
-  State<editsmivmoo> createState() => _editsmivmooState();
+  State<editsmivtmb> createState() => _editsmivtmbState();
 }
 
-class _editsmivmooState extends State<editsmivmoo> {
+class _editsmivtmbState extends State<editsmivtmb> {
   smivmodel? smivModel;
   String? feel;
   String? sleep;
@@ -23,6 +23,8 @@ class _editsmivmooState extends State<editsmivmoo> {
   String? walk;
   String? speak;
   String? key;
+  String? oas;
+  String? confirm;
   String _radioVal = "";
   TextEditingController nameController = TextEditingController();
   TextEditingController cidController = TextEditingController();
@@ -49,6 +51,8 @@ class _editsmivmooState extends State<editsmivmoo> {
     feel = smivModel!.feel;
     fear = smivModel!.fear;
     key = smivModel!.sm_key;
+    oas = smivModel!.oas;
+    confirm = smivModel!.confirm;
     // สมมุติมีค่า  = 0
   }
 
@@ -95,6 +99,10 @@ class _editsmivmooState extends State<editsmivmoo> {
                   buildRadiofeel(size),
                   buildTitle1('เที่ยวหวาดระแวง'),
                   buildRadiofear(size),
+                  buildTitle1(' OAS แบบประเมินพฤติกรรมก้าวร้วรุนแรง'),
+                  Buildoas(size),
+                  buildTitle1('ส่งต่อโรงพยาบาล'),
+                  Buildconfirm(size),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
                     child: Row(
@@ -133,6 +141,108 @@ class _editsmivmooState extends State<editsmivmoo> {
       ),
     );
   }
+
+  Row Buildconfirm(double size) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Container(
+          width: size * 0.4,
+          child: RadioListTile(
+            value: 'N',
+            groupValue: confirm,
+            activeColor: Colors.blue,
+            onChanged: (value) {
+              setState(() {
+                confirm = value as String?;
+              });
+            },
+            title: ShowTitle(
+              title: 'ไม่ใ่ช่',
+              textStyle: MyConstant().h3Style(),
+            ),
+          ),
+        ),
+        Container(
+          width: size * 0.4,
+          child: RadioListTile(
+            value: 'Y',
+            groupValue: confirm,
+            activeColor: Colors.blue,
+            onChanged: (value) {
+              setState(() {
+                confirm = value as String?;
+              });
+            },
+            title: ShowTitle(
+              title: 'ใช่',
+              textStyle: MyConstant().h3Style(),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Column Buildoas(double size) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          width: size * 0.4,
+          child: RadioListTile(
+            value: '1',
+            groupValue: oas,
+            activeColor: Colors.blue,
+            onChanged: (value) {
+              setState(() {
+                oas = value as String?;
+              });
+            },
+            title: ShowTitle(
+              title: ' กึ่งเร่งด่วน',
+              textStyle: MyConstant().h3Style(),
+            ),
+          ),
+        ),
+        Container(
+          width: size * 0.4,
+          child: RadioListTile(
+            value: '2',
+            groupValue: oas,
+            activeColor: Colors.blue,
+            onChanged: (value) {
+              setState(() {
+                oas = value as String?;
+              });
+            },
+            title: ShowTitle(
+              title: 'เร่งด่วน',
+              textStyle: MyConstant().h3Style(),
+            ),
+          ),
+        ),
+        Container(
+          width: size * 0.4,
+          child: RadioListTile(
+            value: '3',
+            groupValue: oas,
+            activeColor: Colors.blue,
+            onChanged: (value) {
+              setState(() {
+                oas = value as String?;
+              });
+            },
+            title: ShowTitle(
+              title: 'ฉุกเฉิน',
+              textStyle: MyConstant().h3Style(),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
   Future<void> _dialogBuilder(BuildContext context) {
     return showDialog<void>(
       context: context,
@@ -167,7 +277,8 @@ class _editsmivmooState extends State<editsmivmoo> {
       },
     );
   }
-    Future<void> processdel() async {
+
+  Future<void> processdel() async {
     MyDialog().showProgressDialog(context);
 
     String key = smivModel!.sm_key;
@@ -180,27 +291,33 @@ class _editsmivmooState extends State<editsmivmoo> {
   }
 
   Future<Null> processEdit() async {
-    MyDialog().showProgressDialog(context);
-    String name = nameController.text;
-    String cid = cidController.text;
-    String address = addressController.text;
-    String phone = phoneController.text;
-    print('key is $key');
-    String apiEditProduct =
-        '${MyConstant.domain}/dopa/api/edit_smivmoo.php?isUpdate=true&feel=$feel&name=$name&cid=$cid&sleep=$sleep&fear=$fear&walk=$walk&address=$address&phone=$phone&speak=$speak&smkey=$key';
-    await Dio().get(apiEditProduct).then((value) {
-      if (value.toString() == 'true') {
-        print('value is Success');
-        //  sendnotitomember(cid);\
+    if (oas == null || confirm == null) {
+      // No Avatar
+      MyDialog().normalDialog(context, 'กรอกข้อมูลไม่ครบ?',
+          'กรุณากรอกข้อมูล OAS และยืนยันส่งต่อโรงพยาบาลด้วยค่ะ');
+    } else {
+      MyDialog().showProgressDialog(context);
+      String name = nameController.text;
+      String cid = cidController.text;
+      String address = addressController.text;
+      String phone = phoneController.text;
+      print('key is $key');
+      String apiEditProduct =
+          '${MyConstant.domain}/dopa/api/edit_smivtmb.php?isUpdate=true&feel=$feel&name=$name&cid=$cid&sleep=$sleep&fear=$fear&walk=$walk&address=$address&phone=$phone&speak=$speak&oas=$oas&confirm=$confirm&smkey=$key';
+      await Dio().get(apiEditProduct).then((value) {
+        if (value.toString() == 'true') {
+          print('value is Success');
+          //  sendnotitomember(cid);\
 
-        Navigator.pop(context);
+          Navigator.pop(context);
 
-        Navigator.pop(context);
-      } else {
-        MyDialog()
-            .normalDialog(context, 'ไม่สามารถเพิ่มได้!!!', 'กรุณาลองใหม่ค่ะ');
-      }
-    });
+          Navigator.pop(context);
+        } else {
+          MyDialog()
+              .normalDialog(context, 'ไม่สามารถอับเดทได้!!!', 'กรุณาลองใหม่ค่ะ');
+        }
+      });
+    }
   }
 
   Row buildRadiofear(double size) {

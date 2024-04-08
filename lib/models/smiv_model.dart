@@ -29,6 +29,9 @@ class smivmodel {
   final String level_name;
   final String? fullname;
   final String? fulladdress;
+  final String? oas;
+  final String? type;
+  final String? com;
   smivmodel({
     required this.sm_key,
     required this.sm_name,
@@ -57,8 +60,11 @@ class smivmodel {
     required this.level_name,
     this.fullname,
     this.fulladdress,
+    this.oas,
+    this.type,
+    this.com,
   });
-
+  
   
 
   Map<String, dynamic> toMap() {
@@ -90,6 +96,9 @@ class smivmodel {
       'level_name': level_name,
       'fullname': fullname,
       'fulladdress': fulladdress,
+      'oas': oas,
+      'type': type,
+      'com': com,
     };
   }
 
@@ -122,6 +131,9 @@ class smivmodel {
       level_name: (map['level_name'] ?? '') as String,
       fullname: map['fullname'] != null ? map['fullname'] as String : null,
       fulladdress: map['fulladdress'] != null ? map['fulladdress'] as String : null,
+      oas: map['oas'] != null ? map['oas'] as String : null,
+      type: map['type'] != null ? map['type'] as String : null,
+      com: map['com'] != null ? map['com'] as String : null,
     );
   }
 

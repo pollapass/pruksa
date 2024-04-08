@@ -161,7 +161,7 @@ class _AddNewsPrState extends State<AddNewsPr> {
     var Dios = dio.Dio();
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
-      allowedExtensions: ['jpg', 'pdf', 'doc'],
+      allowedExtensions: ['pdf'],
     );
     if (result != null) {
       File file = File(result.files.single.path ?? " ");
@@ -185,7 +185,7 @@ class _AddNewsPrState extends State<AddNewsPr> {
   void _pickfile() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
-      allowedExtensions: ['jpg', 'pdf', 'doc'],
+      allowedExtensions: ['pdf'],
     );
 
     if (result != null && result.files.single.path != null) {

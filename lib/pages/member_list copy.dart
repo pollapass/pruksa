@@ -18,7 +18,7 @@ class _MemberListState extends State<MemberList> {
   bool load = true;
   bool? haveData;
   List<UserModel> usermodels = [];
-  List<UserDetails> _searchResult = [];
+ List<UserDetails> _searchResult = [];
 
   List<UserDetails> _userDetails = [];
   //List<Map<String,dynamic>> items = [];
@@ -78,7 +78,6 @@ class _MemberListState extends State<MemberList> {
       }
     });
   }
-
   onSearchTextChanged(String text) async {
     _searchResult.clear();
     if (text.isEmpty) {
@@ -87,13 +86,12 @@ class _MemberListState extends State<MemberList> {
     }
 
     _userDetails.forEach((userDetail) {
-      if (userDetail.fullname.contains(text) ||
-          userDetail.pos_name.contains(text)) _searchResult.add(userDetail);
+      if (userDetail.fullname.contains(text) || userDetail.pos_name.contains(text))
+        _searchResult.add(userDetail);
     });
 
     setState(() {});
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -112,25 +110,29 @@ class _MemberListState extends State<MemberList> {
     );
   }
 
-  Padding BuildTitel() {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: new Card(
-        child: new ListTile(
-          leading: new Icon(Icons.search),
-          title: new TextField(
-            controller: titelController,
-            decoration: new InputDecoration(
-                hintText: 'Search', border: InputBorder.none),
-            onChanged: onSearchTextChanged,
-          ),
-          trailing: new IconButton(
-            icon: new Icon(Icons.cancel),
-            onPressed: () {
-              titelController.clear();
-              onSearchTextChanged('');
-            },
-          ),
+  Container BuildTitel() {
+    return Container(
+      padding: EdgeInsets.all(5),
+      margin: EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: Color.fromRGBO(244, 243, 243, 1),
+        borderRadius: BorderRadius.circular(10),
+        boxShadow: [BoxShadow(color: Colors.blueGrey, blurRadius: 5)],
+      ),
+      child: TextFormField(
+        controller: titelController,
+        validator: (value) {
+          if (value!.isEmpty) {
+            return 'กรุณากรอกชื่อชื่อ';
+          } else {
+            return null;
+          }
+        },
+         onChanged: onSearchTextChanged,
+        decoration: InputDecoration(
+          border: InputBorder.none,
+          hintText: 'กรุณากรอกชื่อเรื่อง',
+          hintStyle: TextStyle(color: Colors.grey, fontSize: 15),
         ),
       ),
     );
@@ -138,45 +140,55 @@ class _MemberListState extends State<MemberList> {
 
   Expanded Buildmember() {
     return Expanded(
-      child: _searchResult.length != 0 || titelController.text.isNotEmpty
-          ? new ListView.builder(
-              itemCount: _searchResult.length,
-              itemBuilder: (context, i) {
-                return new Card(
-                  child: new ListTile(
-                    onTap: () {},
-                    leading: new CircleAvatar(
-                      backgroundImage: new NetworkImage(
-                        ('${MyConstant.domain}/dopa/resource/users/images/${_searchResult[i].user_photo}'),
+      child: Container(
+        child: ListView.builder(
+            scrollDirection: Axis.vertical,
+            shrinkWrap: true,
+            itemCount: usermodels.length,
+            itemBuilder: (context, index) => Card(
+                  elevation: 8.0,
+                  margin:
+                      new EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                        color: Color.fromRGBO(242, 244, 247, 0.898)),
+                    child: ListTile(
+                      contentPadding: EdgeInsets.symmetric(
+                          horizontal: 20.0, vertical: 10.0),
+                      onTap: () {},
+                      trailing: Icon(Icons.keyboard_arrow_right,
+                          color: Color.fromARGB(255, 22, 22, 22), size: 30.0),
+                      leading: Container(
+                        width: 50,
+                        height: 50,
+                        child: CircleAvatar(
+                            backgroundImage: NetworkImage(
+                                ('${MyConstant.domain}/dopa/resource/users/images/${usermodels[index].user_photo}'))),
+                      ),
+                      title: Text(
+                        '${usermodels[index].pos_name}'
+                        ''
+                        '${usermodels[index].fullname}',
+                        style: TextStyle(
+                            color: Color.fromARGB(255, 7, 7, 7),
+                            fontWeight: FontWeight.bold),
+                      ),
+                      // subtitle: Text(usermodels[index].user_phone),
+                      subtitle: Row(
+                        children: <Widget>[
+                          Icon(Icons.mobile_screen_share,
+                              color: Color.fromARGB(255, 11, 11, 11)),
+                          Text('${usermodels[index].pos_name}',
+                              style: TextStyle(
+                                  color: Color.fromARGB(255, 28, 28, 28))),
+                        ],
                       ),
                     ),
-                    title: new Text(_searchResult[i].fullname +
-                        ' ' +
-                        _searchResult[i].pos_name),
                   ),
-                  margin: const EdgeInsets.all(0.0),
-                );
-              },
-            )
-          : new ListView.builder(
-              itemCount: _userDetails.length,
-              itemBuilder: (context, index) {
-                return new Card(
-                  child: new ListTile(
-                    onTap: () {},
-                    leading: new CircleAvatar(
-                      backgroundImage: new NetworkImage(
-                        ('${MyConstant.domain}/dopa/resource/users/images/${_userDetails[index].user_photo}'),
-                      ),
-                    ),
-                    title: new Text(_userDetails[index].fullname +
-                        ' ' +
-                        _userDetails[index].pos_name),
-                  ),
-                  margin: const EdgeInsets.all(0.0),
-                );
-              },
+                )
+            //
             ),
+      ),
     );
   }
 }

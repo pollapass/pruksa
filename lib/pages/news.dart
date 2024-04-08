@@ -1,8 +1,10 @@
 import 'dart:convert';
 
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:pruksa/models/news_model.dart';
 import 'package:pruksa/pages/news_detail.dart';
 
@@ -22,6 +24,8 @@ class _NewsState extends State<News> {
   bool load = true;
   bool? haveData;
   List<NewsModel> newsmodels = [];
+  var formatter = DateFormat.yMMMMEEEEd();
+  DateTime now = new DateTime.now();
   @override
   void initState() {
     // TODO: implement initState
@@ -103,7 +107,8 @@ class _NewsState extends State<News> {
                             ),
                             title: Text(
                                 'เรื่อง: ${newsmodels[index].news_name_th}'),
-                            subtitle: Text('รายละเอียด'),
+                            subtitle: Text(
+                                'วันที่ ${formatter.format(now)} ${newsmodels[index].news_public} '),
                             trailing: Icon(Icons.keyboard_arrow_right,
                                 color: Color.fromARGB(255, 22, 22, 22),
                                 size: 30.0),

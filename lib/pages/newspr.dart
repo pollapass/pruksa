@@ -65,7 +65,7 @@ class _NewsPrState extends State<NewsPr> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('ข่าวประชาสัมพันธ์ ประกาศ'),
+          title: Text('ประกาศ คำสั่ง'),
         ),
         body: load
             ? ShowProgress()
@@ -92,7 +92,8 @@ class _NewsPrState extends State<NewsPr> {
                                     ),
                                   )).then((value) => loadvaluefromapi());
                             },
-                            title: Text('${newsmodels[index].book_name}'),
+                            title: Text('${newsmodels[index].book_name}',style: MyConstant().gh2Style(),),
+                            subtitle: Text('${newsmodels[index].dep_name}',style: MyConstant().h2Style(),),
                           ),
                         ),
                         //  fileUrl: '${MyConstant.domain}/document/pr/${newsmodels[index].doc_key}',
@@ -101,6 +102,6 @@ class _NewsPrState extends State<NewsPr> {
                       );
                     })
                 : TextButton(
-                    onPressed: () {}, child: const Text("Permission issue")));
+                    onPressed: () {}, child: const Text("ไม่มีการประกาศค่ะ")));
   }
 }
