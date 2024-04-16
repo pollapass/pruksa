@@ -23,8 +23,10 @@ class MyConstant {
   static String routeAddfaq = '/add_faq';
   static String routeAddactive = '/add_active';
   static String routeAddbooksend = '/add_booksend';
-    static String routeAddsmiv = '/add_smiv';
+  static String routeAddpaynew = '/add_paynew';
+  static String routeAddsmiv = '/add_smiv';
   static String routeAdmin = '/admin';
+  static String routeAdminregister = '/adminregister';
   // Image
   static String imglogo = 'images/logo1.jpg';
   static String imagdesk = 'images/desktop.png';
@@ -187,7 +189,7 @@ class MyConstant {
         fontWeight: FontWeight.normal,
       );
 
-        TextStyle h4Style() => TextStyle(
+  TextStyle h4Style() => TextStyle(
         fontSize: 12,
         color: dark,
         fontWeight: FontWeight.normal,

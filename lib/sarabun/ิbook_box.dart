@@ -4,6 +4,7 @@ import 'package:pruksa/pages/news.dart';
 
 import 'package:pruksa/pages/newspr.dart';
 import 'package:pruksa/sarabun/book_send_all.dart';
+import 'package:pruksa/sarabun/pay_newslist.dart';
 import 'package:pruksa/wigets/icon_menu.dart';
 import 'package:pruksa/wigets/menu_item.dart';
 
@@ -52,6 +53,15 @@ class _bookboxState extends State<bookbox> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => booksendall()),
+                  );
+                })),
+                         iconsmenu(
+                iconpath: FontAwesomeIcons.moneyBill1,
+                titel: 'จัดซิ้อจัดจ้าง',
+                onTap: (() {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => paynewslist()),
                   );
                 })),
             ],

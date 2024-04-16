@@ -12,14 +12,13 @@ class About extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('เกี่ยวกับโปรแกรม'),
-       
       ),
       body: Column(
         children: [
           SizedBox(
             height: 10,
           ),
-          Text('P Project CodeName Pruksa',
+          Text(' Pruksa Project',
               style: GoogleFonts.prompt(
                 fontSize: 18,
                 color: Colors.black87,
@@ -27,7 +26,7 @@ class About extends StatelessWidget {
               )),
           Container(
               padding: EdgeInsets.all(20),
-             // decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(10))),
+              // decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(10))),
               child: Image.asset(MyConstant.develop)),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,

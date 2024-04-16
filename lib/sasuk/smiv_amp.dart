@@ -9,6 +9,7 @@ import 'package:pruksa/utility/my_constant.dart';
 import 'package:pruksa/wigets/show_image.dart';
 import 'package:pruksa/wigets/show_progress.dart';
 import 'package:pruksa/wigets/show_titel.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class smvamp extends StatefulWidget {
   const smvamp({Key? key}) : super(key: key);
@@ -21,11 +22,12 @@ class _smvampState extends State<smvamp> {
   bool load = true;
   bool? haveData;
   List<smivmodel> smmodels = [];
- 
+
   void initState() {
     // TODO: implement initState
     super.initState();
-    loadvaluefromapi();
+    // loadvaluefromapi();
+    CheckAccess();
     // initialFile();
   }
 
@@ -59,6 +61,54 @@ class _smvampState extends State<smvamp> {
         }
       }
     });
+  }
+
+  Future<Null> CheckAccess() async {
+    SharedPreferences preference = await SharedPreferences.getInstance();
+
+    String key = preference.getString('id')!;
+
+    print('### user_key = $key');
+    String apigetactivelist =
+        '${MyConstant.domain}/dopa/api/checksmiv.php?isAdd=true&key=$key';
+
+    await Dio().get(apigetactivelist).then((value) {
+      print('value ==> $value');
+      // print('value ==> $id');
+      if (value.toString() == 'null') {
+        // No Data
+        _dialogBuilder(context);
+      } else {
+        loadvaluefromapi();
+      }
+    });
+  }
+
+  Future<void> _dialogBuilder(BuildContext context) {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('ไม่สามารถดูข้อมูลได้'),
+          content: const Text(
+            'คุณไม่ได้รับให้อนุญาติให้ดูข้อมูลนี้ หากต้องการดูข้อมูลติดต่อผู้ดูแลระบบ',
+          ),
+          actions: <Widget>[
+            TextButton(
+              style: TextButton.styleFrom(
+                textStyle: Theme.of(context).textTheme.labelLarge,
+              ),
+              child: const Text('ตกลง'),
+              onPressed: () {
+                // Get.offAllNamed(MyConstant.routeAdmin);
+                Navigator.of(context).pop();
+              Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   Widget build(BuildContext context) {

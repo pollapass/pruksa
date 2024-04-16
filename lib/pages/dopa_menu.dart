@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pruksa/pab/palad_main.dart';
 import 'package:pruksa/pages/active_menu.dart';
 import 'package:pruksa/pages/appoint_list.dart';
 import 'package:pruksa/pages/damrong_all.dart';
@@ -86,7 +87,7 @@ class _dopamenuState extends State<dopamenu> {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => ActiveMenu()),
+                      MaterialPageRoute(builder: (context) => paladmain()),
                     );
                   }),
             ],

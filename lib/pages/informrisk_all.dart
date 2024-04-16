@@ -27,7 +27,7 @@ class _InformRiskAllState extends State<InformRiskAll> {
     // TODO: implement initState
     super.initState();
     CheckAccess();
-    loadvaluefromapi();
+    //loadvaluefromapi();
     // initialFile();
   }
 

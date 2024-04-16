@@ -2,9 +2,12 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:pruksa/models/icare_model.dart';
 import 'package:pruksa/models/icare_report_model.dart';
 import 'package:pruksa/sasuk/add_ireport.dart';
-import 'package:pruksa/sasuk/icreport_detail.dart';
+import 'package:pruksa/sasuk/edit_icare.dart';
+import 'package:pruksa/sasuk/icare_edit.dart';
+
 import 'package:pruksa/utility/my_constant.dart';
 import 'package:pruksa/wigets/show_progress.dart';
 import 'package:pruksa/wigets/show_titel.dart';
@@ -26,13 +29,33 @@ class _icarereportState extends State<icarereport> {
   bool load = true;
   bool? haveData;
   List<icareReport> icarereports = [];
+  List<icaremodel> icaremodels = [];
   @override
   void initState() {
     // TODO: implement initState
     loadmemberfromapi();
+    findUser();
     super.initState();
 
     // initialFile();
+  }
+
+  Future<Null> findUser() async {
+    String user = widget.cid;
+    print('cid = $user');
+    String apiGetUser =
+        '${MyConstant.domain}/dopa/api/geticareWherecid.php?isAdd=true&user=$user';
+    await Dio().get(apiGetUser).then((value) {
+      print('value from API ==>> $value');
+      for (var item in json.decode(value.data)) {
+        icaremodel model = icaremodel.fromMap(item);
+        print('name of titel =${model.fullname}');
+
+        setState(() {
+          icaremodels.add(model);
+        });
+      }
+    });
   }
 
   Future<Null> loadmemberfromapi() async {
@@ -80,7 +103,17 @@ class _icarereportState extends State<icarereport> {
           IconButton(
             icon: const Icon(Icons.settings),
             tooltip: 'Setting Icon',
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => editicare(
+                      cid: widget.cid,
+                      //     icaremodels: icarereports[index],
+                    // Icaremodels: icaremodels.,
+                    ),
+                  )).then((value) => loadmemberfromapi());
+            },
           ),
         ],
       ),
@@ -106,9 +139,9 @@ class _icarereportState extends State<icarereport> {
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => icarereportdetail(
-                                            //userModels: icarereports[index],
-                                            ),
+                                        builder: (context) => icareedit(
+                                          icaremodels: icarereports[index],
+                                        ),
                                       )).then((value) => loadmemberfromapi());
                                 },
                                 trailing: Icon(Icons.keyboard_arrow_right,
@@ -119,12 +152,10 @@ class _icarereportState extends State<icarereport> {
                                   height: 50,
                                   child: CircleAvatar(
                                       backgroundImage: NetworkImage(
-                                          ('${MyConstant.domain}/dopa/resource/users/images/${icarereports[index].report_images}'))),
+                                          ('${MyConstant.domain}/dopa/resource/icare/images/${icarereports[index].report_images}'))),
                                 ),
                                 title: Text(
-                                  '${icarereports[index].titel}'
-                                  ''
-                                  '${icarereports[index].report_date}',
+                                  '${icarereports[index].titel}',
                                   style: TextStyle(
                                       color: Color.fromARGB(255, 7, 7, 7),
                                       fontWeight: FontWeight.bold),
@@ -132,9 +163,9 @@ class _icarereportState extends State<icarereport> {
                                 // subtitle: Text(usermodels[index].user_phone),
                                 subtitle: Row(
                                   children: <Widget>[
-                                    Icon(Icons.mobile_screen_share,
+                                    Icon(Icons.date_range_rounded,
                                         color: Color.fromARGB(255, 11, 11, 11)),
-                                    Text('${icarereports[index].pos_name}',
+                                    Text('${icarereports[index].report_date}',
                                         style: TextStyle(
                                             color: Color.fromARGB(
                                                 255, 28, 28, 28))),

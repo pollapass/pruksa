@@ -11,6 +11,7 @@ import 'package:pruksa/pages/show_meet.dart';
 import 'package:pruksa/sarabun/%E0%B8%B4book_box.dart';
 import 'package:pruksa/sarabun/sarabun_menu.dart';
 import 'package:pruksa/sasuk/sasuk_menu.dart';
+import 'package:pruksa/setting/setting_menu.dart';
 import 'package:pruksa/utility/my_constant.dart';
 import 'package:pruksa/wigets/icon_menu.dart';
 import 'package:pruksa/wigets/menu_item.dart';
@@ -101,7 +102,7 @@ class _AdminMenuState extends State<AdminMenu> {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => showmeeting()),
+                      MaterialPageRoute(builder: (context) => settingmenu()),
                     );
                   })
             ],

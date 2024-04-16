@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 
 import 'package:pruksa/models/user_model.dart';
 import 'package:pruksa/utility/my_constant.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class MemberList extends StatefulWidget {
   const MemberList({Key? key}) : super(key: key);
@@ -32,49 +33,19 @@ class _MemberListState extends State<MemberList> {
 
     super.initState();
     getUserDetails();
-    loadmemberfromapi();
+
     // initialFile();
   }
 
   Future<Null> getUserDetails() async {
     String apigetmemberlist =
-        '${MyConstant.domain}/dopa/api/getalluser.php?isAdd=true';
+        '${MyConstant.domain}/dopa/api/getphoneuser.php?isAdd=true';
     final response = await Dio().get(apigetmemberlist);
     final responseJson = json.decode(response.data);
 
     setState(() {
       for (Map<String, dynamic> user in responseJson) {
         _userDetails.add(UserDetails.fromJson(user));
-      }
-    });
-  }
-
-  Future<Null> loadmemberfromapi() async {
-    if (usermodels.length != 0) {
-      usermodels.clear();
-    } else {}
-    String apigetmemberlist =
-        '${MyConstant.domain}/dopa/api/getalluser.php?isAdd=true';
-    await Dio().get(apigetmemberlist).then((value) {
-      //print('value ==> $value');
-      // print('value ==> $id');
-      if (value.toString() == 'null') {
-        // No Data
-        setState(() {
-          load = false;
-          haveData = false;
-        });
-      } else {
-        for (var item in json.decode(value.data)) {
-          UserModel model = UserModel.fromMap(item);
-          print('name of titel =${model.fullname}');
-
-          setState(() {
-            load = false;
-            haveData = true;
-            usermodels.add(model);
-          });
-        }
       }
     });
   }
@@ -98,7 +69,7 @@ class _MemberListState extends State<MemberList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('สมาชิกทั้งหมด'),
+        title: Text('ค้นหาเบอร์โทรศีพท์'),
       ),
       body: Column(
         children: [
@@ -121,7 +92,7 @@ class _MemberListState extends State<MemberList> {
           title: new TextField(
             controller: titelController,
             decoration: new InputDecoration(
-                hintText: 'Search', border: InputBorder.none),
+                hintText: 'ค้นหา', border: InputBorder.none),
             onChanged: onSearchTextChanged,
           ),
           trailing: new IconButton(
@@ -144,7 +115,17 @@ class _MemberListState extends State<MemberList> {
               itemBuilder: (context, i) {
                 return new Card(
                   child: new ListTile(
-                    onTap: () {},
+                    onTap: () async {
+                      Uri phoneno =
+                          Uri.parse('tel:${_searchResult[i].user_phone}');
+                      if (await launchUrl(phoneno)) {
+                        //dialer opened
+                      } else {
+                        //dailer is not opened
+                      }
+                    },
+                    trailing: Icon(Icons.phone,
+                        color: Color.fromARGB(255, 22, 22, 22), size: 30.0),
                     leading: new CircleAvatar(
                       backgroundImage: new NetworkImage(
                         ('${MyConstant.domain}/dopa/resource/users/images/${_searchResult[i].user_photo}'),
@@ -163,7 +144,17 @@ class _MemberListState extends State<MemberList> {
               itemBuilder: (context, index) {
                 return new Card(
                   child: new ListTile(
-                    onTap: () {},
+                    onTap: () async {
+                      Uri phoneno =
+                          Uri.parse('tel:${_userDetails[index].user_phone}');
+                      if (await launchUrl(phoneno)) {
+                        //dialer opened
+                      } else {
+                        //dailer is not opened
+                      }
+                    },
+                    trailing: Icon(Icons.phone,
+                        color: Color.fromARGB(255, 22, 22, 22), size: 30.0),
                     leading: new CircleAvatar(
                       backgroundImage: new NetworkImage(
                         ('${MyConstant.domain}/dopa/resource/users/images/${_userDetails[index].user_photo}'),

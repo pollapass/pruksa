@@ -50,7 +50,7 @@ class _profileState extends State<profile> {
           userModel = UserModel.fromMap(item);
           nameController.text = userModel!.name;
 
-          phoneController.text = userModel!.user_phone!;
+          phoneController.text = userModel!.user_phone?? "";
           lastnameController.text = userModel!.lastname;
         });
       }

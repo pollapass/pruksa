@@ -21,6 +21,7 @@ class icaremodel {
   final String? request;
   final String type_id;
   final String type_name;
+    final String tfullname;
   icaremodel({
     required this.fullname,
     required this.cid,
@@ -41,8 +42,9 @@ class icaremodel {
     this.request,
     required this.type_id,
     required this.type_name,
+    required this.tfullname,
   });
-
+  
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
@@ -65,6 +67,7 @@ class icaremodel {
       'request': request,
       'type_id': type_id,
       'type_name': type_name,
+      'tfullname': tfullname,
     };
   }
 
@@ -89,6 +92,7 @@ class icaremodel {
       request: map['request'] != null ? map['request'] as String : null,
       type_id: (map['type_id'] ?? '') as String,
       type_name: (map['type_name'] ?? '') as String,
+      tfullname: (map['tfullname'] ?? '') as String,
     );
   }
 

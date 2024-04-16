@@ -18,10 +18,12 @@ import 'package:pruksa/pages/add_news.dart';
 import 'package:pruksa/pages/add_newspr.dart';
 import 'package:pruksa/pages/add_redcross.dart';
 import 'package:pruksa/pages/admin.dart';
+import 'package:pruksa/pages/admin_register.dart';
 import 'package:pruksa/pages/dashboard.dart';
 import 'package:pruksa/pages/login.dart';
 import 'package:pruksa/pages/register.dart';
 import 'package:pruksa/sarabun/add_booksend.dart';
+import 'package:pruksa/sarabun/add_paynews.dart';
 import 'package:pruksa/utility/my_constant.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -44,6 +46,8 @@ final Map<String, WidgetBuilder> map = {
   '/add_active': (BuildContext context) => addactive(),
   '/add_booksend': (BuildContext context) => addbooksend(),
   '/add_smiv': (BuildContext context) => addsmiv(),
+   '/adminregister': (BuildContext context) => adminregister(),
+    '/add_paynew': (BuildContext context) => addpaynews(),
 };
 
 String? initlalRoute;

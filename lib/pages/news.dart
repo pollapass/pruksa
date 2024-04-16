@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -24,8 +23,9 @@ class _NewsState extends State<News> {
   bool load = true;
   bool? haveData;
   List<NewsModel> newsmodels = [];
-  var formatter = DateFormat.yMMMMEEEEd();
+  var formatter = DateFormat.yMMMMEEEEd('th');
   DateTime now = new DateTime.now();
+  //DateTime now = DateTime(${newsmodels[index].news_public});
   @override
   void initState() {
     // TODO: implement initState
@@ -108,7 +108,7 @@ class _NewsState extends State<News> {
                             title: Text(
                                 'เรื่อง: ${newsmodels[index].news_name_th}'),
                             subtitle: Text(
-                                'วันที่ ${formatter.format(now)} ${newsmodels[index].news_public} '),
+                                ' ${formatter.format(DateTime.parse("${newsmodels[index].news_public}"))}  '),
                             trailing: Icon(Icons.keyboard_arrow_right,
                                 color: Color.fromARGB(255, 22, 22, 22),
                                 size: 30.0),

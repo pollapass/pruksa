@@ -47,7 +47,7 @@ class _sasukmenuState extends State<sasukmenu> {
                   })),
               MenuItem(
                   imagepath: 'images/sasuk.png',
-                  titel: 'กลุ่มเปราะบาง อำเภอ',
+                  titel: 'กลุ่มเปราะบาง',
                   onTap: (() {
                     Navigator.push(
                       context,

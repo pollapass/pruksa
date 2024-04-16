@@ -199,19 +199,16 @@ class _AdminState extends State<Admin> {
               ),
               BottomNavigationBarItem(
                 icon: IconButton(
-                  icon: const Icon(Icons.phone_enabled),
-                  tooltip: 'ติดต่ออำเภอ',
-                  iconSize: 30,
-                  color: Colors.grey,
-                  onPressed: () async {
-                    Uri phoneno = Uri.parse('tel:054761044');
-                    if (await launchUrl(phoneno)) {
-                      //dialer opened
-                    } else {
-                      //dailer is not opened
-                    }
-                  },
-                ),
+                    icon: const Icon(Icons.phone_enabled),
+                    tooltip: 'ติดต่ออำเภอ',
+                    iconSize: 30,
+                    color: Colors.grey,
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => MemberList()));
+                    }),
                 label: 'โทร',
               ),
             ],
@@ -413,7 +410,7 @@ class _AdminState extends State<Admin> {
               SizedBox(
                 height: 10.0,
               ),
-              Text('คำถามที่พบบ่อย')
+              Text('หนังสือเวียน')
             ],
           ),
         ),
@@ -428,7 +425,7 @@ class _AdminState extends State<Admin> {
       elevation: 0,
 
       title: Text(
-        'BANLUANG',
+        'อำเภอบ้านหลวง',
         style: GoogleFonts.prompt(),
       ),
       centerTitle: true,
