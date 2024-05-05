@@ -7,11 +7,14 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:pruksa/models/icare_report_model.dart';
 import 'package:pruksa/models/news_model.dart';
+import 'package:pruksa/pab/active_main.dart';
 import 'package:pruksa/pages/about.dart';
 import 'package:pruksa/pages/adminmenu.dart';
 import 'package:pruksa/pages/damrong_all.dart';
 import 'package:pruksa/pages/disaster_all.dart';
+import 'package:pruksa/pages/eservice.dart';
 import 'package:pruksa/pages/faq_his.dart';
 import 'package:pruksa/pages/inform_news.dart';
 import 'package:pruksa/pages/informrisk_all.dart';
@@ -23,6 +26,10 @@ import 'package:pruksa/pages/newspr.dart';
 import 'package:pruksa/pages/profile.dart';
 import 'package:pruksa/pages/test.dart';
 import 'package:pruksa/sarabun/book_send_all.dart';
+import 'package:pruksa/sarabun/sarabun_menu.dart';
+import 'package:pruksa/sasuk/icare_amp.dart';
+import 'package:pruksa/service/facebook.dart';
+import 'package:pruksa/service/websitamp.dart';
 import 'package:pruksa/utility/app_service.dart';
 import 'package:pruksa/utility/my_constant.dart';
 import 'package:pruksa/wigets/show_image.dart';
@@ -160,10 +167,10 @@ class _AdminState extends State<Admin> {
                   color: Colors.grey,
                   onPressed: () {
                     Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => News()));
+                        MaterialPageRoute(builder: (context) => sarabunmenu()));
                   },
                 ),
-                label: 'ข่าวกิจกรรม',
+                label: 'สารบัญ',
               ),
               BottomNavigationBarItem(
                 icon: Padding(
@@ -187,15 +194,15 @@ class _AdminState extends State<Admin> {
               ),
               BottomNavigationBarItem(
                 icon: IconButton(
-                  icon: const Icon(Icons.info_outline),
+                  icon: const Icon(Icons.wallet),
                   iconSize: 30,
                   color: Colors.grey,
                   onPressed: () {
                     Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => NewsPr()));
+                        MaterialPageRoute(builder: (context) => Eservice()));
                   },
                 ),
-                label: 'ประกาศ',
+                label: 'e-service',
               ),
               BottomNavigationBarItem(
                 icon: IconButton(
@@ -242,13 +249,15 @@ class _AdminState extends State<Admin> {
                             '${MyConstant.domain}/dopa/resource/users/images/$avatar'),
                       ),
                       accountName:
-                          Text(nameuser == null ? 'Name ?' : ' $fullname '),
+                          Text(fullname == null ? 'Name ?' : '$fullname '),
                       accountEmail:
                           Text(posname == null ? 'Type ?' : ' $posname ')),
 
                   // ShowMenu(),
                   showprofile(),
                   MenuAbout(),
+                  websitmenu(),
+                  facebookmenu(),
 
                   // ShowProduct()
                 ],
@@ -306,6 +315,38 @@ class _AdminState extends State<Admin> {
     );
   }
 
+  ListTile facebookmenu() {
+    return ListTile(
+      onTap: () {
+        setState(() {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => facebook()),
+          );
+        });
+      },
+      leading: FaIcon(FontAwesomeIcons.facebook),
+      title: ShowTitle(title: 'facebook'),
+      subtitle: ShowTitle(title: 'fb อำเภอบ้านหลวง'),
+    );
+  }
+
+  ListTile websitmenu() {
+    return ListTile(
+      onTap: () {
+        setState(() {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => websitamp()),
+          );
+        });
+      },
+      leading: FaIcon(FontAwesomeIcons.google),
+      title: ShowTitle(title: 'websit'),
+      subtitle: ShowTitle(title: 'เวป อำเภอบ้านหลวง'),
+    );
+  }
+
   GridView gridgroup(BuildContext context) {
     return GridView(
       physics: ScrollPhysics(),
@@ -358,39 +399,19 @@ class _AdminState extends State<Admin> {
           onTap: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => InfromNews()),
+              MaterialPageRoute(builder: (context) => activeMain()),
             );
           },
           child: Column(
             children: [
               CircleAvatar(
-                child: Image.asset('images/news.png'),
+                child: Image.asset('images/dopa.png'),
                 backgroundColor: MyConstant.dark,
               ),
               SizedBox(
                 height: 10.0,
               ),
-              Text('ประชาสัมพันธ์')
-            ],
-          ),
-        ),
-        InkWell(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => NewPrList()),
-            );
-          },
-          child: Column(
-            children: [
-              CircleAvatar(
-                child: Image.asset('images/pr.png'),
-                backgroundColor: MyConstant.dark,
-              ),
-              SizedBox(
-                height: 10.0,
-              ),
-              Text('ประกาศ')
+              Text('งานท้องที่')
             ],
           ),
         ),
@@ -411,6 +432,26 @@ class _AdminState extends State<Admin> {
                 height: 10.0,
               ),
               Text('หนังสือเวียน')
+            ],
+          ),
+        ),
+        InkWell(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => icareamp()),
+            );
+          },
+          child: Column(
+            children: [
+              CircleAvatar(
+                child: Image.asset('images/sasuk.png'),
+                backgroundColor: MyConstant.dark,
+              ),
+              SizedBox(
+                height: 10.0,
+              ),
+              Text('พชอ')
             ],
           ),
         ),

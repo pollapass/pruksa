@@ -115,6 +115,42 @@ class Appservice {
     });
   }
 
+  Future<void> accesssmiv() async {
+    String apigetmemberlist =
+        '${MyConstant.domain}/dopa/api/getaccesssmiv.php?isAdd=true';
+
+    await Dio().get(apigetmemberlist).then((value) {
+      if (appController.usermodels.isNotEmpty) {
+        appController.usermodels.clear();
+        appController.chooseUserModels.clear();
+      }
+
+      for (var element in json.decode(value.data)) {
+        UserModel userModel = UserModel.fromMap(element);
+        appController.usermodels.add(userModel);
+        appController.chooseUserModels.add(true);
+      }
+    });
+  }
+
+  Future<void> accesssmivtmb() async {
+    String apigetmemberlist =
+        '${MyConstant.domain}/dopa/api/getaccesssmivtmb.php?isAdd=true';
+
+    await Dio().get(apigetmemberlist).then((value) {
+      if (appController.usermodels.isNotEmpty) {
+        appController.usermodels.clear();
+        appController.chooseUserModels.clear();
+      }
+
+      for (var element in json.decode(value.data)) {
+        UserModel userModel = UserModel.fromMap(element);
+        appController.usermodels.add(userModel);
+        appController.chooseUserModels.add(true);
+      }
+    });
+  }
+
   Future<void> accessrisk() async {
     String apigetmemberlist =
         '${MyConstant.domain}/dopa/api/getaccessrisk.php.php?isAdd=true';
@@ -191,8 +227,8 @@ class Appservice {
   }
 
   Future<void> gotodirection({required String lat, required String lng}) async {
-   // String url = 'https://www.google.co.th/maps/search/?api&query=$lat,$lng';
-   String url = 'https://www.google.co.th/maps/search/?api=1&query=$lat,$lng';
+    // String url = 'https://www.google.co.th/maps/search/?api&query=$lat,$lng';
+    String url = 'https://www.google.co.th/maps/search/?api=1&query=$lat,$lng';
     print('##map = $url');
     Uri uri = Uri.parse(url);
     if (await launchUrl(uri, mode: LaunchMode.externalApplication)) {

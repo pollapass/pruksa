@@ -46,6 +46,7 @@ class _icareeditState extends State<icareedit> {
     nameController.text = icaremodels!.titel;
     dateController.text = icaremodels!.report_date;
     detailController.text = icaremodels!.report_detail;
+    priceController.text = icaremodels?.price ?? "";
 
     // print('### image from mySQL ==>> ${productModel!.images}');
   }
@@ -100,7 +101,7 @@ class _icareeditState extends State<icareedit> {
   }
 
   Future<void> processdel() async {
-    MyDialog().showProgressDialog(context);
+    // MyDialog().showProgressDialog(context);
 
     String key = icaremodels!.report_key;
     print(' id - $key');
@@ -260,7 +261,8 @@ class _icareeditState extends State<icareedit> {
         print('## User Current Avatar');
         editValueToMySQL(icaremodels!.report_images);
       } else {
-        String apiSaveAvatar = '${MyConstant.domain}/dopa/api/saveAvatar.php';
+        String apiSaveAvatar =
+            '${MyConstant.domain}/dopa/api/saveireportpic.php';
 
         List<String> nameAvatars = icaremodels!.report_images.split('/');
         String nameFile = nameAvatars[nameAvatars.length - 1];
@@ -284,13 +286,13 @@ class _icareeditState extends State<icareedit> {
   Future<Null> editValueToMySQL(String pathAvatar) async {
     print('## pathAvatar ==> $pathAvatar');
     String apiEditProfile =
-        '${MyConstant.domain}/dopa/api/edit_ireport.php?isAdd=true&id=${icaremodels!.report_key}&rxdate=${dateController.text}&detail=${detailController.text}&avatar=$pathAvatar';
+        '${MyConstant.domain}/dopa/api/edit_ireport.php?isUpdate=true&id=${icaremodels!.report_key}&name=${nameController.text}&rxdate=${dateController.text}&price=${priceController.text}&detail=${detailController.text}&income=$selecteValue&avatar=$pathAvatar';
     await dio.Dio().get(apiEditProfile).then((value) {
       Get.snackbar(
-        "delete",
+        "Update",
         "ลบข้อมูลการเยี่ยมสำเร็จ",
         colorText: Colors.white,
-        backgroundColor: Colors.red,
+        backgroundColor: Colors.amberAccent,
         icon: const Icon(Icons.add_alert),
         duration: Duration(seconds: 4),
       );
@@ -308,7 +310,7 @@ class _icareeditState extends State<icareedit> {
         children: [
           ElevatedButton(
             onPressed: () {
-              // processEdit();
+              processEditProfileSeller();
             },
             child: Text(
               'อับเดทข้อมูล',

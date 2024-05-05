@@ -38,6 +38,7 @@ class _addicarereportState extends State<addicarereport> {
   TextEditingController dateController = TextEditingController();
   TextEditingController detailController = TextEditingController();
   TextEditingController priceController = TextEditingController();
+ //   TextEditingController priceController = TextEditingController();
   List<String> paths = [];
   late DateTime dateTime;
   final DateFormat formatted = DateFormat('yyyy-MM-dd');

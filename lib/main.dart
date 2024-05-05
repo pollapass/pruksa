@@ -46,8 +46,8 @@ final Map<String, WidgetBuilder> map = {
   '/add_active': (BuildContext context) => addactive(),
   '/add_booksend': (BuildContext context) => addbooksend(),
   '/add_smiv': (BuildContext context) => addsmiv(),
-   '/adminregister': (BuildContext context) => adminregister(),
-    '/add_paynew': (BuildContext context) => addpaynews(),
+  '/adminregister': (BuildContext context) => adminregister(),
+  '/add_paynew': (BuildContext context) => addpaynews(),
 };
 
 String? initlalRoute;
@@ -55,7 +55,7 @@ String? initlalRoute;
 Future<Null> main() async {
   HttpOverrides.global = MyHttpOverride();
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   await GetStorage.init();
 
   await Firebase.initializeApp().then((value) async {
@@ -94,10 +94,15 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       title: MyConstant.appName,
       home: UpgradeAlert(
+          upgrader: Upgrader(
+            canDismissDialog: false,
+            showIgnore: false,
+            showLater: false,
+          ),
           child: Scaffold(
-        appBar: AppBar(title: Text('ตรวจสอบการอับเดทโปรแกรม')),
-        body: Center(child: Text('Checking...')),
-      )),
+            appBar: AppBar(title: Text('ตรวจสอบการอับเดทโปรแกรม')),
+            body: Center(child: Text('Checking...')),
+          )),
       routes: map,
       initialRoute: initlalRoute,
       theme: ThemeData(primarySwatch: materialColor, useMaterial3: false),

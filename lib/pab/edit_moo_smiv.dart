@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:pruksa/models/smiv_model.dart';
+import 'package:pruksa/pab/sm_visit.dart';
 import 'package:pruksa/utility/my_constant.dart';
 import 'package:pruksa/utility/my_dialog.dart';
 import 'package:pruksa/wigets/show_titel.dart';
@@ -57,6 +58,26 @@ class _editsmivmooState extends State<editsmivmoo> {
     return Scaffold(
       appBar: AppBar(
         title: Text('แก้ไขข้อมูล SMIV'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.home_filled),
+            tooltip: 'ประวัติเยียมบ้าน',
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => smvist(
+                      cid: smivModel!.sm_key,
+                      name:smivModel!.sm_name,
+                     //  faddresss:smivModel!.fulladdress,
+                    
+                      //     icaremodels: icarereports[index],
+                      // Icaremodels: icaremodels.,
+                    ),
+                  ));
+            },
+          ),
+        ],
       ),
       body: LayoutBuilder(
         builder: (context, constraints) => GestureDetector(
@@ -133,6 +154,7 @@ class _editsmivmooState extends State<editsmivmoo> {
       ),
     );
   }
+
   Future<void> _dialogBuilder(BuildContext context) {
     return showDialog<void>(
       context: context,
@@ -167,7 +189,8 @@ class _editsmivmooState extends State<editsmivmoo> {
       },
     );
   }
-    Future<void> processdel() async {
+
+  Future<void> processdel() async {
     MyDialog().showProgressDialog(context);
 
     String key = smivModel!.sm_key;

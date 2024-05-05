@@ -102,24 +102,7 @@ class ActiveMenu extends StatelessWidget {
                     MaterialPageRoute(builder: (context) => forest()),
                   );
                 })),
-            MenuItem(
-                imagepath: 'images/sasuk.png',
-                titel: 'พชอ',
-                onTap: (() {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => MemberList()),
-                  );
-                })),
-                    MenuItem(
-                imagepath: 'images/sasuk.png',
-                titel: 'พชอ',
-                onTap: (() {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => MemberList()),
-                  );
-                })),
+ 
           ],
         ),
       ),

@@ -171,9 +171,9 @@ class _icareampState extends State<icareamp> {
                                 ('${MyConstant.domain}/dopa/resource/icare/images/${_foundicare[index].icare_photo}'))),
                       ),
                       title: Text(
-                        '${_foundicare[index].type_name}'
-                        ''
-                        '${_foundicare[index].fullname}',
+                        '${_foundicare[index].fullname}'
+                        ' '
+                        '${_foundicare[index].cid}',
                         style: TextStyle(
                             color: Color.fromARGB(255, 7, 7, 7),
                             fontWeight: FontWeight.bold),

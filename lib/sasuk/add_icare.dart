@@ -23,6 +23,7 @@ class _addicareState extends State<addicare> {
   TextEditingController addressController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
   TextEditingController detailController = TextEditingController();
+  TextEditingController reqController = TextEditingController();
   List groupList = [];
 
   String? selecteValue;
@@ -76,7 +77,8 @@ class _addicareState extends State<addicare> {
 
   Container Builddetail() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 25.0),
+      padding: const EdgeInsets.all(10),
+      margin: EdgeInsets.all(15),
       decoration: BoxDecoration(
         color: Color.fromRGBO(244, 243, 243, 1),
         borderRadius: BorderRadius.circular(10),
@@ -85,7 +87,7 @@ class _addicareState extends State<addicare> {
         controller: detailController,
         validator: (value) {
           if (value!.isEmpty) {
-            return 'กรุณากรอกรายละเอียดควารมช่วยเหลือ';
+            return 'กรุณากรอกรายละเอียด เช่น โรคประจำตัว';
           } else {
             return null;
           }
@@ -93,7 +95,34 @@ class _addicareState extends State<addicare> {
         maxLines: 4,
         decoration: InputDecoration(
           border: InputBorder.none,
-          hintText: 'กรุณากรอกรายละเอียดควารมช่วยเหลือ เช่น มอบถงยังชีพ',
+          hintText: 'กรุณากรอกรายละเอียด เช่น โรคประจำตัว ค่ะ',
+          hintStyle: TextStyle(color: Colors.grey, fontSize: 15),
+        ),
+      ),
+    );
+  }
+
+  Container Buildrequest() {
+    return Container(
+      padding: const EdgeInsets.all(10),
+      margin: EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: Color.fromRGBO(244, 243, 243, 1),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: TextFormField(
+        controller: reqController,
+        validator: (value) {
+          if (value!.isEmpty) {
+            return 'กรุณากรอกรายละเอียดวามต้องการ เช่น ผ้าอ้อม';
+          } else {
+            return null;
+          }
+        },
+        maxLines: 4,
+        decoration: InputDecoration(
+          border: InputBorder.none,
+          hintText: 'กรุณากรอกรายละเอียดวามต้องการ เช่น ผ้าอ้อม ค่ะ',
           hintStyle: TextStyle(color: Colors.grey, fontSize: 15),
         ),
       ),
@@ -140,7 +169,8 @@ class _addicareState extends State<addicare> {
                         return null;
                       }
                     },
-                    //keyboardType: TextInputType.number,
+
+                    ///keyboardType: TextInputType.number,
                     controller: phoneController,
                     hintText: 'เบอร์โทรศัพท์',
                     obscureText: false,
@@ -167,7 +197,7 @@ class _addicareState extends State<addicare> {
                   MyTextField(
                     validatefunc: (p0) {
                       if (p0?.isEmpty ?? true) {
-                        return 'กรุณากรอกบ้านเลขที่ด้วยค่ะ';
+                        return 'กรุณากรอกเลขบัตรประจำตัวประชาชนด้วยค่ะ';
                       } else {
                         return null;
                       }
@@ -183,6 +213,10 @@ class _addicareState extends State<addicare> {
                   SizedBox(
                     height: 10,
                   ),
+                  Buildrequest(),
+                  SizedBox(
+                    height: 10,
+                  ),
                   ShowTitle(title: 'กรุณาเลือกประเภท'),
                   buildGroupList(),
                   SizedBox(
@@ -190,10 +224,8 @@ class _addicareState extends State<addicare> {
                   ),
                   ElevatedButton.icon(
                     onPressed: () {
-                      if (formKey.currentState!.validate()) {
-                        // checkAuthen(user: user, password: password);
-                        InsertData();
-                      }
+                      // checkAuthen(user: user, password: password);
+                      InsertData();
                     },
                     icon: Icon(Icons.save), //icon data for elevated button
                     label: Text("เพิ่มข้อมูล"), //label text
@@ -215,13 +247,16 @@ class _addicareState extends State<addicare> {
     String cid = cidController.text;
     String address = addressController.text;
     String phone = phoneController.text;
-
+    String detail = detailController.text;
+    String req = reqController.text;
     print('## สถานที่ = $name ,cid = $cid');
 
     if (name == null ||
         cid == null ||
         address == null ||
         phone == null ||
+        detail == null ||
+        req == null ||
         selecteValue == null) {
       // No Avatar
       MyDialog().normalDialog(
@@ -234,7 +269,7 @@ class _addicareState extends State<addicare> {
       String addressid = preference.getString('addressid')!;
 
       String apiInsertActReport =
-          '${MyConstant.domain}/dopa/api/inserticare.php?isAdd=true&name=$name&cid=$cid&address=$address&addressid=$addressid&phone=$phone&moopart=$moopart&type=$selecteValue';
+          '${MyConstant.domain}/dopa/api/inserticare.php?isAdd=true&name=$name&cid=$cid&address=$address&addressid=$addressid&phone=$phone&moopart=$moopart&type1=$selecteValue&detail=$detail&req=$req';
       await dio.Dio().get(apiInsertActReport).then((value) {
         if (value.toString() == 'true') {
           Get.back();

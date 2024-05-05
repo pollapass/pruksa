@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:pruksa/models/smiv_model.dart';
+import 'package:pruksa/sasuk/smiv_revisithis.dart';
 import 'package:pruksa/utility/my_constant.dart';
 import 'package:pruksa/utility/my_dialog.dart';
 import 'package:pruksa/wigets/show_titel.dart';
@@ -99,6 +100,22 @@ class _editsmivampState extends State<editsmivamp> {
     return Scaffold(
       appBar: AppBar(
         title: Text('แก้ไขข้อมูล SMIV ของ ${smivModel!.sm_name}'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.home_filled),
+            tooltip: 'ประวัติเยียมบ้าน',
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => simvrevisthis(
+                      fullname: smivModel!.sm_name,
+                      cid: smivModel!.sm_key!,
+                    ),
+                  ));
+            },
+          ),
+        ],
       ),
       body: LayoutBuilder(
         builder: (context, constraints) => GestureDetector(
@@ -186,7 +203,16 @@ class _editsmivampState extends State<editsmivamp> {
           ),
           Padding(padding: EdgeInsets.all(10)),
           ElevatedButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => simvrevisthis(
+                      fullname: smivModel!.sm_name,
+                      cid: smivModel!.sm_key!,
+                    ),
+                  ));
+            },
             child: Text(
               'เยี่ยมบ้าน',
               style: TextStyle(color: Colors.white),

@@ -59,7 +59,7 @@ apply plugin: 'com.google.gms.google-services'
         //versionName flutterVersionName
         //versionCode 1
         //versionName '1.0.1'
-        versionCode 7
+        versionCode 9
         versionName '1.2.0'
     }
 

@@ -115,6 +115,7 @@ class _smvampState extends State<smvamp> {
     return Scaffold(
       appBar: AppBar(
         title: Text('ข้อมูลส่งต่อจาก รพสต'),
+
       ),
       body: load
           ? ShowProgress()

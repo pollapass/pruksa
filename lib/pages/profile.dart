@@ -24,7 +24,7 @@ class profile extends StatefulWidget {
 class _profileState extends State<profile> {
   UserModel? userModel;
   TextEditingController nameController = TextEditingController();
-  TextEditingController addressController = TextEditingController();
+  TextEditingController mooController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
   TextEditingController lastnameController = TextEditingController();
   final formKey = GlobalKey<FormState>();
@@ -50,19 +50,21 @@ class _profileState extends State<profile> {
           userModel = UserModel.fromMap(item);
           nameController.text = userModel!.name;
 
-          phoneController.text = userModel!.user_phone?? "";
+          phoneController.text = userModel!.user_phone ?? "";
           lastnameController.text = userModel!.lastname;
+          mooController.text = userModel?.moopart ?? "";
         });
       }
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('แก้ไขข้อมูลส่วนตัว'),
       ),
-            body: LayoutBuilder(
+      body: LayoutBuilder(
         builder: (context, constraints) => GestureDetector(
           onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
           behavior: HitTestBehavior.opaque,
@@ -76,9 +78,10 @@ class _profileState extends State<profile> {
                 buildlastName(constraints),
                 // buildAddress(constraints),
                 buildPhone(constraints),
+                 buildmoo(constraints),
                 buildTitle('รูปภาพ :'),
                 buildAvatar(constraints),
-               buildButtonEditProfile()
+                buildButtonEditProfile()
               ],
             ),
           ),
@@ -86,6 +89,7 @@ class _profileState extends State<profile> {
       ),
     );
   }
+
   ElevatedButton buildButtonEditProfile() => ElevatedButton.icon(
       onPressed: () => processEditProfileSeller(),
       icon: Icon(Icons.edit),
@@ -124,13 +128,14 @@ class _profileState extends State<profile> {
   Future<Null> editValueToMySQL(String pathAvatar) async {
     print('## pathAvatar ==> $pathAvatar');
     String apiEditProfile =
-        '${MyConstant.domain}/dopa/api/editProfileSellerWhereId.php?isAdd=true&id=${userModel!.user_key}&name=${nameController.text}&lastname=${lastnameController.text}&phone=${phoneController.text}&avatar=$pathAvatar';
+        '${MyConstant.domain}/dopa/api/editProfileSellerWhereId.php?isAdd=true&id=${userModel!.user_key}&name=${nameController.text}&lastname=${lastnameController.text}&phone=${phoneController.text}&avatar=$pathAvatar&moo=${mooController.text}';
     await Dio().get(apiEditProfile).then((value) {
       Navigator.pop(context);
       Navigator.pop(context);
     });
   }
- Row buildPhone(BoxConstraints constraints) {
+
+  Row buildPhone(BoxConstraints constraints) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -156,7 +161,33 @@ class _profileState extends State<profile> {
       ],
     );
   }
-
+  Row buildmoo(BoxConstraints constraints) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Container(
+          margin: EdgeInsets.symmetric(vertical: 16),
+          width: constraints.maxWidth * 0.6,
+          child: TextFormField(
+            keyboardType: TextInputType.number,
+            maxLength: 1,
+            validator: (value) {
+              if (value!.isEmpty) {
+                return 'กรุณากรอกหมู่ว';
+              } else {
+                return null;
+              }
+            },
+            controller: mooController,
+            decoration: InputDecoration(
+              labelText: 'หมู่ที่ :',
+              border: OutlineInputBorder(),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
   ShowTitle buildTitle(String title) {
     return ShowTitle(
       title: title,
@@ -280,5 +311,4 @@ class _profileState extends State<profile> {
       placeholder: (context, url) => ShowProgress(),
     );
   }
-
 }

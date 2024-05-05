@@ -2,7 +2,7 @@ import 'dart:convert';
 
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 class icareReport {
- final String report_key;
+  final String report_key;
   final String cid;
   final String titel;
   final String report_date;
@@ -15,8 +15,10 @@ class icareReport {
   final String income_name;
   final String username;
   final String dep_name;
- 
+
   final String pos_name;
+  final String? price;
+  final String? income;
   icareReport({
     required this.report_key,
     required this.cid,
@@ -32,6 +34,8 @@ class icareReport {
     required this.username,
     required this.dep_name,
     required this.pos_name,
+    this.price,
+    this.income,
   });
 
   Map<String, dynamic> toMap() {
@@ -50,6 +54,8 @@ class icareReport {
       'username': username,
       'dep_name': dep_name,
       'pos_name': pos_name,
+      'price': price,
+      'income': income,
     };
   }
 
@@ -69,10 +75,13 @@ class icareReport {
       username: (map['username'] ?? '') as String,
       dep_name: (map['dep_name'] ?? '') as String,
       pos_name: (map['pos_name'] ?? '') as String,
+      price: map['price'] != null ? map['price'] as String : null,
+      income: map['income'] != null ? map['income'] as String : null,
     );
   }
 
   String toJson() => json.encode(toMap());
 
-  factory icareReport.fromJson(String source) => icareReport.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory icareReport.fromJson(String source) =>
+      icareReport.fromMap(json.decode(source) as Map<String, dynamic>);
 }

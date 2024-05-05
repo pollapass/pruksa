@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -20,6 +21,9 @@ import 'package:pruksa/pages/news_detail.dart';
 
 import 'package:pruksa/pages/newspr.dart';
 import 'package:pruksa/pages/redcross_his.dart';
+import 'package:pruksa/sarabun/pay_newslist.dart';
+import 'package:pruksa/service/facebook.dart';
+import 'package:pruksa/service/websitamp.dart';
 import 'package:pruksa/utility/app_service.dart';
 
 import 'package:pruksa/utility/my_constant.dart';
@@ -150,15 +154,15 @@ class _DashboardState extends State<Dashboard> {
               ),
               BottomNavigationBarItem(
                 icon: IconButton(
-                  icon: const Icon(Icons.newspaper),
+                  icon: const Icon(Icons.bookmark_outline),
                   iconSize: 30,
                   color: Colors.grey,
                   onPressed: () {
                     Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => News()));
+                        MaterialPageRoute(builder: (context) => paynewslist()));
                   },
                 ),
-                label: 'ข่าวกิจกรรม',
+                label: 'จัดซื้อจัดจ้าง',
               ),
               BottomNavigationBarItem(
                 icon: Padding(
@@ -250,6 +254,8 @@ class _DashboardState extends State<Dashboard> {
                         : ' คุณ $nameuser $lastname'),
                     accountEmail: Text(cid == null ? 'CID ?' : ' $cid ')),
                 MenuAbout(),
+                websitmenu(),
+                facebookmenu(),
               ],
             )
           ],
@@ -354,19 +360,19 @@ class _DashboardState extends State<Dashboard> {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => ContactHis()),
+                        MaterialPageRoute(builder: (context) => News()),
                       );
                     },
                     child: Column(
                       children: [
                         CircleAvatar(
-                          child: Image.asset('images/webboard.png'),
+                          child: Image.asset('images/news.png'),
                           backgroundColor: MyConstant.dark,
                         ),
                         SizedBox(
                           height: 10.0,
                         ),
-                        Text('ติดต่อสอบถาม')
+                        Text('ข่าว')
                       ],
                     ),
                   ),
@@ -514,7 +520,37 @@ class _DashboardState extends State<Dashboard> {
       subtitle: ShowTitle(title: 'แสดงรายละเอียดผู้ใช้'),
     );
   }
+  ListTile facebookmenu() {
+    return ListTile(
+      onTap: () {
+        setState(() {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => facebook()),
+          );
+        });
+      },
+      leading: FaIcon(FontAwesomeIcons.facebook),
+      title: ShowTitle(title: 'facebook'),
+      subtitle: ShowTitle(title: 'fb อำเภอบ้านหลวง'),
+    );
+  }
 
+  ListTile websitmenu() {
+    return ListTile(
+      onTap: () {
+        setState(() {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => websitamp()),
+          );
+        });
+      },
+      leading: FaIcon(FontAwesomeIcons.google),
+      title: ShowTitle(title: 'websit'),
+      subtitle: ShowTitle(title: 'เวป อำเภอบ้านหลวง'),
+    );
+  }
   Container BuildTop() {
     return Container(
       padding: EdgeInsets.only(top: 40, left: 15, right: 15, bottom: 20),

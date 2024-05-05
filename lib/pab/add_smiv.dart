@@ -1,5 +1,8 @@
-import 'package:dio/dio.dart';
+import 'package:dio/dio.dart' as dio;
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:pruksa/utility/app_controller.dart';
+import 'package:pruksa/utility/app_service.dart';
 import 'package:pruksa/utility/my_constant.dart';
 import 'package:pruksa/utility/my_dialog.dart';
 import 'package:pruksa/wigets/my_textfield.dart';
@@ -22,10 +25,19 @@ class _addsmivState extends State<addsmiv> {
   final formKey = GlobalKey<FormState>();
   TextEditingController nameController = TextEditingController();
   TextEditingController cidController = TextEditingController();
-    TextEditingController addressController = TextEditingController();
-  TextEditingController  phoneController = TextEditingController();
-
+  TextEditingController addressController = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
+  AppController appController = Get.put(AppController());
   @override
+  void initState() {
+    // TODO: implement initState
+
+    super.initState();
+    Appservice().accesssmivtmb();
+    Appservice().accesssmiv();
+    // initialFile();
+  }
+
   Widget build(BuildContext context) {
     double size = MediaQuery.of(context).size.width;
     return Scaffold(
@@ -128,40 +140,58 @@ class _addsmivState extends State<addsmiv> {
     );
   }
 
-  
-    Future<Null> InsertData() async {
+  Future<Null> InsertData() async {
     String name = nameController.text;
     String cid = cidController.text;
     String address = addressController.text;
-  String phone = phoneController.text;
-  
- 
+    String phone = phoneController.text;
+
     print('## สถานที่ = $name ,cid = $cid');
 
-    if (feel == null || sleep == null || fear == null || speak == null || walk == null) {
+    if (feel == null ||
+        sleep == null ||
+        fear == null ||
+        speak == null ||
+        walk == null) {
       // No Avatar
-      MyDialog().normalDialog(context, 'กรุณากรองข้อมูลให้ครบ', 'ต้องประเมินให้ครบค่ะ');
-    
+      MyDialog().normalDialog(
+          context, 'กรุณากรองข้อมูลให้ครบ', 'ต้องประเมินให้ครบค่ะ');
     } else {
       //      // Have Avatar
-        SharedPreferences preference = await SharedPreferences.getInstance();
+      SharedPreferences preference = await SharedPreferences.getInstance();
 
-    String moopart = preference.getString('moopart')!;
-    String addressid = preference.getString('addressid')!;
-    String userkey = preference.getString('id')!;
-          String apiInsertActReport =
-        '${MyConstant.domain}/dopa/api/insertsmiv.php?isAdd=true&userkey=$userkey&feel=$feel&name=$name&cid=$cid&sleep=$sleep&fear=$fear&walk=$walk&address=$address&addressid=$addressid&phone=$phone&moopart=$moopart&speak=$speak';
-    await Dio().get(apiInsertActReport).then((value) {
-      if (value.toString() == 'true') {
-        Navigator.pop(context);
-      } else {
-        MyDialog().normalDialog(
-            context, 'ไม่สามารถเพิ่มได้!!!', 'กรุณาลองใหม่ค่ะ');
-      }
-    });
-      }
+      String moopart = preference.getString('moopart')!;
+      String addressid = preference.getString('addressid')!;
+      String userkey = preference.getString('id')!;
+      String apiInsertActReport =
+          '${MyConstant.domain}/dopa/api/insertsmiv.php?isAdd=true&userkey=$userkey&feel=$feel&name=$name&cid=$cid&sleep=$sleep&fear=$fear&walk=$walk&address=$address&addressid=$addressid&phone=$phone&moopart=$moopart&speak=$speak';
+      await dio.Dio().get(apiInsertActReport).then((value) {
+        if (value.toString() == 'true') {
+          Get.back();
+          Get.snackbar(
+            "Success",
+            "เพิ่มข้อมูลการเยี่ยมสำเร็จ",
+            colorText: Colors.white,
+            backgroundColor: Colors.lightGreen,
+            icon: const Icon(Icons.add_alert),
+            duration: Duration(seconds: 4),
+          );
+          for (var i = 0; i < appController.usermodels.length; i++) {
+            if ((appController.usermodels[i].token!.isNotEmpty)) {
+              Appservice().processnotitouser(
+                  token: appController.usermodels[i].token!,
+                  title: 'มีการเพิ่มผู้ป่วย SMIV',
+                  message:
+                      'กรุณาดูข้อมูลที่เมนู รายงาน SMIVตำบลและ SMIV อำเภอ!!');
+            }
+          }
+        } else {
+          MyDialog()
+              .normalDialog(context, 'ไม่สามารถเพิ่มได้!!!', 'กรุณาลองใหม่ค่ะ');
+        }
+      });
     }
-
+  }
 
   Container buildTitle1(String title) {
     return Container(
