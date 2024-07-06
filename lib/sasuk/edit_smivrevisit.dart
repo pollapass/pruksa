@@ -237,7 +237,7 @@ class _editsmivrevisitState extends State<editsmivrevisit> {
           Padding(padding: EdgeInsets.all(10)),
           ElevatedButton(
             onPressed: () {
-              //_dialogBuilder(context);
+              _dialogBuilder(context);
             },
             child: Text(
               'ลบข้อมูล',

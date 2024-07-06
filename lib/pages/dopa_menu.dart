@@ -7,6 +7,7 @@ import 'package:pruksa/pages/disaster_all.dart';
 import 'package:pruksa/pages/informrisk_all.dart';
 import 'package:pruksa/pages/redcross_all.dart';
 import 'package:pruksa/sarabun/sarabun_menu.dart';
+import 'package:pruksa/sasuk/smiv_amp.dart';
 import 'package:pruksa/wigets/menu_item.dart';
 
 class dopamenu extends StatefulWidget {
@@ -88,6 +89,15 @@ class _dopamenuState extends State<dopamenu> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => paladmain()),
+                    );
+                  }),
+                      MenuItem(
+                  imagepath: 'images/dopa.png',
+                  titel: 'ผู้ป่วยจิตเวช',
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => smvamp()),
                     );
                   }),
             ],

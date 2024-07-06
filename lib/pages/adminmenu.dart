@@ -8,6 +8,7 @@ import 'package:pruksa/pages/dopa_menu.dart';
 import 'package:pruksa/pages/informrisk_all.dart';
 import 'package:pruksa/pages/redcross_all.dart';
 import 'package:pruksa/pages/show_meet.dart';
+import 'package:pruksa/police/police_menu.dart';
 import 'package:pruksa/sarabun/%E0%B8%B4book_box.dart';
 import 'package:pruksa/sarabun/sarabun_menu.dart';
 import 'package:pruksa/sasuk/sasuk_menu.dart';
@@ -58,12 +59,12 @@ class _AdminMenuState extends State<AdminMenu> {
                   })),
             
               MenuItem(
-                  imagepath: 'images/redcross.jpg',
-                  titel: 'กาชาด',
+                  imagepath: 'images/pol.jpg',
+                  titel: 'สภ.บ้านหลวง',
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => redcrossall()),
+                      MaterialPageRoute(builder: (context) => policemenu()),
                     );
                   }),
      

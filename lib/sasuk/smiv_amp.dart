@@ -102,7 +102,7 @@ class _smvampState extends State<smvamp> {
               onPressed: () {
                 // Get.offAllNamed(MyConstant.routeAdmin);
                 Navigator.of(context).pop();
-              Navigator.of(context).pop();
+                Navigator.of(context).pop();
               },
             ),
           ],
@@ -114,8 +114,7 @@ class _smvampState extends State<smvamp> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('ข้อมูลส่งต่อจาก รพสต'),
-
+        title: Text('ข้อมูลผู้ป่วยจิตเวชอำเภอบ้านหลวง'),
       ),
       body: load
           ? ShowProgress()
@@ -173,6 +172,12 @@ class _smvampState extends State<smvamp> {
                     ),
                   ],
                 ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: MyConstant.dark,
+        onPressed: () => Navigator.pushNamed(context, MyConstant.routeAddampsmiv)
+            .then((value) => loadvaluefromapi()),
+        child: Text('เพิ่ม'),
+      ),
     );
   }
 }

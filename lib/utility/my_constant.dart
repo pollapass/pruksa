@@ -25,6 +25,7 @@ class MyConstant {
   static String routeAddbooksend = '/add_booksend';
   static String routeAddpaynew = '/add_paynew';
   static String routeAddsmiv = '/add_smiv';
+  static String routeAddampsmiv = '/add_ampsmiv';
   static String routeAdmin = '/admin';
   static String routeAdminregister = '/adminregister';
   // Image

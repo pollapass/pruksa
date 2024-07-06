@@ -1,4 +1,5 @@
-import 'package:dio/dio.dart' as dio;
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pruksa/utility/app_controller.dart';
@@ -8,41 +9,91 @@ import 'package:pruksa/utility/my_dialog.dart';
 import 'package:pruksa/wigets/my_textfield.dart';
 import 'package:pruksa/wigets/show_titel.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:dio/dio.dart' as dio;
 
-class addsmiv extends StatefulWidget {
-  const addsmiv({Key? key}) : super(key: key);
+class addampsmiv extends StatefulWidget {
+  const addampsmiv({Key? key}) : super(key: key);
 
   @override
-  State<addsmiv> createState() => _addsmivState();
+  State<addampsmiv> createState() => _addampsmivState();
 }
 
-class _addsmivState extends State<addsmiv> {
+class _addampsmivState extends State<addampsmiv> {
   String? feel;
   String? sleep;
   String? fear;
   String? walk;
   String? speak;
+  String? oas;
+  String? type;
+  String? level;
   final formKey = GlobalKey<FormState>();
   TextEditingController nameController = TextEditingController();
   TextEditingController cidController = TextEditingController();
   TextEditingController addressController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
+  TextEditingController mooController = TextEditingController();
+  List typeList = [];
+  List addresslist = [];
+  String? selecteValue;
+  String? addressValue;
   AppController appController = Get.put(AppController());
   @override
   void initState() {
     // TODO: implement initState
-
     super.initState();
-    Appservice().accesssmivtmb();
-   // Appservice().accesssmiv();
-    // initialFile();
+
+    // สมมุติมีค่า  = 0
+    loadAddressAPI();
+    loadActivegroupFromAPI();
+  }
+
+  Future<Null> loadtypeFromAPI() async {
+    print('type is $type');
+    String apiGetActiveGroup =
+        '${MyConstant.domain}/dopa/api/getsmtypebytype.php?isAdd=true&id=$type';
+    await dio.Dio().get(apiGetActiveGroup).then((value) {
+      //print('value ==> $value');
+      var item = json.decode(value.data);
+
+      setState(() {
+        typeList = item;
+      });
+    });
+    //print(poslist);
+  }
+
+  Future<Null> loadAddressAPI() async {
+    String apiGetProductWhereIdSeller =
+        '${MyConstant.domain}/dopa/api/getaddress.php';
+    await dio.Dio().get(apiGetProductWhereIdSeller).then((value) {
+      // print('value ==> $value');
+      var item = json.decode(value.data);
+      setState(() {
+        addresslist = item;
+      });
+    });
+    //print(poslist);
+  }
+
+  Future<Null> loadActivegroupFromAPI() async {
+    String apiGetActiveGroup = '${MyConstant.domain}/dopa/api/getsmtype.php';
+    await dio.Dio().get(apiGetActiveGroup).then((value) {
+      //print('value ==> $value');
+      var item = json.decode(value.data);
+
+      setState(() {
+        typeList = item;
+      });
+    });
+    print(typeList);
   }
 
   Widget build(BuildContext context) {
     double size = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
-        title: Text('เพิ่มข้อมูลคัดกรองผู้ป่วย'),
+        title: Text('เพิ่มข้อมูล Smiv อำเภอ'),
       ),
       body: LayoutBuilder(
         builder: (context, constraints) => GestureDetector(
@@ -54,6 +105,9 @@ class _addsmivState extends State<addsmiv> {
                 key: formKey,
                 child: Column(
                   children: [
+                    SizedBox(
+                      height: 30,
+                    ),
                     MyTextField(
                       validatefunc: (p0) {
                         if (p0?.isEmpty ?? true) {
@@ -95,9 +149,30 @@ class _addsmivState extends State<addsmiv> {
                       },
                       //keyboardType: TextInputType.number,
                       controller: addressController,
-                      hintText: 'บ้านเลขที่ตามบัตรประชาชน',
+                      hintText: 'บ้านเลขที่',
                       obscureText: false,
                     ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    MyTextField(
+                      validatefunc: (p0) {
+                        if (p0?.isEmpty ?? true) {
+                          return 'กรุณากรอกข้อมูลหมู่ที่ด้วยค่ะ';
+                        } else {
+                          return null;
+                        }
+                      },
+                      //keyboardType: TextInputType.number,
+
+                      controller: mooController,
+                      hintText: 'หมู่ที่',
+                      obscureText: false,
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    BuidAdress(size),
                     SizedBox(
                       height: 10,
                     ),
@@ -116,6 +191,15 @@ class _addsmivState extends State<addsmiv> {
                     buildRadiofeel(size),
                     buildTitle1('เที่ยวหวาดระแวง'),
                     buildRadiofear(size),
+                    buildTitle1(' OAS แบบประเมินพฤติกรรมก้าวร้วรุนแรง'),
+                    Buildoas(size),
+                    buildTitle1('กลุ่มที่มีอาการทางจิต'),
+                    Buildlevel(size),
+                    buildTitle1('ประเภท SMI-V'),
+                    buildGroup(constraints),
+                    SizedBox(
+                      height: 20,
+                    ),
                     ElevatedButton.icon(
                       onPressed: () {
                         if (formKey.currentState!.validate()) {
@@ -140,6 +224,181 @@ class _addsmivState extends State<addsmiv> {
     );
   }
 
+  Container BuidAdress(double size) {
+    return Container(
+      width: size * 0.7,
+      margin: EdgeInsets.only(top: 16),
+      child: DropdownButtonFormField(
+          isExpanded: true,
+          hint: Text('กรุณาระบุตำบล'),
+          value: addressValue,
+          //validator: Validators.required('เลือกสถานะการแต่งงาน'),
+          items: addresslist.map((pos) {
+            return DropdownMenuItem(
+                value: pos['addressid'], child: Text(pos['full_name']));
+          }).toList(),
+          onChanged: (value) {
+            setState(() {
+              loadAddressAPI();
+              addressValue = value as String;
+            });
+          }),
+    );
+  }
+
+  Widget buildGroup(BoxConstraints constraints) {
+    return Container(
+      width: constraints.maxWidth * 0.75,
+      margin: EdgeInsets.only(top: 16),
+      child: DropdownButtonFormField(
+          isExpanded: true,
+          //hint: Text('กรุณาระบุประเภท'),
+          value: selecteValue,
+          //validator: Validators.required('เลือกสถานะการแต่งงาน'),
+          items: typeList.map((pos) {
+            return DropdownMenuItem(
+                value: pos['sm_type'], child: Text(pos['type_name']));
+            // print(pos['active_id']);
+          }).toList(),
+          onChanged: (value) {
+            setState(() {
+              //selecteValue = null;
+              loadActivegroupFromAPI();
+              selecteValue = value as String;
+              //_getActiveList();
+              print(selecteValue);
+            });
+          }),
+    );
+  }
+
+  Row Buildlevel(double size) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Container(
+          width: size * 0.3,
+          child: RadioListTile(
+            value: '0',
+            groupValue: level,
+            activeColor: Colors.blue,
+            onChanged: (value) {
+              setState(() {
+                level = value as String?;
+              });
+            },
+            title: ShowTitle(
+              title: 'สีเขียว',
+              textStyle: TextStyle(
+                fontSize: 14,
+                color: Colors.greenAccent,
+              ),
+            ),
+          ),
+        ),
+        Container(
+          width: size * 0.3,
+          child: RadioListTile(
+            value: '1',
+            groupValue: level,
+            activeColor: Colors.blue,
+            onChanged: (value) {
+              setState(() {
+                level = value as String?;
+              });
+            },
+            title: ShowTitle(
+              title: 'สีเหลือง',
+              textStyle: TextStyle(
+                fontSize: 14,
+                color: Colors.amber,
+              ),
+            ),
+          ),
+        ),
+        Container(
+          width: size * 0.3,
+          child: RadioListTile(
+            value: '2',
+            groupValue: level,
+            activeColor: Colors.blue,
+            onChanged: (value) {
+              setState(() {
+                level = value as String?;
+              });
+            },
+            title: ShowTitle(
+              title: 'สีแดง',
+              textStyle: TextStyle(
+                fontSize: 14,
+                color: Colors.redAccent,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Column Buildoas(double size) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          width: size * 0.4,
+          child: RadioListTile(
+            value: '1',
+            groupValue: oas,
+            activeColor: Colors.blue,
+            onChanged: (value) {
+              setState(() {
+                oas = value as String?;
+              });
+            },
+            title: ShowTitle(
+              title: ' กึ่งเร่งด่วน',
+              textStyle: MyConstant().h3Style(),
+            ),
+          ),
+        ),
+        Container(
+          width: size * 0.4,
+          child: RadioListTile(
+            value: '2',
+            groupValue: oas,
+            activeColor: Colors.blue,
+            onChanged: (value) {
+              setState(() {
+                oas = value as String?;
+              });
+            },
+            title: ShowTitle(
+              title: 'เร่งด่วน',
+              textStyle: MyConstant().h3Style(),
+            ),
+          ),
+        ),
+        Container(
+          width: size * 0.4,
+          child: RadioListTile(
+            value: '3',
+            groupValue: oas,
+            activeColor: Colors.blue,
+            onChanged: (value) {
+              setState(() {
+                oas = value as String?;
+              });
+            },
+            title: ShowTitle(
+              title: 'ฉุกเฉิน',
+              textStyle: MyConstant().h3Style(),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
   Future<Null> InsertData() async {
     String name = nameController.text;
     String cid = cidController.text;
@@ -152,7 +411,9 @@ class _addsmivState extends State<addsmiv> {
         sleep == null ||
         fear == null ||
         speak == null ||
-        walk == null) {
+        walk == null ||
+        oas == null ||
+        level == null) {
       // No Avatar
       MyDialog().normalDialog(
           context, 'กรุณากรองข้อมูลให้ครบ', 'ต้องประเมินให้ครบค่ะ');
@@ -160,17 +421,17 @@ class _addsmivState extends State<addsmiv> {
       //      // Have Avatar
       SharedPreferences preference = await SharedPreferences.getInstance();
 
-      String moopart = preference.getString('moopart')!;
-      String addressid = preference.getString('addressid')!;
+      String moopart = mooController.text;
+
       String userkey = preference.getString('id')!;
       String apiInsertActReport =
-          '${MyConstant.domain}/dopa/api/insertsmiv.php?isAdd=true&userkey=$userkey&feel=$feel&name=$name&cid=$cid&sleep=$sleep&fear=$fear&walk=$walk&address=$address&addressid=$addressid&phone=$phone&moopart=$moopart&speak=$speak';
+          '${MyConstant.domain}/dopa/api/insertampsmiv.php?isAdd=true&userkey=$userkey&feel=$feel&name=$name&cid=$cid&sleep=$sleep&fear=$fear&walk=$walk&address=$address&addressid=$addressValue&phone=$phone&moopart=$moopart&speak=$speak&oas=$oas&type=$selecteValue&level=$level';
       await dio.Dio().get(apiInsertActReport).then((value) {
         if (value.toString() == 'true') {
           Get.back();
           Get.snackbar(
             "Success",
-            "เพิ่มข้อมูลการเยี่ยมสำเร็จ",
+            "เพิ่มข้อมูลผูป้วยสำเร็จ",
             colorText: Colors.white,
             backgroundColor: Colors.lightGreen,
             icon: const Icon(Icons.add_alert),
@@ -181,8 +442,7 @@ class _addsmivState extends State<addsmiv> {
               Appservice().processnotitouser(
                   token: appController.usermodels[i].token!,
                   title: 'มีการเพิ่มผู้ป่วย SMIV',
-                  message:
-                      'กรุณาดูข้อมูลที่เมนู รายงาน SMIVตำบลและ SMIV อำเภอ!!');
+                  message: 'กรุณาดูข้อมูล SMIV อำเภอ!!');
             }
           }
         } else {

@@ -150,7 +150,7 @@ class _smivHreportState extends State<smivHreport> {
                                     textStyle: MyConstant().h2RedStyle(),
                                   ),
                                   ShowTitle(
-                                    title: 'กรุณาเพิ่มการช่วยเหลือค่ะ',
+                                    title: 'กรุณาเลือกวันที่ใหม่ค่ะ',
                                     textStyle: MyConstant().h2RedStyle(),
                                   ),
                                 ],

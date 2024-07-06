@@ -24,6 +24,7 @@ import 'package:pruksa/pages/login.dart';
 import 'package:pruksa/pages/register.dart';
 import 'package:pruksa/sarabun/add_booksend.dart';
 import 'package:pruksa/sarabun/add_paynews.dart';
+import 'package:pruksa/sasuk/add_ampsmiv.dart';
 import 'package:pruksa/utility/my_constant.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -48,6 +49,7 @@ final Map<String, WidgetBuilder> map = {
   '/add_smiv': (BuildContext context) => addsmiv(),
   '/adminregister': (BuildContext context) => adminregister(),
   '/add_paynew': (BuildContext context) => addpaynews(),
+  '/add_ampsmiv': (BuildContext context) => addampsmiv(),
 };
 
 String? initlalRoute;
